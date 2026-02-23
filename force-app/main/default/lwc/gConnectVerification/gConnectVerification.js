@@ -1214,163 +1214,6 @@ export default class GConnectVerification extends LightningElement {
         }
     }
 
-
-    //<!-- 7. OLD RTW Details -->
-    // async callConfirmForm64() {
-    //     let allFieldsValid = true;
-    //     // const inputFields = this.template.querySelectorAll('.dateOfEntry,.accessCode,.settledStatus,.rtwDoc,.citi_Immi_status,.expiryDate');
-    //     const inputFields = this.template.querySelectorAll('.shareCode,.rtwDoc,.citi_Immi_status,.expiryDate');
-    //     console.log('-->inputFields',inputFields);
-    //     inputFields.forEach(inputField => {
-    //         let value = inputField.value;
-    //         if (!inputField.classList.contains('citi_Immi_status') && !inputField.classList.contains('rtwDoc') && !inputField.classList.contains('settledStatus')) {
-    //             value = value.trim();
-    //         }
-    //         console.log('value-->',value);
-    //         inputField.value = value;
-    //         inputField.reportValidity();
-    //         if (!inputField.checkValidity()) {
-    //             allFieldsValid = false;
-    //             inputField.focus();
-    //         }
-    //     });
-
-    //     // Validate radio group
-    //     let radioGrpValue;
-    //     if (this.citizenshipIsEEU) {
-    //         const radioGroup = this.template.querySelector('.biometricEvidence');
-    //         radioGrpValue = radioGroup.value;
-    //         if (radioGroup.value === '' || radioGroup.value === undefined) {
-    //             this.showBioEviError = true;
-    //         } else {
-    //             this.showBioEviError = false;
-    //         }
-    //     } else {
-    //         this.showBioEviError = false;
-    //     }
-
-    //     let confirmSuccess = false;
-    //     if (allFieldsValid && !this.showBioEviError) {
-    //         if (this.citizenshipIsEEU) {
-    //             if ((radioGrpValue === 'Yes' && !this.isRtwDocError) || radioGrpValue === 'No') {
-    //                 confirmSuccess = true;
-    //             }
-    //         } else {
-    //             if (!this.isRtwDocError) {
-    //                 confirmSuccess = true;
-    //             }
-    //         }
-    //     }
-    //     if (confirmSuccess == true) {
-    //         this.spinner = true;
-    //         this.collectDetails['lastConfirmStage'] = 'Right To Work';
-    //         this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
-
-
-    //         // if (!this.collectDetails.confirmRightToWorkDetails) {
-    //         //     this.collectDetails.confirmRightToWorkDetails = {
-    //         //         citi_Immi_status: this.citi_Immi_status,
-    //         //         rtwDoc: this.showRTWDoc ? this.rtwDoc : null,
-    //         //         expiryDate: this.showRTWExpiryDate ? this.expiryDate : null,
-    //         //         dateOfEntry: this.citizenshipIsEEU ? this.dateOfEntry : null,
-    //         //         settledStatus: this.citizenshipIsEEU ? this.settledStatus : null,
-    //         //         biometricEvidence: this.citizenshipIsEEU ? this.biometricEvidence : null,
-    //         //         accessCode: this.showAccessCode ? this.accessCode : null
-    //         //     };
-    //         // }
-
-    //         //if (this.rtwFilesUploded == true || radioGrpValue == 'No') {
-    //         await this.updateConfirmDetails();
-    //         if (!this.isError) {
-    //             this.confirmForm64Page = false;
-    //             if (this.showFileUploadCombo) {
-    //                 this.confirmRTWUploadPage = true;
-    //             } else {
-    //                 this.confirmGovtGatewayDetailspage = true;
-    //             }
-    //         } else {
-    //             this.showToast('Error', this.updateErrorMessage, 'error');
-    //         }
-    //         this.spinner = false;
-    //         //}
-    //     }
-
-    // }
-
-
-    // <!-- 7. NEW RTW Details -->
-    // async callConfirmForm64() {
-    //     let allFieldsValid = true;
-
-    //     // Validate category selection
-    //     if (!this.citi_Immi_status) {
-    //         this.showToast('Error', 'Please select your citizenship status', 'error');
-    //         return;
-    //     }
-
-    //     // Validate document selection (if applicable)
-    //     if (this.isRTWDoc && !this.rtwDoc) {
-    //         this.showToast('Error', 'Please select the document you will provide', 'error');
-    //         return;
-    //     }
-
-    //     // Validate share code (if applicable)
-    //     if (this.showShareCode) {
-    //         const shareCodeInput = this.template.querySelector('input[name="shareCode"]');
-    //         if (shareCodeInput) {
-    //             let value = shareCodeInput.value ? shareCodeInput.value.trim().toUpperCase() : '';
-    //             let errorMessage = '';
-
-    //             const alphaNumericPattern = /^[A-Z0-9]+$/;
-
-    //             if (value.length === 0) {
-    //                 errorMessage = 'Share Code is required.';
-    //             }
-    //             else if (!value.startsWith('W')) {
-    //                 errorMessage = 'Share Code is invalid. It must start with W.';
-    //             }
-    //             else if (value.length !== 9) {
-    //                 errorMessage = 'Share Code must be exactly 9 characters.';
-    //             }
-    //             else if (!alphaNumericPattern.test(value)) {
-    //                 errorMessage = 'Share Code must contain letters and numbers only.';
-    //             }
-
-    //             if (errorMessage) {
-    //                 this.showToast('Error', errorMessage, 'error');
-    //                 return;
-    //             }
-
-    //             this.shareCode = value;
-    //             this.collectForm64Details.shareCode = value;
-    //         }
-    //     }
-
-    //     let confirmSuccess = false;
-
-    //     if (allFieldsValid && !this.isRtwDocError) {
-    //         confirmSuccess = true;
-    //     }
-
-    //     if (confirmSuccess == true) {
-    //         this.spinner = true;
-    //         this.collectDetails['lastConfirmStage'] = 'Right To Work';
-    //         this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
-
-    //         await this.updateConfirmDetails();
-    //         if (!this.isError) {
-    //             this.confirmForm64Page = false;
-    //             if (this.showFileUploadCombo) {
-    //                 this.confirmRTWUploadPage = true;
-    //             } else {
-    //                 this.confirmGovtGatewayDetailspage = true;
-    //             }
-    //         } else {
-    //             this.showToast('Error', this.updateErrorMessage, 'error');
-    //         }
-    //         this.spinner = false;
-    //     }
-    // }
     async callConfirmForm64() {
         let allFieldsValid = true;
 
@@ -1423,29 +1266,22 @@ export default class GConnectVerification extends LightningElement {
 
 
         if (allFieldsValid && !this.isRtwDocError) {
-            this.spinner = true;
+            // Only validate and navigate to the RTW upload page here.
+            // The actual file upload and server update will be performed from the upload page's Next button.
             this.collectDetails['lastConfirmStage'] = 'Right To Work';
             this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
 
-            await this.updateConfirmDetails();
+            this.confirmForm64Page = false;
+            this.showUploadScreen = false;
+            this.confirmGovtGatewayDetailspage = false;
 
-            if (!this.isError) {
-                this.confirmForm64Page = false;
-                this.showUploadScreen = false;
-                this.confirmGovtGatewayDetailspage = false;
-
-                setTimeout(() => {
-                    if (this.showFileUploadCombo) {
-                        this.confirmRTWUploadPage = true;
-                    } else {
-                        this.confirmGovtGatewayDetailspage = true;
-                    }
-                }, 100);
-            } else {
-                console.error('❌ Update failed:', this.updateErrorMessage);
-                this.showToast('Error', this.updateErrorMessage, 'error');
-            }
-            this.spinner = false;
+            setTimeout(() => {
+                if (this.showFileUploadCombo) {
+                    this.confirmRTWUploadPage = true;
+                } else {
+                    this.confirmGovtGatewayDetailspage = true;
+                }
+            }, 100);
         }
     }
 
@@ -1496,6 +1332,8 @@ export default class GConnectVerification extends LightningElement {
         this.savedRTWOption = null;
 
         if (this.rtwFilesUploded === true) {
+            // Ensure RTW detail fields are included before server update
+            this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
             await this.updateConfirmDetails();
             if (!this.isError) {
                 this.confirmRTWUploadPage = false;
@@ -2039,189 +1877,6 @@ export default class GConnectVerification extends LightningElement {
 
         this.collectBankDetails[event.target.name] = event.target.value.trim();
     }
-
-    // OLD RTW
-    // onChangeForm64Details(event) {
-
-    //      console.log('this.rtwDoc: ', this.rtwDoc);
-    //             console.log('this.showFileUploadCombo: ', this.showFileUploadCombo);
-    //     if (event.target.name === 'citi_Immi_status') {
-
-    //         this.rtwDoc = null;
-    //         this.expiryDate = null;
-    //         this.dateOfEntry = null;
-    //         this.settledStatus = null;
-    //         this.biometricEvidence = '';
-    //         this.accessCode = null;
-
-
-    //         this.collectForm64Details.rtwDoc = null;
-    //             this.collectForm64Details.expiryDate = null;
-    //             this.collectForm64Details.dateOfEntry = null;
-    //             this.collectForm64Details.settledStatus = null;
-    //             this.collectForm64Details.biometricEvidence = null;
-    //             this.collectForm64Details.accessCode = null;
-
-    //         if (event.target.value == 'EU/EEA/Swiss Citizen') {
-    //             this.citizenshipIsEEU = true;
-    //             this.isRTWDoc = false;
-    //             this.showFileUploadCombo = false;
-    //             this.showAccessCode = false;
-    //             this.showRTWExpiryDate = false;
-    //             if (this.biometricEvidence != null && this.biometricEvidence != '') {
-    //                 if (this.biometricEvidence == 'Yes') {
-    //                     this.showFileUploadCombo = true;
-    //                     this.showAccessCode = false;
-    //                     this.selectedRTWOption = 'Biometric';
-    //                 } else {
-    //                     this.showFileUploadCombo = false;
-    //                     this.showAccessCode = true;
-    //                 }
-    //             }
-
-
-
-    //         } else {
-    //             this.citizenshipIsEEU = false;
-    //             this.isRTWDoc = true;
-    //             this.showFileUploadCombo = false;
-    //             this.showAccessCode = false;
-    //             let citiImmiStatus = event.target.value;
-    //             this.rtw_option = this.allowedRTWOptions[citiImmiStatus];
-
-
-
-    //             if (this.rtwDoc != null) {
-    //                 if (this.rtwDoc == 'British passport') {
-    //                     this.selectedRTWOption = 'Passport';
-    //                     this.showRTWExpiryDate = true;
-    //                 } else if (this.rtwDoc == 'British Birth or Adoption Certificate') {
-    //                     this.selectedRTWOption = 'Adoption';
-    //                     this.showRTWExpiryDate = false;
-    //                 } else if (this.rtwDoc == 'Naturalisation') {
-    //                     this.selectedRTWOption = 'Naturalisation';
-    //                     this.showRTWExpiryDate = false;
-    //                 } else if (this.rtwDoc == 'Work Visa') {
-    //                     this.selectedRTWOption = 'Visa';
-    //                     this.showRTWExpiryDate = true;
-    //                 } else if (this.rtwDoc == 'Work Permit') {
-    //                     this.selectedRTWOption = 'Permit';
-    //                     this.showRTWExpiryDate = true;
-    //                 } else if (this.rtwDoc == 'Other') {
-    //                     this.selectedRTWOption = 'Other';
-    //                     this.showRTWExpiryDate = true;
-    //                 }
-    //                 this.showFileUploadCombo = true;
-    //             }
-    //         }
-    //     }
-    //     if (event.target.name === 'rtwDoc') {
-    //         this.expiryDate = null;
-
-    //         this.collectForm64Details.expiryDate = null;
-    //         this.showFileUploadCombo = true;
-    //         if (event.target.value == 'British passport') {
-    //             this.selectedRTWOption = 'Passport';
-    //             this.showRTWExpiryDate = true;
-    //         } else if (event.target.value == 'British Birth or Adoption Certificate') {
-    //             this.selectedRTWOption = 'Adoption';
-    //             this.showRTWExpiryDate = false;
-    //         } else if (event.target.value == 'Naturalisation') {
-    //             this.selectedRTWOption = 'Naturalisation';
-    //             this.showRTWExpiryDate = false;
-    //         } else if (event.target.value == 'Work Visa') {
-    //             this.selectedRTWOption = 'Visa';
-    //             this.showRTWExpiryDate = true;
-    //         } else if (event.target.value == 'Work Permit') {
-    //             this.selectedRTWOption = 'Permit';
-    //             this.showRTWExpiryDate = true;
-    //         } else if (event.target.value == 'Other') {
-    //             this.selectedRTWOption = 'Other';
-    //             this.showRTWExpiryDate = true;
-    //         }
-    //     }
-    //     if (event.target.name === 'biometricEvidence') {
-    //         this.accessCode = null;
-    //         this.collectForm64Details.accessCode = null;
-
-    //         if (event.target.value == 'Yes') {
-    //             this.showFileUploadCombo = true;
-    //             this.showAccessCode = false;
-    //             this.selectedRTWOption = 'Biometric';
-    //         } else {
-    //             this.showFileUploadCombo = false;
-    //             this.showAccessCode = true;
-    //         }
-    //     }
-    //     if (event.target.name == 'accessCode') {
-    //         let accessCodePattern = /^[A-Z0-9]*$/;
-    //         let accessCodeValue = event.target.value;
-    //         let errorMessage = '';
-    //         if (!accessCodePattern.test(accessCodeValue)) {
-    //             errorMessage = 'Access code must be alphanumeric.';
-    //         }
-    //         if (accessCodeValue.length < 9 || accessCodeValue.length > 9) {
-    //             errorMessage = 'Access code must has 9 characters.';
-    //         }
-    //         if (accessCodeValue.length == 9) {
-    //             let plainDigitsPattern = /^\d{9}$/;
-    //             let plainAlphabetsPattern = /^[A-Z]{9}$/;
-
-    //             if (plainDigitsPattern.test(accessCodeValue) || plainAlphabetsPattern.test(accessCodeValue)) {
-    //                 errorMessage = 'Access code must be alphanumeric.';
-    //             }
-    //         }
-    //         event.target.setCustomValidity(errorMessage);
-    //         event.target.reportValidity();
-    //     }
-    //     if (event.target.type == 'date') {
-    //         if (event.target.name == 'dateOfEntry') {
-    //             const selectedDate = new Date(event.target.value);
-    //             const minDate = new Date();
-    //             if (selectedDate > minDate) {
-    //                 event.target.setCustomValidity("Not allowing future date.");
-    //             } else {
-    //                 event.target.setCustomValidity("");
-    //                 this.collectLicenseDetails[event.target.name] = event.target.value.trim();
-    //             }
-    //             event.target.reportValidity();
-    //         }
-    //         if (event.target.name == 'expiryDate') {
-
-    //             const selectedDate = new Date(event.target.value);
-    //             const minDate = new Date();
-    //             minDate.setHours(0, 0, 0, 0);
-
-    //             let currentCitizenshipStatus = this.citi_Immi_status;
-    //             if (this.collectForm64Details['citi_Immi_status']) {
-    //                 currentCitizenshipStatus = this.collectForm64Details['citi_Immi_status'];
-    //             }
-
-    //             let rightToWorkDocument = this.rtwDoc;
-    //             if (this.collectForm64Details['rtwDoc']) {
-    //                 rightToWorkDocument = this.collectForm64Details['rtwDoc'];
-    //             }
-
-    //             let byPassExpiryDateValidation = false;
-    //             if (currentCitizenshipStatus == 'British passport/UK National' && rightToWorkDocument == 'British passport') {
-    //                 byPassExpiryDateValidation = true;
-    //             }
-
-    //             if (selectedDate < minDate && !byPassExpiryDateValidation) {
-    //                 event.target.setCustomValidity("Past date is not allowed.");
-    //             } else {
-    //                 event.target.setCustomValidity("");
-    //                 this.collectLicenseDetails[event.target.name] = event.target.value.trim();
-    //             }
-    //             event.target.reportValidity();
-    //             this.expiryDate = event.target.value;
-    //         }
-    //     }
-    //     console.log('-->this.collectForm64Details',this.collectForm64Details);
-    //     this.collectForm64Details[event.target.name] = event.target.value.trim();
-    //     // this.collectForm64Details[event.target.name] = event.target.value ? event.target.value.trim() : null;
-
-    // }
 
     // NEW RTW
     shareCode = null;
