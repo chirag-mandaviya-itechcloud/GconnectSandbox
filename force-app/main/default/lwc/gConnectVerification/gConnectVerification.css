@@ -8,6 +8,17 @@ video::-webkit-media-controls-timeline {
     padding: 0 15px;
     margin: 0 auto;
 }
+
+.header_info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0px;
+}
+.header_info img {
+    width: 130px;
+}
+
 .title {
     line-height: 40px;
     font-size: 40px;

@@ -266,6 +266,9 @@ export default class GConnectVerification extends LightningElement {
     @track GDPRStatementError = false;
     @track showCortexNumber = false;
 
+    @track DSPNavbarLogo = '';
+    @track mainContractorName = '';
+
     rtwData = {
         categories: [
             {
@@ -666,9 +669,8 @@ export default class GConnectVerification extends LightningElement {
                         this.buttonFontColor = row.Button_Font_Color__c;
                         this.primaryColor = row.Primary_Color__c;
                         this.secondaryColor = row.Secondary_Color__c;
-
-
-
+                        this.DSPNavbarLogo = row.DSP_Logo__c;
+                        this.mainContractorName = row.Main_Contractor__r.Name;
                     }
 
                 }
