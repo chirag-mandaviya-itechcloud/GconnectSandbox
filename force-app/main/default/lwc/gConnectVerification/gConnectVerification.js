@@ -1134,6 +1134,7 @@ export default class GConnectVerification extends LightningElement {
         if (!this.isDlDocError) {
             this.spinner = true
             this.collectDetails['lastConfirmStage'] = 'DL Upload';
+            this.collectDetails['fromVerification'] = true;
 
             //if (this.fileErrorMessage == false) {
             if (this.isDlDocError == false) {
@@ -1273,6 +1274,7 @@ export default class GConnectVerification extends LightningElement {
 
         this.spinner = true;
         this.collectDetails['lastConfirmStage'] = 'RTW Upload';
+        this.collectDetails['fromVerification'] = true;
 
         if (!this.isRtwDocError) {
             await this.uploadAllFiles();

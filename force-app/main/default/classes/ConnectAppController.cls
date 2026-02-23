@@ -175,6 +175,16 @@ global without sharing class ConnectAppController {
                 if(detailsWrapper.lastConfirmStage == 'Right To Work'){
                     applicationUpdate.Confirm_Form64__c = true;
                 }
+
+                if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'DL Upload'){
+                    applicationUpdate.DL_Requested__c = false;
+                }
+
+                if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'RTW Upload'){
+                    applicationUpdate.RTW_Requested__c = false;
+                }
+
+
                 //Basic Details
                 if(detailsWrapper.confirmBasicDetails != null)
 				{
@@ -353,6 +363,11 @@ global without sharing class ConnectAppController {
         public confirmBankDetails confirmBankDetails {get;set;}
         public confirmRightToWorkDetails confirmRightToWorkDetails {get;set;} // Get the Right To Work Details
         public confirmDrivingLicenseDetails confirmDrivingLicenseDetails {get;set;} // Get the Driving License Details
+        public Boolean fromVerification {get;set;}
+
+        public ConfirmDetailsWrapper(){
+            this.fromVerification = false;
+        }
     }
 
     global class confirmDrivingLicenseDetails{
