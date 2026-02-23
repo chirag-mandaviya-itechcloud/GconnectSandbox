@@ -1158,20 +1158,16 @@ export default class GConnectVerification extends LightningElement {
         });
 
         if (allFieldsValid) {
-            this.spinner = true
+            // Only validate and navigate to the DL upload page here.
+            // Actual file upload and server save will happen on the DL upload page's Next button
             this.collectDetails['lastConfirmStage'] = 'Driving Licence';
-
             this.currentLicenceNumber = this.collectLicenseDetails['licenseNumber'];
             this.collectDetails['confirmDrivingLicenseDetails'] = this.collectLicenseDetails;
-            await this.updateConfirmDetails();
-            if (!this.isError) {
-                this.confirmDrivingLicensePage = false;
-                this.confirmDLUploadPage = true;
-                this.checkDuplicateAccount();
-            } else {
-                this.showToast('Error', this.updateErrorMessage, 'error');
-            }
-            this.spinner = false;
+
+            this.confirmDrivingLicensePage = false;
+            this.confirmDLUploadPage = true;
+            // Keep checking for duplicate account if needed
+            this.checkDuplicateAccount();
         }
     }
 
@@ -1204,6 +1200,8 @@ export default class GConnectVerification extends LightningElement {
                 }
             }
             if (this.licenseFilesUploded == true) {
+                // Ensure driving licence details are included before server update
+                this.collectDetails['confirmDrivingLicenseDetails'] = this.collectLicenseDetails;
                 await this.updateConfirmDetails();
                 if (!this.isError) {
                     this.confirmDLUploadPage = false;
