@@ -12,6 +12,7 @@ import getSubContractorDetails from '@salesforce/apex/ConnectAppController.getSu
 import prefferLanguage from '@salesforce/apex/ConnectAppController.prefferLanguage';
 import nationality from '@salesforce/apex/ConnectAppController.nationality';
 import updateDetails from '@salesforce/apex/ConnectAppController.updateDetails';
+import updateDetailsFromVerification from '@salesforce/apex/ConnectAppController.updateDetailsFromVerification';
 import fetchAddress from '@salesforce/apex/AddressAPIController.fetchAddress';
 import fetchFullAddress from '@salesforce/apex/AddressAPIController.fetchFullAddress';
 import CongratulationsImage from '@salesforce/resourceUrl/CongratulationsImage';
@@ -906,7 +907,6 @@ export default class GConnectVerification extends LightningElement {
                 encryptedKey: this.encryptedKey
             })
                 .then((response) => {
-                    console.log("Response from getSubContractorDetails:", response);
                     let ConnectVideo;
 
                     const parsedResponse = JSON.parse(response);
@@ -976,19 +976,25 @@ export default class GConnectVerification extends LightningElement {
                         this.collectGovtGatewayDetails['uniqueTaxRefNumber'] = row.Do_You_Have_Unique_Tax_Reference_Number__c;
                         this.errorMessage = '';
 
-                        if (this.DLRequested == true) {
-                            this.signUpPage = false;
-                            this.confirmDrivingLicensePage = true;
-                        } else if (this.RTWRequested == true) {
+                        // this is for DL and RTW both
+                        // if (this.DLRequested == true) {
+                        //     this.signUpPage = false;
+                        //     this.confirmDrivingLicensePage = true;
+                        // } else if (this.RTWRequested == true) {
+                        //     this.signUpPage = false;
+                        //     this.confirmForm64Page = true;
+                        // } else {
+                        //     this.alreadySubmittedPage = true;
+                        // }
+
+                        // this is for RTW only
+                        if (this.RTWRequested == true) {
                             this.signUpPage = false;
                             this.confirmForm64Page = true;
                         } else {
                             this.alreadySubmittedPage = true;
                         }
 
-                        console.log('DLRequested -->', this.DLRequested);
-                        console.log('RTWRequested -->', this.RTWRequested);
-                        console.log('confirmDrivingLicensePage -->', this.confirmDrivingLicensePage);
                         //========================================================================
                         if (row.Driving_Licence_Number__c != null) {
                             this.currentLicenceNumber = row.Driving_Licence_Number__c;
@@ -1226,13 +1232,13 @@ export default class GConnectVerification extends LightningElement {
 
             this.confirmForm64Page = false;
             this.showUploadScreen = false;
-            this.confirmGovtGatewayDetailspage = false;
+            this.successPage = false;
 
             setTimeout(() => {
                 if (this.showFileUploadCombo) {
                     this.confirmRTWUploadPage = true;
                 } else {
-                    this.confirmGovtGatewayDetailspage = true;
+                    this.successPage = true;
                 }
             }, 100);
         }
@@ -2051,7 +2057,7 @@ export default class GConnectVerification extends LightningElement {
     updateConfirmDetails() {
         this.spinner = true;
         console.log(this.collectDetails);
-        return updateDetails({
+        return updateDetailsFromVerification({
             outputMap: JSON.stringify(this.collectDetails)
         })
             .then((response) => {
@@ -2219,14 +2225,6 @@ export default class GConnectVerification extends LightningElement {
             });
 
         let currentScreenName = event.target.name;
-        // if (currentScreenName == 'profilePicture') {
-        //     this.confirmBasicDetailsPage = true;
-        //     this.confirmProfilePicture = false;
-        // }
-        // if (currentScreenName == 'identifiers') {
-        //     this.confirmProfilePicture = true;
-        //     this.confirmNationalInsurancePage = false;
-        // }
         if (currentScreenName == 'drivingLicence') {
             this.signUpPage = true;
             this.confirmDrivingLicensePage = false;
@@ -2236,7 +2234,10 @@ export default class GConnectVerification extends LightningElement {
             this.confirmDLUploadPage = false;
         }
         if (currentScreenName == 'rtw') {
-            this.confirmDLUploadPage = true;
+            // this is for when the DL Upload is there
+            // this.confirmDLUploadPage = true;
+            // this is for when there is only RTW
+            this.signUpPage = true;
             this.confirmForm64Page = false;
         }
         if (currentScreenName == 'rtwUpload') {

@@ -176,15 +176,6 @@ global without sharing class ConnectAppController {
                     applicationUpdate.Confirm_Form64__c = true;
                 }
 
-                if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'DL Upload'){
-                    applicationUpdate.DL_Requested__c = false;
-                }
-
-                if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'RTW Upload'){
-                    applicationUpdate.RTW_Requested__c = false;
-                }
-
-
                 //Basic Details
                 if(detailsWrapper.confirmBasicDetails != null)
 				{
@@ -343,6 +334,66 @@ global without sharing class ConnectAppController {
             return JSON.serialize(nationalityList);
         }else{
             return null;
+        }
+    }
+
+    @AuraEnabled
+    public static string updateDetailsFromVerification(String outputMap){
+        try {
+            ConfirmDetailsWrapper detailsWrapper = (ConfirmDetailsWrapper)System.JSON.deserialize(outputMap, ConfirmDetailsWrapper.class);
+                    System.debug('detailsWrapper-->'+JSON.serialize(detailsWrapper));
+            List<Application__c> appList = getApplication(detailsWrapper.signUpEmail,detailsWrapper.encryptedKey);
+
+            if(appList.size()>0)
+            {
+                for(Application__c applicationUpdate : appList)
+                {
+                    if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'DL Upload'){
+                        applicationUpdate.DL_Requested__c = false;
+                    }
+
+                    if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'RTW Upload'){
+                        applicationUpdate.RTW_Requested__c = false;
+                    }
+
+
+
+                    // Right To Work Details
+                    if(detailsWrapper.confirmRightToWorkDetails != null)
+                    {
+                        applicationUpdate.Citizenship_Immigration_status__c = detailsWrapper.confirmRightToWorkDetails.citi_Immi_status != null ? detailsWrapper.confirmRightToWorkDetails.citi_Immi_status : applicationUpdate.Citizenship_Immigration_status__c;
+                        applicationUpdate.Right_to_work_document__c = detailsWrapper.confirmRightToWorkDetails.rtwDoc != null ?  detailsWrapper.confirmRightToWorkDetails.rtwDoc : null;
+                        applicationUpdate.Settled_Status__c = detailsWrapper.confirmRightToWorkDetails.settledStatus != null ? detailsWrapper.confirmRightToWorkDetails.settledStatus : null;
+                        applicationUpdate.Date_of_Entry__c = detailsWrapper.confirmRightToWorkDetails.dateOfEntry != null ?  Date.valueOf(detailsWrapper.confirmRightToWorkDetails.dateOfEntry) : null;
+                        applicationUpdate.RTW_Expiry_Date__c = detailsWrapper.confirmRightToWorkDetails.expiryDate != null ?  Date.valueOf(detailsWrapper.confirmRightToWorkDetails.expiryDate) : null;
+                        applicationUpdate.Access_Code__c = detailsWrapper.confirmRightToWorkDetails.accessCode != null ? detailsWrapper.confirmRightToWorkDetails.accessCode : '';
+                        applicationUpdate.Share_Code__C = detailsWrapper.confirmRightToWorkDetails.shareCode != null ? detailsWrapper.confirmRightToWorkDetails.shareCode : '';
+                        applicationUpdate.Biometric_Evidence__c = detailsWrapper.confirmRightToWorkDetails.biometricEvidence != null ? detailsWrapper.confirmRightToWorkDetails.biometricEvidence : null;
+                    }
+
+                    // Driving License Details
+                    if(detailsWrapper.confirmDrivingLicenseDetails != null)
+                    {
+                        applicationUpdate.Driving_Licence_Number__c = detailsWrapper.confirmDrivingLicenseDetails.licenseNumber != null ? detailsWrapper.confirmDrivingLicenseDetails.licenseNumber : applicationUpdate.Driving_Licence_Number__c;
+                        applicationUpdate.Points_on_Licence__c = detailsWrapper.confirmDrivingLicenseDetails.pointOfLicense != null ?  detailsWrapper.confirmDrivingLicenseDetails.pointOfLicense : applicationUpdate.Points_on_Licence__c;
+                        applicationUpdate.Driving_Licence_Expiry_Date__c = detailsWrapper.confirmDrivingLicenseDetails.licenseExpiryDate != null ?  Date.valueOf(detailsWrapper.confirmDrivingLicenseDetails.licenseExpiryDate) : applicationUpdate.Driving_Licence_Expiry_Date__c;
+                        applicationUpdate.Type_of_licence__c = detailsWrapper.confirmDrivingLicenseDetails.typeOfLicense != null ? detailsWrapper.confirmDrivingLicenseDetails.typeOfLicense : applicationUpdate.Type_of_licence__c;
+                        applicationUpdate.Additional_licence_categories__c = detailsWrapper.confirmDrivingLicenseDetails.licenseCategory != null ? String.valueOf(detailsWrapper.confirmDrivingLicenseDetails.licenseCategory) : applicationUpdate.Additional_licence_categories__c;
+                        applicationUpdate.Driving_Licence_Issue_Date__c = detailsWrapper.confirmDrivingLicenseDetails.licenseIssueDate != null ?  Date.valueOf(detailsWrapper.confirmDrivingLicenseDetails.licenseIssueDate) : applicationUpdate.Driving_Licence_Issue_Date__c;
+                    }
+                    System.debug('applicationUpdate-->'+JSON.serialize(applicationUpdate));
+                }
+                System.debug('appList-->'+JSON.serialize(appList));
+
+
+                Update appList;
+
+
+
+            }
+            return null;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
     }
 
