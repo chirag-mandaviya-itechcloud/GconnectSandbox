@@ -1,0 +1,53 @@
+.player {
+    position: relative;
+  
+    z-index: 10;
+  }
+
+  .player-container {
+    position: relative;
+  
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: -11;
+  }
+
+  .progress-container {
+    position: relative;
+    width: 100%;
+    height: 25px; /* Adjust height as needed */
+    background-color: #F1F1F1;
+    border-radius: 20px;
+    margin-top: 20px;
+}
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 20px;
+  background-color: #DB4237;
+  width: 0;
+}
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000000; /* Color of the progress text */
+  font-weight: bold;
+}
+
+@media (max-width: 519.98px) {
+  .progress-text {
+    font-size: 11px;
+  }
+}
