@@ -270,6 +270,8 @@ export default class GConnectVerification extends LightningElement {
     @track mainContractorName = '';
     @track DLRequested = false;
     @track RTWRequested = false;
+    @track successPage = false;
+    @track alreadySubmittedPage = false;
 
     rtwData = {
         categories: [
@@ -974,71 +976,14 @@ export default class GConnectVerification extends LightningElement {
                         this.collectGovtGatewayDetails['uniqueTaxRefNumber'] = row.Do_You_Have_Unique_Tax_Reference_Number__c;
                         this.errorMessage = '';
 
-                        //============================================================================
-                        // if (this.lastConfirmStage == 'Sign Up') {
-                        //     this.confirmBasicDetailsPage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Basic Details') {
-                        //     this.confirmProfilePicture = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Profile Picture') {
-                        //     this.confirmNationalInsurancePage = true //<<--------  NEW VARIABLE
-                        // }
-                        // if (this.lastConfirmStage == 'National Insurance') { // <=== NEW PICKLIST VALUE
-                        //     this.confirmDrivingLicensePage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Driving Licence') {
-                        //     this.confirmDLUploadPage = true; //<<--------  NEW VARIABLE
-                        // }
-                        // if (this.lastConfirmStage == 'DL Upload') { // <=== NEW PICKLIST VALUE
-                        //     this.confirmForm64Page = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Right To Work') {
-                        //     this.confirmRTWUploadPage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'RTW Upload') { // <=== NEW PICKLIST VALUE
-                        //     this.confirmGovtGatewayDetailspage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'GovtGateway Details') {
-                        //     this.confirmAddressDetailsPage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Address Details') {
-                        //     this.confirmEmergencyContactpage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Emergency Contact') {
-                        //     this.confirmBankDetailsPage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Bank Details') {
-                        //     this.confirmVideoDetailsPage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Video') {
-                        //     this.confirmServicePlanDetailsPage = true;
-                        // }
-                        // if (this.lastConfirmStage == 'Service Plan') {
-                        //     if (row.Do_You_Have_Unique_Tax_Reference_Number__c == 'Yes' && this.vatRegisteredProducts.length > 0) {
-                        //         this.confirmAddOnServicePlan = true;
-                        //     } else {
-                        //         if (row.SC_Product__c) {
-                        //             this.confirmServiceTermsDetailsPage = true;
-                        //         } else {
-                        //             this.confirmServiceTermsDetailsPage = true;
-                        //         }
-                        //     }
-                        // }
-                        // if (this.lastConfirmStage == 'Service AddOn Plan') {
-                        //     if (row.SC_Product__c) {
-                        //         this.confirmServiceTermsDetailsPage = true;
-                        //     } else {
-                        //         this.confirmServiceTermsDetailsPage = true;
-                        //     }
-                        // }
-                        // if (this.lastConfirmStage == 'Service Terms') {
-                        //     this.congratulationsPage = true;
-                        // }
-
                         if (this.DLRequested == true) {
                             this.signUpPage = false;
                             this.confirmDrivingLicensePage = true;
+                        } else if (this.RTWRequested == true) {
+                            this.signUpPage = false;
+                            this.confirmForm64Page = true;
+                        } else {
+                            this.alreadySubmittedPage = true;
                         }
 
                         console.log('DLRequested -->', this.DLRequested);
@@ -1205,7 +1150,14 @@ export default class GConnectVerification extends LightningElement {
                 await this.updateConfirmDetails();
                 if (!this.isError) {
                     this.confirmDLUploadPage = false;
-                    this.confirmForm64Page = true;
+                    if (this.RTWRequested == true) {
+                        this.confirmForm64Page = true;
+                    } else {
+                        this.successPage = false;
+                        setTimeout(() => {
+                            this.successPage = true;
+                        }, 100);
+                    }
                 } else {
                     this.showToast('Error', this.updateErrorMessage, 'error');
                 }
@@ -1338,46 +1290,15 @@ export default class GConnectVerification extends LightningElement {
             if (!this.isError) {
                 this.confirmRTWUploadPage = false;
                 this.confirmForm64Page = false;
-                this.confirmGovtGatewayDetailspage = false;
+                this.successPage = false;
                 setTimeout(() => {
-                    this.confirmGovtGatewayDetailspage = true;
+                    this.successPage = true;
                 }, 100);
             } else {
                 this.showToast('Error', this.updateErrorMessage, 'error');
             }
         }
         this.spinner = false;
-    }
-
-    //<!-- 9. VAT and UTR Details -->
-    async callConfirmGovtGatewayDetails() {
-
-        let allFieldsValid = true;
-
-        const inputFields = this.template.querySelectorAll('.URTNumberEntry,.VATNumberEntry,.govtGatewayUsername,.govtGatewayPassword');
-
-        inputFields.forEach(inputField => {
-            const value = inputField.value.trim();
-            inputField.value = value;
-            inputField.reportValidity();
-            if (!inputField.checkValidity()) {
-                allFieldsValid = false;
-                inputField.focus();
-            }
-        });
-
-        if (allFieldsValid) {
-            this.collectDetails['lastConfirmStage'] = 'GovtGateway Details';
-
-            this.collectDetails['confirmGovtGatewayDetails'] = this.collectGovtGatewayDetails;
-            await this.updateConfirmDetails();
-            if (!this.isError) {
-                this.confirmGovtGatewayDetailspage = false;
-                this.confirmAddressDetailsPage = true;
-            } else {
-                this.showToast('Error', this.updateErrorMessage, 'error');
-            }
-        }
     }
 
     //<!-- 10. Address Details -->
