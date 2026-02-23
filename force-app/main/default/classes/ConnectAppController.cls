@@ -285,7 +285,7 @@ global without sharing class ConnectAppController {
     public static List<Application__c> getApplication(String email, String encryptedKey)
     {
         email = email.toLowerCase();
-        return [SELECT Id, Name,  Main_Contractor__c,Main_Contractor__r.Include_in_vat__c,Main_Contractor__r.Name, First_Name__c, Last_Name__c,Phone__c, Email__c, Nationality__c,
+        return [SELECT Id, Name,  Main_Contractor__c,Main_Contractor__r.Include_in_vat__c,Main_Contractor__r.Name, First_Name__c, Last_Name__c,Phone__c, Email__c, Nationality__c, Gconnect_Account__c,
                 Date_of_Birth__c, National_Insurance_Number__c, Do_You_Have_Unique_Tax_Reference_Number__c,URT_Number_Entry__c, Generate_Product_Type__c,SC_Product__c,VAT_Registration_SC_Product__c,
                 Date_Expires__c, Date_Signed__c, Fee_Type__c, Do_You_Have_VAT_Number__c,VAT_Registration_Number__c,
                 Next_Client_Fee_Waived__c, VAT_Period__c,SC_Status__c,
@@ -369,6 +369,7 @@ global without sharing class ConnectAppController {
                         applicationUpdate.Access_Code__c = detailsWrapper.confirmRightToWorkDetails.accessCode != null ? detailsWrapper.confirmRightToWorkDetails.accessCode : '';
                         applicationUpdate.Share_Code__C = detailsWrapper.confirmRightToWorkDetails.shareCode != null ? detailsWrapper.confirmRightToWorkDetails.shareCode : '';
                         applicationUpdate.Biometric_Evidence__c = detailsWrapper.confirmRightToWorkDetails.biometricEvidence != null ? detailsWrapper.confirmRightToWorkDetails.biometricEvidence : null;
+                        applicationUpdate.RTW_Verified_by__c = null;
                     }
 
                     // Driving License Details
@@ -387,6 +388,60 @@ global without sharing class ConnectAppController {
 
 
                 Update appList;
+
+                // Also update related Account records via Gconnect_Account__c lookup
+                Set<Id> accountIds = new Set<Id>();
+                for(Application__c app : appList) {
+                    if(app.Gconnect_Account__c != null) {
+                        accountIds.add(app.Gconnect_Account__c);
+                    }
+                }
+
+                if(!accountIds.isEmpty()) {
+                    List<Account> accountsToUpdate = [SELECT Id, Citizenship_Immigration_status__c, Right_to_work_document__c, Settled_Status__c,
+                                                        Date_of_Entry__c, RTW_Expiry_Date__c, Access_Code__c, Share_Code__c, Biometric_Evidence__c, RTW_Verified_by__c,
+                                                        Driving_Licence_Number__c, Points_on_Licence__c, Driving_Licence_Expiry_Date__c, Type_of_Licence__c,
+                                                        Additional_Licence_Categories__c, Driving_Licence_Issue_Date__c FROM Account WHERE Id IN :accountIds];
+
+                    List<Account> accountUpdates = new List<Account>();
+                    for(Account acc : accountsToUpdate) {
+                        for(Application__c app : appList) {
+                            if(app.Gconnect_Account__c == acc.Id) {
+                                // Sync RTW details
+                                acc.Citizenship_Immigration_status__c = app.Citizenship_Immigration_status__c;
+                                acc.Right_to_work_document__c = app.Right_to_work_document__c;
+                                acc.Settled_Status__c = app.Settled_Status__c;
+                                acc.Date_of_Entry__c = app.Date_of_Entry__c;
+                                acc.RTW_Expiry_Date__c = app.RTW_Expiry_Date__c;
+                                acc.Access_Code__c = app.Access_Code__c;
+                                acc.Share_Code__c = app.Share_Code__c;
+                                acc.Biometric_Evidence__c = app.Biometric_Evidence__c;
+                                acc.RTW_Verified_by__c = app.RTW_Verified_by__c;
+
+                                // Sync driving licence details
+                                acc.Driving_Licence_Number__c = app.Driving_Licence_Number__c;
+                                acc.Points_on_Licence__c = app.Points_on_Licence__c;
+                                acc.Driving_Licence_Expiry_Date__c = app.Driving_Licence_Expiry_Date__c;
+                                acc.Type_of_Licence__c = app.Type_of_licence__c;
+                                acc.Additional_Licence_Categories__c = app.Additional_licence_categories__c;
+                                acc.Driving_Licence_Issue_Date__c = app.Driving_Licence_Issue_Date__c;
+
+                                accountUpdates.add(acc);
+                                break;
+                            }
+                        }
+                    }
+
+                    if(!accountUpdates.isEmpty()) {
+                        try {
+                            Update accountUpdates;
+                            System.debug('Accounts updated successfully: ' + accountUpdates.size());
+                        } catch(Exception e) {
+                            System.debug('Error updating accounts: ' + e.getMessage());
+                            throw new AuraHandledException('Failed to update Account: ' + e.getMessage());
+                        }
+                    }
+                }
 
 
 
