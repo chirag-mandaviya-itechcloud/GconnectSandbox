@@ -268,6 +268,8 @@ export default class GConnectVerification extends LightningElement {
 
     @track DSPNavbarLogo = '';
     @track mainContractorName = '';
+    @track DLRequested = false;
+    @track RTWRequested = false;
 
     rtwData = {
         categories: [
@@ -902,6 +904,7 @@ export default class GConnectVerification extends LightningElement {
                 encryptedKey: this.encryptedKey
             })
                 .then((response) => {
+                    console.log("Response from getSubContractorDetails:", response);
                     let ConnectVideo;
 
                     const parsedResponse = JSON.parse(response);
@@ -911,6 +914,8 @@ export default class GConnectVerification extends LightningElement {
                         let row = parsedResponse.scAccount[0];
                         this.accountId = row.Id;
                         this.accountName = row.Name;
+                        this.DLRequested = row.DL_Requested__c;
+                        this.RTWRequested = row.RTW_Requested__c;
 
 
                         ConnectVideo = parsedResponse.connectVideo[0];
@@ -970,66 +975,75 @@ export default class GConnectVerification extends LightningElement {
                         this.errorMessage = '';
 
                         //============================================================================
-                        if (this.lastConfirmStage == 'Sign Up') {
-                            this.confirmBasicDetailsPage = true;
-                        }
-                        if (this.lastConfirmStage == 'Basic Details') {
-                            this.confirmProfilePicture = true;
-                        }
-                        if (this.lastConfirmStage == 'Profile Picture') {
-                            this.confirmNationalInsurancePage = true //<<--------  NEW VARIABLE
-                        }
-                        if (this.lastConfirmStage == 'National Insurance') { // <=== NEW PICKLIST VALUE
+                        // if (this.lastConfirmStage == 'Sign Up') {
+                        //     this.confirmBasicDetailsPage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Basic Details') {
+                        //     this.confirmProfilePicture = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Profile Picture') {
+                        //     this.confirmNationalInsurancePage = true //<<--------  NEW VARIABLE
+                        // }
+                        // if (this.lastConfirmStage == 'National Insurance') { // <=== NEW PICKLIST VALUE
+                        //     this.confirmDrivingLicensePage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Driving Licence') {
+                        //     this.confirmDLUploadPage = true; //<<--------  NEW VARIABLE
+                        // }
+                        // if (this.lastConfirmStage == 'DL Upload') { // <=== NEW PICKLIST VALUE
+                        //     this.confirmForm64Page = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Right To Work') {
+                        //     this.confirmRTWUploadPage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'RTW Upload') { // <=== NEW PICKLIST VALUE
+                        //     this.confirmGovtGatewayDetailspage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'GovtGateway Details') {
+                        //     this.confirmAddressDetailsPage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Address Details') {
+                        //     this.confirmEmergencyContactpage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Emergency Contact') {
+                        //     this.confirmBankDetailsPage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Bank Details') {
+                        //     this.confirmVideoDetailsPage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Video') {
+                        //     this.confirmServicePlanDetailsPage = true;
+                        // }
+                        // if (this.lastConfirmStage == 'Service Plan') {
+                        //     if (row.Do_You_Have_Unique_Tax_Reference_Number__c == 'Yes' && this.vatRegisteredProducts.length > 0) {
+                        //         this.confirmAddOnServicePlan = true;
+                        //     } else {
+                        //         if (row.SC_Product__c) {
+                        //             this.confirmServiceTermsDetailsPage = true;
+                        //         } else {
+                        //             this.confirmServiceTermsDetailsPage = true;
+                        //         }
+                        //     }
+                        // }
+                        // if (this.lastConfirmStage == 'Service AddOn Plan') {
+                        //     if (row.SC_Product__c) {
+                        //         this.confirmServiceTermsDetailsPage = true;
+                        //     } else {
+                        //         this.confirmServiceTermsDetailsPage = true;
+                        //     }
+                        // }
+                        // if (this.lastConfirmStage == 'Service Terms') {
+                        //     this.congratulationsPage = true;
+                        // }
+
+                        if (this.DLRequested == true) {
+                            this.signUpPage = false;
                             this.confirmDrivingLicensePage = true;
                         }
-                        if (this.lastConfirmStage == 'Driving Licence') {
-                            this.confirmDLUploadPage = true; //<<--------  NEW VARIABLE
-                        }
-                        if (this.lastConfirmStage == 'DL Upload') { // <=== NEW PICKLIST VALUE
-                            this.confirmForm64Page = true;
-                        }
-                        if (this.lastConfirmStage == 'Right To Work') {
-                            this.confirmRTWUploadPage = true;
-                        }
-                        if (this.lastConfirmStage == 'RTW Upload') { // <=== NEW PICKLIST VALUE
-                            this.confirmGovtGatewayDetailspage = true;
-                        }
-                        if (this.lastConfirmStage == 'GovtGateway Details') {
-                            this.confirmAddressDetailsPage = true;
-                        }
-                        if (this.lastConfirmStage == 'Address Details') {
-                            this.confirmEmergencyContactpage = true;
-                        }
-                        if (this.lastConfirmStage == 'Emergency Contact') {
-                            this.confirmBankDetailsPage = true;
-                        }
-                        if (this.lastConfirmStage == 'Bank Details') {
-                            this.confirmVideoDetailsPage = true;
-                        }
-                        if (this.lastConfirmStage == 'Video') {
-                            this.confirmServicePlanDetailsPage = true;
-                        }
-                        if (this.lastConfirmStage == 'Service Plan') {
-                            if (row.Do_You_Have_Unique_Tax_Reference_Number__c == 'Yes' && this.vatRegisteredProducts.length > 0) {
-                                this.confirmAddOnServicePlan = true;
-                            } else {
-                                if (row.SC_Product__c) {
-                                    this.confirmServiceTermsDetailsPage = true;
-                                } else {
-                                    this.confirmServiceTermsDetailsPage = true;
-                                }
-                            }
-                        }
-                        if (this.lastConfirmStage == 'Service AddOn Plan') {
-                            if (row.SC_Product__c) {
-                                this.confirmServiceTermsDetailsPage = true;
-                            } else {
-                                this.confirmServiceTermsDetailsPage = true;
-                            }
-                        }
-                        if (this.lastConfirmStage == 'Service Terms') {
-                            this.congratulationsPage = true;
-                        }
+
+                        console.log('DLRequested -->', this.DLRequested);
+                        console.log('RTWRequested -->', this.RTWRequested);
+                        console.log('confirmDrivingLicensePage -->', this.confirmDrivingLicensePage);
                         //========================================================================
                         if (row.Driving_Licence_Number__c != null) {
                             this.currentLicenceNumber = row.Driving_Licence_Number__c;
@@ -1126,136 +1140,6 @@ export default class GConnectVerification extends LightningElement {
 
     }
 
-    //<!-- 2. Basic Detail -->
-    async callConfirmBasicDetails() {
-        let allFieldsValid = true;
-
-        const inputFields = this.template.querySelectorAll('.confirmFirstName,.confirmLastName,.confirmEmail,.confirmPhone,.confirmPreferredLanguage');
-
-        inputFields.forEach(inputField => {
-            let value = inputField.value;
-
-            if (!inputField.classList.contains('confirmPreferredLanguage')) {
-                value = value.trim();
-            }
-            inputField.value = value;
-            inputField.reportValidity();
-            if (!inputField.checkValidity()) {
-                allFieldsValid = false;
-                inputField.focus();
-            }
-
-        });
-        if (allFieldsValid) {
-            this.collectDetails['lastConfirmStage'] = 'Basic Details';
-
-            this.collectDetails['confirmBasicDetails'] = this.collectBasicDetails;
-            await this.updateConfirmDetails();
-            if (!this.isError) {
-                this.confirmBasicDetailsPage = false;
-                this.confirmProfilePicture = true;
-                this.collectDetails['signUpEmail'] = this.email;
-            } else {
-                this.showToast('Error', this.updateErrorMessage, 'error');
-            }
-        }
-    }
-
-    //<!-- 3. Profile Picture Upload -->
-    async callConfirmProfilePicture() {
-
-        if (this.profileFiles.length === 0) {
-            //this.fileErrorMessage = true;
-            this.isProfilePicError = true;
-        } else {
-
-            this.spinner = true;
-            this.collectDetails['lastConfirmStage'] = 'Profile Picture';
-
-            //this.fileErrorMessage = false;
-            this.isProfilePicError = false;
-
-            await saveProfilePhoto({
-                recordId: this.recordId,
-                base64Data: this.profileFiles[0].base64Data,
-                contentType: this.profileFiles[0].fileType
-            })
-                .then(() => {
-                    this.profileFileUploded = true;
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: 'Success',
-                            message: 'Profile uploaded successfully.',
-                            variant: 'success'
-                        })
-                    );
-                })
-                .catch(error => {
-                    console.error('error-->', error);
-                    this.profileFileUploded = false;
-                    this.spinner = false;
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: 'Error',
-                            message: 'Error uploading profile: ' + error.body.message,
-                            variant: 'error'
-                        })
-                    );
-                });
-            if (this.profileFileUploded == true) {
-                await this.updateConfirmDetails();
-                if (!this.isError) {
-                    this.confirmProfilePicture = false;
-                    this.confirmNationalInsurancePage = true;
-                    this.spinner = false;
-                } else {
-                    this.showToast('Error', this.updateErrorMessage, 'error');
-                    this.spinner = false;
-                }
-            }
-
-
-
-        }
-    }
-
-    //<!-- 4. National Insurance Screen -->
-    //NEW CONFIRM METHOD
-    async callConfirmNationalInsuranceDetails() {
-
-        let allFieldsValid = true;
-
-        const inputFields = this.template.querySelectorAll('.insuranceNumber,.dateOfBirth,.nationality');
-
-        inputFields.forEach(inputField => {
-            let value = inputField.value;
-            if (!inputField.classList.contains('nationality')) {
-                value = value.trim();
-            }
-            inputField.value = value;
-            inputField.reportValidity();
-            if (!inputField.checkValidity()) {
-                allFieldsValid = false;
-                inputField.focus();
-            }
-
-        });
-        if (allFieldsValid) {
-            this.collectDetails['lastConfirmStage'] = 'National Insurance';
-
-            this.currentNINumber = this.collectAddressDetails['nationalInsNumber'];
-            this.collectDetails['confirmAddressDetails'] = this.collectAddressDetails;
-            await this.updateConfirmDetails();
-            if (!this.isError) {
-                this.confirmNationalInsurancePage = false;
-                this.confirmDrivingLicensePage = true;
-            } else {
-                this.showToast('Error', this.updateErrorMessage, 'error');
-            }
-        }
-    }
-
-
     //<!-- 5. Driving Licence Details -->
     async callConfirmDrivingLicense() {
         let allFieldsValid = true;
@@ -1273,13 +1157,6 @@ export default class GConnectVerification extends LightningElement {
             }
         });
 
-
-        // const checkboxes = this.template.querySelectorAll('.licenseCategory');
-        // let isAnyChecked = Array.from(checkboxes).some(cb => cb.checked);
-        // this.showCboxCategoryError = !isAnyChecked;
-        // if (!isAnyChecked) {
-        //     allFieldsValid = false;
-        // }
         if (allFieldsValid) {
             this.spinner = true
             this.collectDetails['lastConfirmStage'] = 'Driving Licence';
@@ -2977,16 +2854,16 @@ export default class GConnectVerification extends LightningElement {
             });
 
         let currentScreenName = event.target.name;
-        if (currentScreenName == 'profilePicture') {
-            this.confirmBasicDetailsPage = true;
-            this.confirmProfilePicture = false;
-        }
-        if (currentScreenName == 'identifiers') {
-            this.confirmProfilePicture = true;
-            this.confirmNationalInsurancePage = false;
-        }
+        // if (currentScreenName == 'profilePicture') {
+        //     this.confirmBasicDetailsPage = true;
+        //     this.confirmProfilePicture = false;
+        // }
+        // if (currentScreenName == 'identifiers') {
+        //     this.confirmProfilePicture = true;
+        //     this.confirmNationalInsurancePage = false;
+        // }
         if (currentScreenName == 'drivingLicence') {
-            this.confirmNationalInsurancePage = true;
+            this.signUpPage = true;
             this.confirmDrivingLicensePage = false;
         }
         if (currentScreenName == 'drivingLicenceUpload') {
