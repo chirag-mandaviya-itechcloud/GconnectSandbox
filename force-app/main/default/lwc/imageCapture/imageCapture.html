@@ -1,0 +1,295 @@
+<template>
+    <div class="overrideStyle"></div>
+    
+    <template if:true={showFrontBackRadioBtn}>
+        <div class="slds-large-size_5-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-horizontal_medium slds-p-top_x-small biometric-radio">
+            <lightning-radio-group label="Select Document Type"  name="docType" value={docType}  options={optionDocType} type="vertical"  onchange={onChangeDocType}
+            required="true" message-when-value-missing="Please Select Doc Tyoe" class="lightning-radio-online"></lightning-radio-group>   
+            <div style="color: red;" if:true={showDocError}>{showErrorMessage}</div>
+        </div>
+    </template>
+    
+    
+
+        <!-- For Upload File-->
+         <div style="position: relative;">
+            <template if:true={showRTWGuideImage}>
+                <div class="guide_image">
+                    <img src={rtwGuideImage} class="edit-button" />
+                </div>
+            </template>
+            <template if:true={showFrontGuideImage}>
+                <div class="guide_image">
+                    <img src={frontGuideImage} class="edit-button" />
+                </div>
+            </template>
+            <template if:true={showFileUpload}>
+                <div class="slds-m-around_medium">
+                    <div class="slds-grid slds-wrap">
+                        <div class="image_container_left upload_image_left slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                            <div class="fileUpload slds-grid slds-grid_vertical">
+                                <div class="slds-col uploadIcon">
+                                    <img src={uploadIcon}  class="centered-img" >
+                                </div>
+                                <div class="slds-col" style="text-align: center;">
+                                    <template if:true={isFrontDoc}>
+                                        <input type="file" id="frontFile" accept={fileAcceptExtension} onchange={handleFileUploadChange} disabled={setFrontUploadDisable} />
+                                        <label for="frontFile">Choose a file</label>
+                                    </template>
+                                    <template if:true={isBackDoc}>
+                                        <input type="file" id="backFile" accept={fileAcceptExtension} onchange={handleFileUploadChange} disabled={setBackUploadDisable} />
+                                        <label for="backFile">Choose a file</label>
+                                    </template>
+                                    <!-- <template if:true={isFrontDoc}> -->
+                                        <!-- <template if:false={setFrontUploadDisable}> -->
+                                            <!-- <input type="file" id="file"  accept=".pdf, .png, .jpg" onchange={handleFileUploadChange} disabled={setBackUploadDisable}/> -->
+                                        <!-- </template>
+                                        <template if:true={setFrontUploadDisable}>
+                                            <input type="file"  accept=".pdf, .png, .jpg" onchange={handleFileUploadChange} disabled/>
+                                        </template> -->
+                                    <!-- </template> -->
+
+                                    <!-- <template if:true={isBackDoc}>
+                                        <template if:false={setBackUploadDisable}>
+                                            <input type="file" id="fileB"  accept=".pdf, .png, .jpg" onchange={handleFileUploadChange} />
+                                        </template>
+                                        <template if:true={setBackUploadDisable}>
+                                            <input type="file"  accept=".pdf, .png, .jpg" onchange={handleFileUploadChange} disabled/>
+                                        </template>
+                                    </template> -->
+                                    
+                                    <!-- <input type="file"  accept=".pdf, .png, .jpg" onchange={handleFileChange} disabled/> -->
+                                    <!-- <label for="file"> Choose a file </label> -->
+                                </div>
+            
+                            </div>
+                        </div>
+                        <div class="image_container_right slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
+                            <div class="image_container_right_data" style="display: flex;flex-wrap: wrap;width: 100%;">
+                                <!-- <template if:true={files.length}>
+                                    <template for:each={files} for:item="file">
+                                        <div key={file.id} class="items">
+                                            <template if:true={file.isImage}>
+                                                <img src={file.preview} class="preview_image" />
+                                            </template>
+            
+                                            <template if:false={file.isImage}>
+                                                <p style="text-overflow: ellipsis; overflow: hidden;">{file.name}</p>
+                                            </template>
+                                        <lightning-icon icon-name="action:close" class="close_icon" size="xx-small"
+                                                onclick={handleRemoveFile} data-index={file.id} alternative-text="Delete"
+                                                title="Delete"></lightning-icon>
+                                        </div>
+                
+                                    </template>
+                
+                                </template> -->
+                                <!-- <template if:true={isFrontDoc}> -->
+                                    
+                                        <template for:each={uploadFrontFiles} for:item="file">
+                                            <div key={file.id} class="items">
+                                                <template if:true={file.isImage}>
+                                                    <img src={file.preview} class="preview_image" />
+                                                </template>
+                
+                                                <template if:false={file.isImage}>
+                                                    <p style="text-overflow: ellipsis; overflow: hidden;">{file.name}</p>
+                                                </template>
+                                            <lightning-icon icon-name="action:close" class="close_icon" size="xx-small"
+                                                    onclick={delFrontUploadFile} data-index={file.id} data-doctype="uploadFRONT" alternative-text="Delete"
+                                                    title="Delete"></lightning-icon>
+                                            </div>
+                                        </template>
+                                    
+                                <!-- </template> -->
+
+                                <!-- <template if:true={isBackDoc}> -->
+                                    
+                                        <template for:each={uploadBackFiles} for:item="file">
+                                            <div key={file.id} class="items">
+                                                <template if:true={file.isImage}>
+                                                    <img src={file.preview} class="preview_image" />
+                                                </template>
+                
+                                                <template if:false={file.isImage}>
+                                                    <p style="text-overflow: ellipsis; overflow: hidden;">{file.name}</p>
+                                                </template>
+                                                <lightning-icon icon-name="action:close" class="close_icon" size="xx-small"
+                                                    onclick={delBackUploadFile} data-index={file.id} data-doctype="uploadBACK" alternative-text="Delete"
+                                                    title="Delete"></lightning-icon>
+                                                    <!-- <lightning-icon icon-name="action:close" class="close_icon" size="xx-small"
+                                                    onclick={handleRemoveFile} data-index={file.id} data-doctype="uploadBACK" alternative-text="Delete"
+                                                    title="Delete"></lightning-icon> -->
+                                            </div>
+                                        </template>
+                                    
+                                <!-- </template> -->
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            
+            <!-- For Capture Images-->
+            <template if:true={showCaptureFile}>
+                <div class="slds-m-around_medium">
+                    <div class="slds-grid slds-wrap">
+                        <div class="image_container_left capture_image_left slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                            <template if:false={showCamera}>
+                                <div>
+                                    <!-- <template if:false={setFrontCaptureDisable}>
+                                        <button class="fileCapture_btn" onclick={captureImage} >Capture Image</button>
+                                    </template>
+                                    <template if:true={setFrontCaptureDisable}>
+                                        <button class="fileCapture_btn"  disabled>Capture Image</button>
+                                    </template> -->
+                                    <!-- <button class="fileCapture_btn" onclick={captureImage}>Capture Image</button> -->
+                                    <template if:true={isFrontDoc}>
+                                        <button class="fileCapture_btn" onclick={captureImage} disabled={setFrontCaptureDisable}>Capture Image</button>
+                                    </template>
+                                    <template if:true={isBackDoc}>
+                                        <button class="fileCapture_btn" onclick={captureImage} disabled={setBackCaptureDisable}>Capture Image</button>
+                                    </template>
+                                </div>
+                            </template>
+                            
+                            <template if:true={showCamera}>
+                                <div class="camera">
+                                    <video id="videoElement" autoplay playsinline></video>
+                                    <template if:true={showCaptureIcon}>
+                                        <img src={photoIcon} onclick={takePhoto}>
+                                    
+                                    </template>
+                                    <canvas id="canvasElement" class="slds-hide"></canvas>
+                                </div>
+                            </template>
+                            
+                        </div>
+                        <div class="image_container_right slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
+                            <!-- <template if:true={isFrontDoc}> -->
+                                    <div class="image_container_right_data" style="display: flex;flex-wrap: wrap;width: 100%;">
+                                        <template for:each={capturedFrontFiles} for:item="image" for:index="index">
+                                            <div key={image.id} class="slds-m-bottom_medium items">
+                                                <img src={image.preview} alt="Captured Image" class="preview_image" />
+                                                <lightning-icon icon-name="action:close" size="xx-small" onclick={removeFrontImage} data-index={image.id} alternative-text="Delete" class="close_icon" title="Delete"></lightning-icon>
+                                            </div>
+                                        </template>
+                                    </div>
+                            <!-- </template> -->
+                            <!-- <template if:true={isBackDoc}> -->
+                                    <div class="image_container_right_data" style="display: flex;flex-wrap: wrap;width: 100%;">
+                                        <template for:each={capturedBackFiles} for:item="image" for:index="index">
+                                            <div key={image.id} class="slds-m-bottom_medium items">
+                                                <img src={image.preview} alt="Captured Image" class="preview_image" />
+                                                <lightning-icon icon-name="action:close" size="xx-small" onclick={removeBackImage} data-index={image.id} alternative-text="Delete" class="close_icon" title="Delete"></lightning-icon>
+                                            </div>
+                                        </template>
+                                    </div>
+                            <!-- </template> -->
+                            <!-- <template if:true={images.length}>
+                                <div style="display: flex;flex-wrap: wrap;width: 100%;">
+                                    <template for:each={images} for:item="image" for:index="index">
+                                        <div key={image.id} class="slds-m-bottom_medium items">
+                                            <img src={image.url} alt="Captured Image" class="preview_image" />
+                                                <lightning-icon icon-name="action:close" size="xx-small" onclick={removeImage} data-index={image.id} alternative-text="Delete" class="close_icon" title="Delete"></lightning-icon>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template> -->
+                        </div>
+
+                        <!-- <div class="slds-form-element slds-m-around_medium">
+                            <label class="slds-checkbox_toggle slds-grid">
+                                <span class="slds-form-element__label slds-m-bottom_none">Select Camera Mode : </span>
+                                <input type="checkbox" name="checkbox-toggle-16" value="checkbox-toggle-16" aria-describedby="checkbox-toggle-16" onchange={handleToggleChange} />
+                                <span id="checkbox-toggle-16" class="slds-checkbox_faux_container">
+                                    <span class="slds-checkbox_faux"></span>
+                                    <span class="slds-checkbox_on slds-m-top_x-small" style="font-weight: bolder; font-size: small;">Front Camera</span>
+                                    <span class="slds-checkbox_off slds-m-top_x-small" style="font-weight: bolder; font-size: small;">Back Camera</span>
+                                </span>
+                            </label>
+                        </div> -->
+                        
+                    </div>
+                </div>
+            </template>
+            
+           
+            <!-- <template if:true={showBackGuideImage}>
+                <div style="height: 300px;position: absolute;width: 50%;top: 0%;left: 45%;">
+                    <img src={backGuideImage} class="edit-button" />
+                </div>
+            </template> -->
+            
+        </div>
+        <!-- For Upload Profile Pic-->
+        
+        <template if:true={showProfile}>
+            <div style="color: red;" if:true={showDocError}>{showErrorMessage}</div>
+            <div class="slds-m-around_medium">
+                <div class="slds-grid slds-wrap">
+                    <div class="image_container_left upload_image_left slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                        <div class="fileUpload slds-grid slds-grid_vertical">
+                            <div class="slds-col uploadIcon">
+                                <img src={uploadIcon}  class="centered-img" onclick={handleProfileChange}>
+                            </div>
+                            <div class="slds-col" style="text-align: center;">
+                                <input type="file" id="profile"  accept=".png, .jpg" onchange={handleProfileChange} disabled={disabledProfileUpload} />
+                                <label for="profile">Upload Profile</label>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="image_container_right slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12">
+                        <div class="image_container_right_data" style="display: flex;flex-wrap: wrap;width: 100%;">
+                            
+                            <template for:each={profileFiles} for:item="file">
+                                <div key={file.id} class="items">
+                                    <template if:true={file.isImage}>
+                                        <img src={file.preview} class="preview_image" />
+                                    </template>
+    
+                                    <template if:false={file.isImage}>
+                                        <p style="text-overflow: ellipsis; overflow: hidden;">{file.name}</p>
+                                    </template>
+                                    <lightning-icon icon-name="action:close" class="close_icon" size="xx-small"
+                                        onclick={handleRemoveProfile} data-index={file.id} alternative-text="Delete"
+                                        title="Delete"></lightning-icon>
+                                </div>
+        
+                            </template>
+            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-m-around_medium">
+                <div class="slds-grid slds-wrap">
+                    <div class="image_container_left capture_image_left slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12">
+                        <template if:false={showCamera}>
+                            <div>
+                                <button class="fileCapture_btn" onclick={captureImage} disabled={disableProfileCapture}>Capture Profile</button>
+                            </div>
+                        </template>
+                        
+                        <template if:true={showCamera}>
+                            <div class="camera">
+                                <video id="videoElementProfile" autoplay playsinline></video>
+                                 <template if:true={showCaptureIcon}>
+                                    <img src={photoIcon} onclick={takePhotoForProfile}>
+                                    <img src={Camera_Swap} onclick={handleCameraSwap} class="photoSwap">
+                                 </template>
+                                <canvas id="canvasElementProfile" class="slds-hide"></canvas>
+                            </div>
+                        </template>
+                    </div>
+                   
+                </div>
+            </div>
+        </template>
+        
+
+    
+</template>
