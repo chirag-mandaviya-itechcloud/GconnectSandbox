@@ -1565,7 +1565,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         this.isFileModuleError = false;
         this.fileModuleError = '';
         this.allowedExtension = undefined;
-        if (this.selectedOption == 'RTW' && this.selectedContractor.hasAccessCode) {
+        if (this.selectedOption == 'RTW' && (this.selectedContractor.hasAccessCode || this.selectedContractor.hasShareCode)) {
             this.allowedExtension = '.png, .jpg, .jpeg, .pdf'
         }
     }
@@ -1587,7 +1587,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
                     if (!this.showFrontBackRadioBtn) {
 
-                        if (this.selectedOption == 'RTW' && this.selectedContractor.hasAccessCode) {
+                        if (this.selectedOption == 'RTW' && (this.selectedContractor.hasAccessCode || this.selectedContractor.hasShareCode)) {
                             this.selectedContractor.CheckDoc = this.frontDocFiles[0].preview;
                             this.selectedContractor.CheckDocName = this.frontDocFiles[0].name;
                             this.isExtraFieldEditable = true;
@@ -2168,7 +2168,13 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                             rtwLicenseNotVerify: false,
                             rtwLicenseVerify: true,
                             RtwProgressIcon: this.rtwGreen,
-                            expiryDate: this.data[this.selectedContractor.currentClickIndex].expiryDate
+                            expiryDate: this.data[this.selectedContractor.currentClickIndex].expiryDate,
+                            Type_of_e_visa__c: this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c,
+                            Permission_Expiry_Date__c: this.data[this.selectedContractor.currentClickIndex].Permission_Expiry_Date__c,
+                            Any_work_restrictions__c: this.data[this.selectedContractor.currentClickIndex].Any_work_restrictions__c,
+                            Limited_To_X_Hours_Per_Week__c: this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c,
+                            Limited_To_Specific_Job_Types__c: this.data[this.selectedContractor.currentClickIndex].Limited_To_Specific_Job_Types__c,
+                            Other_Restrictions__c: this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c
                         };
 
                         if (!bypassValidation && this.checkDLandRTWExpiry(this.data[this.selectedContractor.currentClickIndex].RTW_Expiry_Date__c) == 'expiring') {
@@ -2290,7 +2296,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                 }
 
             }
-
+            console.log('Saving Share Code RTW Data:', changedFields);
             if (updateProceed) {
                 await this.callUpdateAccountClient(changedFields);
             }
@@ -2310,8 +2316,9 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
         try {
             for (const file of this.uploadFiles) {
+                console.log(file);
                 let fileDocName;
-                if (this.selectedContractor.hasAccessCode && this.selectedOption == 'RTW') {
+                if ((this.selectedContractor.hasAccessCode || this.selectedContractor.hasShareCode) && this.selectedOption == 'RTW') {
                     fileDocName = this.selectedContractor.Client_Name__c + '_' + this.selectedOption + ' ' + 'Check';
                 } else {
                     fileDocName = this.selectedContractor.Client_Name__c + '_' + this.selectedOption + ' ' + file.docType;
@@ -2326,7 +2333,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                 }
                 else {
 
-                    if (this.selectedContractor.hasAccessCode || file.docType === 'Check') {
+                    if (this.selectedContractor.hasAccessCode || this.selectedContractor.hasShareCode || file.docType === 'Check') {
                         docType = 'Right To Work Check';
                     } else if (file.docType == 'Front') {
                         docType = 'Right To Work Front';
