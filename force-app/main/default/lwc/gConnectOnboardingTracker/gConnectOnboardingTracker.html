@@ -738,7 +738,7 @@
                                                 <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>                                       
                                         </div> -->
                                         <template if:true={rightToWorkEditOpen}>
-                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                                                <!-- <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
                                                     <lightning-combobox
                                                         name="typeOfEVisa"
                                                         label="Type of eVisa"
@@ -746,7 +746,7 @@
                                                         options={typeOfVisa_option}
                                                         onchange={onChangeRTWDetails}>
                                                     </lightning-combobox>
-                                                </div>
+                                                </div> -->
 
                                                 <template if:true={showTimeLimitedSection}>
                                                     <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
@@ -824,65 +824,21 @@
                                                 </template>
                                             </div>
                                         </template>
-                                        <template if:true={selectedContractor.showTimeLimitedSection}>
-                                            <!-- <template if:true={selectedContractor.hasPermissionExpiryDate}> -->
-                                                <div class="slds-col slds-size_1-of-2">
-                                                    <p><strong>Permission Expiry Date:</strong></p>
-                                                    <template if:false={rightToWorkEditOpen}>
-                                                        <p>{selectedContractor.Permission_Expiry_Date__c}</p>
-                                                    </template>
-                                                    <template if:true={rightToWorkEditOpen}>
-                                                        <template if:true={showTimeLimitedSection}>
-                                                            <lightning-input
-                                                                type="date"
-                                                                name="PermissionexpiryDate"
-                                                                value={selectedContractor.Permission_Expiry_Date__c}
-                                                                onchange={onChangeRTWDetails}>
-                                                            </lightning-input>
-                                                        </template>
-                                                    </template>
-                                                </div>
-                                            <!-- </template> -->
-                                            <!-- <template if:true={selectedContractor.hasAnyWorkRestrictions}> -->
-                                                <div class="slds-col slds-size_1-of-2">
-                                                    <p><strong>Any Work Restrictions:</strong></p>
-                                                    <template if:false={rightToWorkEditOpen}>
-                                                        <p>{selectedContractor.Any_work_restrictions__c}</p>
-                                                    </template>
-                                                    <template if:true={rightToWorkEditOpen}>
-                                                        <template if:true={showTimeLimitedSection}>
-                                                            <lightning-combobox
-                                                                name="anyWorkRestrictions"
-                                                                value={selectedContractor.Any_work_restrictions__c}
-                                                                options={anyWorkRestrictions_option}
-                                                                onchange={onChangeRTWDetails}>
-                                                            </lightning-combobox>
-                                                        </template>
-                                                    </template>
-                                                </div>
-                                            <!-- </template> -->
-                                        </template>
-                                        <!-- <template if:true={selectedContractor.hasPermissionExpiryDate}>
-                                            <div class="slds-col slds-size_1-of-2">
-                                                <p><strong>Permission Expiry Date:</strong></p>
-                                                <p>{selectedContractor.Permission_Expiry_Date__c}</p>
-                                            </div>
-                                        </template> -->
                                     </template>
 
-                                    <!-- <template if:true={selectedContractor.hasPermissionExpiryDate}>
+                                    <template if:true={selectedContractor.hasPermissionExpiryDate}>
                                         <div class="slds-col slds-size_1-of-2">
                                             <p><strong>Permission Expiry Date:</strong></p>
                                             <p>{selectedContractor.Permission_Expiry_Date__c}</p>
                                         </div>
-                                    </template> -->
+                                    </template>
 
-                                    <!-- <template if:true={selectedContractor.hasAnyWorkRestrictions}>
+                                    <template if:true={selectedContractor.hasAnyWorkRestrictions}>
                                         <div class="slds-col slds-size_1-of-2">
                                             <p><strong>Any Work Restrictions:</strong></p>
                                             <p>{selectedContractor.Any_work_restrictions__c}</p>
                                         </div>
-                                    </template> -->
+                                    </template>
 
                                     <template if:true={selectedContractor.hasLimitedToSpecificJobTypes}>
                                         <div class="slds-col slds-size_1-of-2">

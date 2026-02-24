@@ -426,6 +426,7 @@ export default class GConnectVerification extends LightningElement {
             this.isRTWDoc = true;
             this.showFileUploadCombo = false;
             this.showShareCode = false;
+            this.coll
         }
 
         this.collectForm64Details.citi_Immi_status = category.value;
@@ -456,6 +457,7 @@ export default class GConnectVerification extends LightningElement {
         this.RTWFiles = null;
         const evidenceId = event.currentTarget.dataset.id;
         const evidence = this.selectedCategory.evidence.find(ev => ev.id === evidenceId);
+        console.log(evidence);
         if (!evidence) return;
 
         const newRtwValue = evidence.value;
@@ -684,7 +686,17 @@ export default class GConnectVerification extends LightningElement {
                 this.collectDetails['signOffersNews'] = this.signOffersNews;
                 const style = document.createElement('style');
                 style.innerText = `
-
+                    .siteforceStarterBody .cCenterPanel {
+                        max-width: unset !important;
+                    }
+                    .cCenterPanel{
+                        margin: 0px !important;
+                        padding: 0px !important;
+                    }
+                    .siteforceContentArea .comm-layout-column:not(:empty), .siteforceContentArea .comm-layout-column:not(:empty), .slds-col_padded, .slds-col--padded{
+                        margin: 0px !important;
+                        padding: 0px !important;
+                    }
                     .slds-input:active, .slds-input:focus {
                         box-shadow: none;
                         border-color: #1DC079 !important;
@@ -1192,44 +1204,78 @@ export default class GConnectVerification extends LightningElement {
         }
 
         // Validate share code (if applicable)
+        // if (this.showShareCode) {
+        //     const shareCodeInput = this.template.querySelector('input[name="shareCode"]');
+        //     if (shareCodeInput) {
+        //         let value = shareCodeInput.value ? shareCodeInput.value.trim().toUpperCase() : '';
+        //         let errorMessage = '';
+
+        //         const alphaNumericPattern = /^[A-Z0-9]+$/;
+
+        //         if (value.length === 0) {
+        //             errorMessage = 'Share Code is required.';
+        //         }
+        //         else if (!value.startsWith('W')) {
+        //             errorMessage = 'Share Code is invalid. It must start with W.';
+        //         }
+        //         else if (value.length !== 9) {
+        //             errorMessage = 'Share Code must be exactly 9 characters.';
+        //         }
+        //         else if (!alphaNumericPattern.test(value)) {
+        //             errorMessage = 'Share Code must contain letters and numbers only.';
+        //         }
+
+        //         if (errorMessage) {
+        //             this.showToast('Error', errorMessage, 'error');
+        //             return;
+        //         }
+
+        //         this.shareCode = value;
+        //         this.collectForm64Details.shareCode = value;
+        //     }
+        // }
         if (this.showShareCode) {
-            const shareCodeInput = this.template.querySelector('input[name="shareCode"]');
-            if (shareCodeInput) {
-                let value = shareCodeInput.value ? shareCodeInput.value.trim().toUpperCase() : '';
-                let errorMessage = '';
 
-                const alphaNumericPattern = /^[A-Z0-9]+$/;
+            const value = this.collectForm64Details.shareCode ? this.collectForm64Details.shareCode.trim().toUpperCase() : '';
 
-                if (value.length === 0) {
-                    errorMessage = 'Share Code is required.';
-                }
-                else if (!value.startsWith('W')) {
-                    errorMessage = 'Share Code is invalid. It must start with W.';
-                }
-                else if (value.length !== 9) {
-                    errorMessage = 'Share Code must be exactly 9 characters.';
-                }
-                else if (!alphaNumericPattern.test(value)) {
-                    errorMessage = 'Share Code must contain letters and numbers only.';
-                }
+            const alphaNumericPattern = /^[A-Z0-9]{8}$/;
 
-                if (errorMessage) {
-                    this.showToast('Error', errorMessage, 'error');
-                    return;
-                }
-
-                this.shareCode = value;
-                this.collectForm64Details.shareCode = value;
+            if (!value) {
+                this.showToast('Error', 'Share Code is required.', 'error');
+                return;
             }
-        }
 
+            if (!alphaNumericPattern.test(value)) {
+                this.showToast('Error', 'Share Code must be exactly 8 letters and numbers.', 'error');
+                return;
+            }
+            const fullValue = 'W' + value;
+
+            this.shareCode = fullValue;
+            this.collectForm64Details.shareCode = fullValue;
+                
+        }
 
         if (allFieldsValid && !this.isRtwDocError) {
             // Only validate and navigate to the RTW upload page here.
             // The actual file upload and server update will be performed from the upload page's Next button.
+            let shareCode = this.collectForm64Details.shareCode;
+
+            if (shareCode) {
+                shareCode = shareCode.trim().toUpperCase();
+
+                if (shareCode.length === 8) {
+                    shareCode = 'W' + shareCode;
+                }
+
+                this.collectForm64Details.shareCode = shareCode;
+            }
+            console.log(shareCode);
             this.collectDetails['lastConfirmStage'] = 'Right To Work';
             this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
 
+            await this.updateConfirmDetails();
+            
             this.confirmForm64Page = false;
             this.showUploadScreen = false;
             this.successPage = false;
@@ -1610,8 +1656,8 @@ export default class GConnectVerification extends LightningElement {
 
 
             this.collectForm64Details.rtwDoc = null;
-            // NEW RTW
-            this.collectForm64Details.shareCode = null;
+                // NEW RTW
+                this.collectForm64Details.shareCode = null;
 
             if (event.target.value == 'Non-UK National') {
                 // this.citizenshipIsEEU = true;
@@ -1619,7 +1665,7 @@ export default class GConnectVerification extends LightningElement {
                 this.showFileUploadCombo = false;
                 // this.showAccessCode = true;
                 this.showShareCode = true;
-
+              
             } else {
                 // this.citizenshipIsEEU = false;
                 this.isRTWDoc = true;
@@ -1633,23 +1679,23 @@ export default class GConnectVerification extends LightningElement {
                     if (this.rtwDoc == 'British passport') {
                         this.selectedRTWOption = 'BritishPassport';
                         // this.showRTWExpiryDate = false;
-                    }
+                    } 
                     else if (this.rtwDoc == 'Birth/Adoption Certificate + National Insurance document') {
                         this.selectedRTWOption = 'BirthAdoptionNI';
                         // this.showRTWExpiryDate = false;
-                    }
+                    } 
                     else if (this.rtwDoc == 'Certificate of registration/naturalisation + National Insurance document') {
                         this.selectedRTWOption = 'NaturalisationNI';
                         // this.showRTWExpiryDate = false;
-                    }
+                    } 
                     else if (this.rtwDoc == 'Irish passport or passport card') {
                         this.selectedRTWOption = 'IrishPassport';
                         // this.showRTWExpiryDate = false;
-                    }
+                    } 
                     else if (this.rtwDoc == 'Irish Birth/Adoption Certificate + National Insurance document') {
                         this.selectedRTWOption = 'IrishBirthAdoptionNI';
                         // this.showRTWExpiryDate = false;
-                    }
+                    } 
 
                     this.showFileUploadCombo = true;
                 }
@@ -1659,49 +1705,62 @@ export default class GConnectVerification extends LightningElement {
         if (event.target.name === 'rtwDoc') {
             this.showFileUploadCombo = true;
             if (this.rtwDoc == 'British passport') {
-                this.selectedRTWOption = 'BritishPassport';
-                // this.showRTWExpiryDate = false;
-            }
-            else if (this.rtwDoc == 'Birth/Adoption Certificate + National Insurance document') {
-                this.selectedRTWOption = 'BirthAdoptionNI';
-                // this.showRTWExpiryDate = false;
-            }
-            else if (this.rtwDoc == 'Certificate of registration/naturalisation + National Insurance document') {
-                this.selectedRTWOption = 'NaturalisationNI';
-                // this.showRTWExpiryDate = false;
-            }
-            else if (this.rtwDoc == 'Irish passport or passport card') {
-                this.selectedRTWOption = 'IrishPassport';
-                // this.showRTWExpiryDate = false;
-            }
-            else if (this.rtwDoc == 'Irish Birth/Adoption Certificate + National Insurance document') {
-                this.selectedRTWOption = 'IrishBirthAdoptionNI';
-                // this.showRTWExpiryDate = false;
-            }
+                    this.selectedRTWOption = 'BritishPassport';
+                    // this.showRTWExpiryDate = false;
+                } 
+                else if (this.rtwDoc == 'Birth/Adoption Certificate + National Insurance document') {
+                    this.selectedRTWOption = 'BirthAdoptionNI';
+                    // this.showRTWExpiryDate = false;
+                } 
+                else if (this.rtwDoc == 'Certificate of registration/naturalisation + National Insurance document') {
+                    this.selectedRTWOption = 'NaturalisationNI';
+                    // this.showRTWExpiryDate = false;
+                } 
+                else if (this.rtwDoc == 'Irish passport or passport card') {
+                    this.selectedRTWOption = 'IrishPassport';
+                    // this.showRTWExpiryDate = false;
+                } 
+                else if (this.rtwDoc == 'Irish Birth/Adoption Certificate + National Insurance document') {
+                    this.selectedRTWOption = 'IrishBirthAdoptionNI';
+                    // this.showRTWExpiryDate = false;
+                } 
         }
+        
+        if (event.target.name === 'shareCode') {
 
-        if (event.target.name == 'shareCode') {
-            let value = event.target.value ? event.target.value.trim() : '';
+            let value = event.target.value
+                ? event.target.value.trim().toUpperCase()
+                : '';
+
+            // Remove non-alphanumeric
+            value = value.replace(/[^A-Z0-9]/g, '');
+
+            // Limit to 8 characters
+            value = value.substring(0, 8);
+
+            // Update input UI
+            event.target.value = value;
+
             let errorMessage = '';
+            const alphaNumericPattern = /^[A-Z0-9]{8}$/;
 
-            const alphaNumericPattern = /^[A-Z0-9]+$/;
-
-            if (!value.startsWith('W')) {
-                errorMessage = 'Share Code is invalid. It must start with ‘W’.';
-            }
-            else if (value.length !== 9) {
-                errorMessage = 'Share Code must be exactly 9 characters.';
-            }
+            if (value.length === 0) {
+                errorMessage = 'Share Code is required.';
+            } 
             else if (!alphaNumericPattern.test(value)) {
-                errorMessage = 'Share Code must contain letters and numbers only.';
+                errorMessage = 'Share Code must be exactly 8 letters and numbers.';
             }
-
 
             event.target.setCustomValidity(errorMessage);
             event.target.reportValidity();
+
+            // Save ONLY 8 characters (backend adds W)
+            this.shareCode = value;
+            this.collectForm64Details.shareCode = value;
+
+            return;
         }
-
-
+      
         this.collectForm64Details[event.target.name] = event.target.value.trim();
 
     }

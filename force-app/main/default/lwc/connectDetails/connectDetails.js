@@ -348,7 +348,7 @@ export default class ConnectDetails extends LightningElement {
     @track backDocFiles = [];
     @track savedRTWDocs = null;  // saved files when user goes Back
     @track savedRTWOption = null;  // which doc was selected when saved
-
+    shareCodeValue = '';
 
     get categories() {
         return this.rtwData.categories.map(cat => {
@@ -413,6 +413,9 @@ export default class ConnectDetails extends LightningElement {
         this.collectForm64Details.shareCode = null;
         
         if (category.value === 'Non-UK National') {
+            if (!this.shareCode) {
+                this.shareCode = null;
+            }
             this.isRTWDoc = false;
             this.showFileUploadCombo = false;
             this.showShareCode = true;
@@ -1498,10 +1501,10 @@ export default class ConnectDetails extends LightningElement {
     // }
     async callConfirmForm64() {        
         let allFieldsValid = true;
-        
+        console.log('This',this.shareCode);
         // Validate category selection
         if (!this.citi_Immi_status) {
-            this.showToast('Error', 'Please select your citizenship status', 'error');
+            this.showToast('Error', 'Must choose one of the 3 categories.', 'error');
             return;
         }
         
@@ -1515,39 +1518,72 @@ export default class ConnectDetails extends LightningElement {
         }
         
         // Validate share code (if applicable)
+        // if (this.showShareCode) {
+        //     const shareCodeInput = this.template.querySelector('input[name="shareCode"]');
+        //     if (shareCodeInput) {
+        //         let value = shareCodeInput.value ? shareCodeInput.value.trim().toUpperCase() : '';
+        //         let errorMessage = '';
+
+        //         const alphaNumericPattern = /^[A-Z0-9]+$/;
+                
+        //         if (value.length === 0) {
+        //             errorMessage = 'Share Code is required.';
+        //         }
+        //         else if (!value.startsWith('W')) {
+        //             errorMessage = 'Share Code is invalid. It must start with W.';
+        //         } 
+        //         else if (value.length !== 9) {
+        //             errorMessage = 'Share Code must be exactly 9 characters.';
+        //         } 
+        //         else if (!alphaNumericPattern.test(value)) {
+        //             errorMessage = 'Share Code must contain letters and numbers only.';
+        //         }
+
+        //         if (errorMessage) {
+        //             this.showToast('Error', errorMessage, 'error');
+        //             return;
+        //         }
+                
+        //         this.shareCode = value;
+        //         this.collectForm64Details.shareCode = value;
+        //     }
+        // }
         if (this.showShareCode) {
-            const shareCodeInput = this.template.querySelector('input[name="shareCode"]');
-            if (shareCodeInput) {
-                let value = shareCodeInput.value ? shareCodeInput.value.trim().toUpperCase() : '';
-                let errorMessage = '';
 
-                const alphaNumericPattern = /^[A-Z0-9]+$/;
-                
-                if (value.length === 0) {
-                    errorMessage = 'Share Code is required.';
-                }
-                else if (!value.startsWith('W')) {
-                    errorMessage = 'Share Code is invalid. It must start with W.';
-                } 
-                else if (value.length !== 9) {
-                    errorMessage = 'Share Code must be exactly 9 characters.';
-                } 
-                else if (!alphaNumericPattern.test(value)) {
-                    errorMessage = 'Share Code must contain letters and numbers only.';
-                }
+            const value = this.collectForm64Details.shareCode
+                ? this.collectForm64Details.shareCode.trim().toUpperCase()
+                : '';
 
-                if (errorMessage) {
-                    this.showToast('Error', errorMessage, 'error');
-                    return;
-                }
-                
-                this.shareCode = value;
-                this.collectForm64Details.shareCode = value;
+            const alphaNumericPattern = /^[A-Z0-9]{8}$/;
+
+            if (!value) {
+                this.showToast('Error', 'Share Code is required.', 'error');
+                return;
             }
+
+            if (!alphaNumericPattern.test(value)) {
+                this.showToast('Error', 'Share Code must be exactly 8 letters and numbers.', 'error');
+                return;
+            }
+            const fullValue = 'W' + value;
+
+            this.shareCode = fullValue;
+            this.collectForm64Details.shareCode = fullValue;
+                
         }
 
-
         if (allFieldsValid && !this.isRtwDocError) {
+            let shareCode = this.collectForm64Details.shareCode;
+
+            if (shareCode) {
+                shareCode = shareCode.trim().toUpperCase();
+
+                if (shareCode.length === 8) {
+                    shareCode = 'W' + shareCode;
+                }
+
+                this.collectForm64Details.shareCode = shareCode;
+            }
             this.spinner = true;
             this.collectDetails['lastConfirmStage'] = 'Right To Work';
             this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
@@ -2432,27 +2468,40 @@ export default class ConnectDetails extends LightningElement {
                 } 
         }
         
-        if (event.target.name == 'shareCode') {
-            let value = event.target.value ? event.target.value.trim() : '';
-            let errorMessage = '';
+        if (event.target.name === 'shareCode') {
 
-            const alphaNumericPattern = /^[A-Z0-9]+$/;
-            
-            if (!value.startsWith('W')) {
-                errorMessage = 'Share Code is invalid. It must start with ‘W’.';
-            } 
-            else if (value.length !== 9) {
-                errorMessage = 'Share Code must be exactly 9 characters.';
+            let value = event.target.value
+                ? event.target.value.trim().toUpperCase()
+                : '';
+
+            // Remove non-alphanumeric
+            value = value.replace(/[^A-Z0-9]/g, '');
+
+            // Limit to 8 characters
+            value = value.substring(0, 8);
+
+            // Update input UI
+            event.target.value = value;
+
+            let errorMessage = '';
+            const alphaNumericPattern = /^[A-Z0-9]{8}$/;
+
+            if (value.length === 0) {
+                errorMessage = 'Share Code is required.';
             } 
             else if (!alphaNumericPattern.test(value)) {
-                errorMessage = 'Share Code must contain letters and numbers only.';
-            } 
-             
+                errorMessage = 'Share Code must be exactly 8 letters and numbers.';
+            }
 
             event.target.setCustomValidity(errorMessage);
             event.target.reportValidity();
-        }
 
+            // Save ONLY 8 characters (backend adds W)
+            this.shareCode = value;
+            this.collectForm64Details.shareCode = value;
+
+            return;
+        }
       
         this.collectForm64Details[event.target.name] = event.target.value.trim();
 
@@ -3137,7 +3186,20 @@ export default class ConnectDetails extends LightningElement {
         this.dateOfEntry = rowData.Date_of_Entry__c ? rowData.Date_of_Entry__c : '';
         this.expiryDate = rowData.RTW_Expiry_Date__c ? rowData.RTW_Expiry_Date__c : '';
         this.accessCode = rowData.Access_Code__c ? rowData.Access_Code__c : '';
-        this.shareCode = rowData.Share_Code__c ? rowData.Share_Code__c : '';
+        // this.shareCode = rowData.Share_Code__c ? rowData.Share_Code__c : '';
+        // ✅ Remove 'W' prefix from share code when displaying in UI
+        if (rowData.Share_Code__c) {
+            let shareCodeValue = rowData.Share_Code__c;
+            // If share code starts with 'W', remove it for UI display
+            if (shareCodeValue.length === 9 && (shareCodeValue.startsWith('W') || shareCodeValue.startsWith('w'))) {
+                shareCodeValue = shareCodeValue.substring(1);
+            }
+            this.shareCode = shareCodeValue;
+            this.collectForm64Details.shareCode = shareCodeValue;
+        } else {
+            this.shareCode = '';
+            this.collectForm64Details.shareCode = '';
+        }
         this.biometricEvidence = rowData.Biometric_Evidence__c ? rowData.Biometric_Evidence__c : '';
 
         // OLD RTW
