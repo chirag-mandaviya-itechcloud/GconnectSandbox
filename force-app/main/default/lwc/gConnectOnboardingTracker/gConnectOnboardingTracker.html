@@ -277,7 +277,7 @@
                                             <td if:true={contractor.rtwLicenseNotVerify}><button name="RTW"
                                                     class="rtwButton" data-index={index}
                                                     onclick={verifyCPassFailHandle}>Verify</button></td>
-                                            
+
                                             <td if:true={contractor.rtwLicenseVerify}><button class="rtwVerifiedButton"
                                                     data-index={index} onclick={verifyCPassFailHandle}
                                                     name="RTW">&#x2713; Verified</button></td>
@@ -387,7 +387,7 @@
                     <header class="slds-modal__header">
                         <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
                             title="Close" onclick={closeModal}>
-                            <lightning-icon icon-name="utility:close" alternative-text="close" 
+                            <lightning-icon icon-name="utility:close" alternative-text="close"
                                 size="small"></lightning-icon>
                             <span class="slds-assistive-text">Close</span>
                         </button>
@@ -491,8 +491,8 @@
                             <h2>Right to Work</h2>
                             <div class="action-group">
                                 <button class="btn-request" onclick={handleRequestNewEvidence}
-                                 data-selected-id={selectedContractor.Id}> Request New Evidence
-                                 </button>
+                                    data-selected-id={selectedContractor.Id}> Request New Evidence
+                                </button>
                                 <template if:true={selectedContractor.allowRTWEdit}>
                                     <!-- <button class="btn btn-edit">Edit</button> -->
                                     <button class="btn btn-edit" onclick={handleRTWEditClick}
@@ -501,8 +501,8 @@
                                     </button>
                                 </template>
                                 <button class="custom-button validate-button" onclick={handledownloadRTWfile}
-                                        data-selected-id={selectedContractor.Id}>
-                                        Download
+                                    data-selected-id={selectedContractor.Id}>
+                                    Download
                                 </button>
                                 <button class="close-button" onclick={cancelModule}>×</button>
                             </div>
@@ -530,7 +530,7 @@
                                             <div class="info-value">{selectedContractor.nationalInsurance}</div>
                                         </template>
                                     </div>
-                                    
+
                                     <!-- <div class="info-field">
                                     <div class="info-label">RTW Category <span class="field-tag tag-readonly">Read-only</span></div>
                                     <div class="info-badge badge-british">🇬🇧 British Citizen</div>
@@ -540,7 +540,7 @@
                                     <div class="info-value">British Passport</div>
                                     </div> -->
                                 </div>
-                                
+
                                 <!-- <template if:true={selectedContractor.clientName}>
                                     <div class="slds-text-body_large slds-m-bottom_xx-small">
                                         <strong>Driver Name:</strong>
@@ -580,7 +580,7 @@
                                                     <template if:true={selectedContractor.CheckDoc}>
                                                         <img src={selectedContractor.CheckDoc} alt={selectedContractor.CheckDocName}
                                                             class="docView"  onerror={handleRTWImageError} />
-                                                            
+
                                                     </template>
                                                     <template if:false={selectedContractor.CheckDoc}>
                                                         <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">
@@ -588,7 +588,7 @@
                                                                 {selectedContractor.CheckDocName}
                                                             </template>
                                                             <template if:false={selectedContractor.CheckDocName}>
-                                                                Image Not Uploaded 
+                                                                Image Not Uploaded
                                                             </template>
                                                             </div>
                                                     </template>
@@ -633,9 +633,10 @@
                                                 <p class="slds-p-bottom_small"><strong>Document:</strong></p>
                                                 <div style="width: 100%;">
                                                     <template if:true={selectedContractor.CheckDoc}>
-                                                        <img src={selectedContractor.CheckDoc} alt={selectedContractor.CheckDocName}
-                                                            class="docView"  onerror={handleRTWImageError} />
-                                                            
+                                                        <img src={selectedContractor.CheckDoc}
+                                                            alt={selectedContractor.CheckDocName} class="docView"
+                                                            onerror={handleRTWImageError} />
+
                                                     </template>
                                                     <template if:false={selectedContractor.CheckDoc}>
                                                         <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">
@@ -643,9 +644,9 @@
                                                                 {selectedContractor.CheckDocName}
                                                             </template>
                                                             <template if:false={selectedContractor.CheckDocName}>
-                                                                Image Not Uploaded 
+                                                                Image Not Uploaded
                                                             </template>
-                                                            </div>
+                                                        </div>
                                                     </template>
                                                 </div>
                                             </div>
@@ -661,28 +662,34 @@
                                         </div>
                                         <template if:true={imagesAvailable}>
                                             <div class="frontDoc">
-                                                <p class="slds-p-bottom_small"><strong>{selectedContractor.rtwFrontDocumentName}:</strong></p>
+                                                <p class="slds-p-bottom_small">
+                                                    <strong>{selectedContractor.rtwFrontDocumentName}:</strong>
+                                                </p>
                                                 <div style="width: 100%;">
                                                     <template if:true={selectedContractor.FrontDoc}>
                                                         <img src={selectedContractor.FrontDoc} alt="Front of RTW"
                                                             class="docView" />
                                                     </template>
                                                     <template if:false={selectedContractor.FrontDoc}>
-                                                        <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not Uploaded </div>
+                                                        <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not
+                                                            Uploaded </div>
                                                     </template>
                                                 </div>
                                             </div>
                                             <!-- New UI RTW can contain 2 Image -->
                                             <template if:true={selectedContractor.doubleRTWImage}>
                                                 <div class="backDoc slds-p-top_small">
-                                                    <p class="slds-p-bottom_small"><strong>{selectedContractor.rtwBackDocumentName}:</strong></p>
+                                                    <p class="slds-p-bottom_small">
+                                                        <strong>{selectedContractor.rtwBackDocumentName}:</strong>
+                                                    </p>
                                                     <div style="width: 100%;">
                                                         <template if:true={selectedContractor.BackDoc}>
                                                             <img src={selectedContractor.BackDoc} alt="Front of RTW"
                                                                 class="docView" />
                                                         </template>
                                                         <template if:false={selectedContractor.BackDoc}>
-                                                            <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not Uploaded </div>
+                                                            <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image
+                                                                Not Uploaded </div>
                                                         </template>
                                                     </div>
                                                 </div>
@@ -691,7 +698,7 @@
                                         </template>
                                     </div>
                                 </template>
-                            
+
                             </div>
 
                             <div class="slds-col slds-size_1-of-2">
@@ -703,102 +710,94 @@
                                 <div class="driver-info">
                                     <div class="info-field">
                                         <div class="label">RTW Category</div>
-                                        <div class="badge badge-blue">{selectedContractor.Citizenship_Immigration_status__c}</div>
+                                        <div class="badge badge-blue">
+                                            {selectedContractor.Citizenship_Immigration_status__c}</div>
                                     </div>
                                     <template if:true={selectedContractor.hasRTWDoc}>
                                         <div class="info-field">
                                             <div class="info-label">Evidence Type</div>
                                             <div class="info-value">{selectedContractor.Right_to_work_document__c}</div>
-                                        </div> 
+                                        </div>
                                     </template>
-                                    <template if:true={selectedContractor.hasShareCode}>                                        
-                                                <div class="info-field">
-                                                    <div class="info-label">Share Code</div>
-                                                    <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>
-                                                </div>                                       
-                                    </template> 
-                                    <template if:true={selectedContractor.hasAccessCode}>                                        
-                                                <div class="info-field">
-                                                    <div class="info-label">Access Code</div>
-                                                    <div class="badge badge-gray">{selectedContractor.Access_Code__c}</div>
-                                                </div>                                       
-                                    </template>                                  
-                               </div>
+                                    <template if:true={selectedContractor.hasShareCode}>
+                                        <div class="info-field">
+                                            <div class="info-label">Share Code</div>
+                                            <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>
+                                        </div>
+                                    </template>
+                                    <template if:true={selectedContractor.hasAccessCode}>
+                                        <div class="info-field">
+                                            <div class="info-label">Access Code</div>
+                                            <div class="badge badge-gray">{selectedContractor.Access_Code__c}</div>
+                                        </div>
+                                    </template>
+                                </div>
                                 <hr class="slds-m-vertical_small" />
                                 <div class="slds-grid slds-wrap slds-p-top_small">
-                                    <template if:true={selectedContractor.hasAccessCode}>                                        
-                                            <!-- <div class="slds-col slds-size_1-of-2">
+                                    <template if:true={selectedContractor.hasAccessCode}>
+                                        <!-- <div class="slds-col slds-size_1-of-2">
                                                 <p><strong>Access Code:</strong></p>
-                                                <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>                                       
+                                                <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>
                                         </div> -->
                                     </template>
-                                    <template if:true={selectedContractor.hasShareCode}>                                        
-                                            <!-- <div class="slds-col slds-size_1-of-2">
+                                    <template if:true={selectedContractor.hasShareCode}>
+                                        <!-- <div class="slds-col slds-size_1-of-2">
                                                 <p><strong>Share Code:</strong></p>
-                                                <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>                                       
+                                                <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>
                                         </div> -->
                                         <template if:true={rightToWorkEditOpen}>
-                                                <!-- <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
-                                                    <lightning-combobox
-                                                        name="typeOfEVisa"
-                                                        label="Type of eVisa"
-                                                        value={selectedContractor.Type_of_e_visa__c}
-                                                        options={typeOfVisa_option}
+                                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                                                <lightning-combobox name="typeOfEVisa" label="Type of eVisa"
+                                                    value={selectedContractor.Type_of_e_visa__c}
+                                                    options={typeOfVisa_option} onchange={onChangeRTWDetails}>
+                                                </lightning-combobox>
+                                            </div>
+
+                                            <template if:true={showTimeLimitedSection}>
+                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                                                    <lightning-input type="date" name="PermissionexpiryDate"
+                                                        label="Permission Expiry Date"
+                                                        value={selectedContractor.Permission_Expiry_Date__c}
+                                                        onchange={onChangeRTWDetails}>
+                                                    </lightning-input>
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                                                    <lightning-combobox name="anyWorkRestrictions"
+                                                        label="Any Work Restrictions"
+                                                        value={selectedContractor.Any_work_restrictions__c}
+                                                        options={anyWorkRestrictions_option}
                                                         onchange={onChangeRTWDetails}>
                                                     </lightning-combobox>
-                                                </div> -->
-
-                                                <template if:true={showTimeLimitedSection}>
-                                                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
-                                                        <lightning-input
-                                                            type="date"
-                                                            name="PermissionexpiryDate"
-                                                            label="Permission Expiry Date"
-                                                            value={selectedContractor.Permission_Expiry_Date__c}
-                                                            onchange={onChangeRTWDetails}>
-                                                        </lightning-input>
-                                                    </div>
-
-                                                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
-                                                        <lightning-combobox
-                                                            name="anyWorkRestrictions"
-                                                            label="Any Work Restrictions"
-                                                            value={selectedContractor.Any_work_restrictions__c}
-                                                            options={anyWorkRestrictions_option}
-                                                            onchange={onChangeRTWDetails}>
-                                                        </lightning-combobox>
-                                                    </div>
-                                                </template>
-
-                                                <template if:true={showRestrictionsSection}>
-                                                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
-                                                        <lightning-input
-                                                            label="Limited To X Hours Per Week"
-                                                            name="limitedHours"
-                                                            value={selectedContractor.Limited_To_X_Hours_Per_Week__c}
-                                                            onchange={onChangeRTWDetails}>
-                                                        </lightning-input>
-                                                    </div>
-
-                                                    <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
-                                                        <lightning-input
-                                                            label="Limited To Specific Job Types"
-                                                            name="specificJobs"
-                                                            value={selectedContractor.Limited_To_Specific_Job_Types__c}
-                                                            onchange={onChangeRTWDetails}>
-                                                        </lightning-input>
-                                                    </div>
-
-                                                    <div class="slds-col slds-size_1-of-1">
-                                                        <lightning-textarea
-                                                            label="Other Restrictions"
-                                                            name="otherRestrictions"
-                                                            value={selectedContractor.Other_Restrictions__c}
-                                                            onchange={onChangeRTWDetails}>
-                                                        </lightning-textarea>
-                                                    </div>
-                                                </template>
+                                                </div>
                                             </template>
+
+                                            <template if:true={showRestrictionsSection}>
+                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
+                                                    <lightning-input label="Limited To X Hours Per Week"
+                                                        name="limitedHours"
+                                                        value={selectedContractor.Limited_To_X_Hours_Per_Week__c}
+                                                        onchange={onChangeRTWDetails}>
+                                                    </lightning-input>
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
+                                                    <lightning-input label="Limited To Specific Job Types"
+                                                        name="specificJobs"
+                                                        value={selectedContractor.Limited_To_Specific_Job_Types__c}
+                                                        onchange={onChangeRTWDetails}>
+                                                    </lightning-input>
+                                                </div>
+
+                                                <div class="slds-col slds-size_1-of-1">
+                                                    <lightning-textarea label="Other Restrictions"
+                                                        name="otherRestrictions"
+                                                        value={selectedContractor.Other_Restrictions__c}
+                                                        onchange={onChangeRTWDetails}>
+                                                    </lightning-textarea>
+                                                </div>
+                                            </template>
+                                        </template>
                                     </template>
                                     <template if:true={selectedContractor.hasSettledStatus}>
                                         <div class="slds-col slds-size_1-of-2">
@@ -815,12 +814,10 @@
                                                     <p>{selectedContractor.Type_of_e_visa__c}</p>
                                                 </template>
                                                 <template if:true={rightToWorkEditOpen}>
-                                                    <lightning-combobox
-                                                            name="typeOfEVisa"
-                                                            value={selectedContractor.Type_of_e_visa__c}
-                                                            options={typeOfVisa_option}
-                                                            onchange={onChangeRTWDetails}>
-                                                        </lightning-combobox>
+                                                    <lightning-combobox name="typeOfEVisa"
+                                                        value={selectedContractor.Type_of_e_visa__c}
+                                                        options={typeOfVisa_option} onchange={onChangeRTWDetails}>
+                                                    </lightning-combobox>
                                                 </template>
                                             </div>
                                         </template>
@@ -907,7 +904,7 @@
                                             <lightning-button icon-name="utility:upload" variant="brand" class="fileBtn"
                                                 name="uploadType" label="File Upload" onclick={clickFrontBackUpload}>
                                             </lightning-button>
-                                            
+
                                         </div>
                                     </div>
                                 </template>
@@ -1017,7 +1014,8 @@
                                 <div class="spinner-container" style="height: 100%;">
                                     <lightning-spinner if:true={imageLoading} alternative-text="Uploading" size="small"
                                         class="spinner-overlay"></lightning-spinner>
-                                    <div if:true={imagesNotAvailable} class="imageNotAvail"><span>No Image Uploaded</span></div>
+                                    <div if:true={imagesNotAvailable} class="imageNotAvail"><span>No Image
+                                            Uploaded</span></div>
                                     <template if:true={imagesAvailable}>
                                         <div class="frontDoc">
                                             <p class="slds-p-bottom_small"><strong>Front of Licence:</strong></p>
@@ -1027,7 +1025,8 @@
                                                         alt="Front of Driving Licence" class="docView" />
                                                 </template>
                                                 <template if:false={selectedContractor.FrontDoc}>
-                                                    <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not Uploaded </div>
+                                                    <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not
+                                                        Uploaded </div>
                                                 </template>
                                             </div>
                                         </div>
@@ -1039,7 +1038,8 @@
                                                         class="docView" />
                                                 </template>
                                                 <template if:false={selectedContractor.BackDoc}>
-                                                    <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not Uploaded </div>
+                                                    <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not
+                                                        Uploaded </div>
                                                 </template>
                                             </div>
                                         </div>
@@ -1177,7 +1177,8 @@
                                             </div>
                                             <div class="slds-var-p-top_small">
                                                 <lightning-input label="Points on Licence:" type="text"
-                                                    name="pointOfLicense" onchange={onChangeLicenseDetails} required="true"
+                                                    name="pointOfLicense" onchange={onChangeLicenseDetails}
+                                                    required="true"
                                                     message-when-value-missing="Please add Points on Licence"
                                                     value={selectedContractor.Points_on_Licence__c} class=pointOfLicense
                                                     placeholder="Add points here"></lightning-input>
@@ -1247,7 +1248,7 @@
                                 <template if:true={drivingLicenseNotShowVerified}>
                                     <button name="drivingValidate" class="custom-button validate-button"
                                         data-update-type='validate' onclick={saveRTWandDLdata}>Verify & Save</button>
-                                    </template>
+                                </template>
                             </template>
                         </div>
                     </footer>
@@ -1278,7 +1279,8 @@
                             <div class="slds-col slds-size_6-of-6">
                                 <c-image-capture record-id={selectedContractorId} show-file-upload={showFileUploadModal}
                                     show-profile={showProfileUploadModal} show-capture-file={showImageCaptureModal}
-                                    show-doc-error={isFileModuleError} show-error-message={fileModuleError}  allowed-extension = {allowedExtension}
+                                    show-doc-error={isFileModuleError} show-error-message={fileModuleError}
+                                    allowed-extension={allowedExtension}
                                     show-front-back-radio-btn={showFrontBackRadioBtn} document-names={documentNames}>
                                 </c-image-capture>
 
