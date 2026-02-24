@@ -745,7 +745,7 @@
                                                 <p><strong>Share Code:</strong></p>
                                                 <div class="badge badge-gray">{selectedContractor.Share_Code__c}</div>
                                         </div> -->
-                                        <!-- <template if:true={rightToWorkEditOpen}>
+                                        <template if:true={rightToWorkEditOpen}>
                                             <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
                                                 <lightning-combobox name="typeOfEVisa" label="Type of eVisa"
                                                     value={selectedContractor.Type_of_e_visa__c}
@@ -797,7 +797,7 @@
                                                     </lightning-textarea>
                                                 </div>
                                             </template>
-                                        </template> -->
+                                        </template>
                                     </template>
                                     <template if:true={selectedContractor.hasSettledStatus}>
                                         <div class="slds-col slds-size_1-of-2">
@@ -818,6 +818,21 @@
                                                         value={selectedContractor.Type_of_e_visa__c}
                                                         options={typeOfVisa_option} onchange={onChangeRTWDetails}>
                                                     </lightning-combobox>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template if:true={selectedContractor.hasEVisa}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p><strong>Permission Expiry Date:</strong></p>
+                                                <template if:false={rightToWorkEditOpen}>
+                                                    <p>{selectedContractor.Permission_Expiry_Date__c}</p>
+                                                </template>
+                                                <template if:true={rightToWorkEditOpen}>
+                                                    <lightning-input type="date" name="PermissionexpiryDate"
+                                                        label="Permission Expiry Date"
+                                                        value={selectedContractor.Permission_Expiry_Date__c}
+                                                        onchange={onChangeRTWDetails}>
+                                                    </lightning-input>
                                                 </template>
                                             </div>
                                         </template>
