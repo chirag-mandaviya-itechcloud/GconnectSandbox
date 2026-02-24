@@ -1,0 +1,1111 @@
+.contractor-overview {
+    padding: 1rem 3.5rem;
+    background-color: var(--color-page-bg);
+    height: calc(100vh - 130px);
+    overflow-y: auto;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-family: var(--color-font-primary);
+}
+
+.title-section {
+    display: inline;
+    font-size: 1.5rem;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 28px;
+    color: var(--color-primary);
+}
+
+.sub-title {
+    color: var(--color-page-subtitle-font);
+    margin-left: 0.5rem;
+    font-weight: bold;
+    font-size: 28px;
+}
+
+.new-contractor-button {
+    background-color: var(--color-Active-button-bg);
+    color: var(--color-nevbar-bg);
+    border: none !important;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+.search-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.tabData {
+    background-color: #fff;
+    /* padding: 5px; */
+    border-radius: 10px;
+}
+
+.tab-section {
+    position: relative;
+    background-color: #F4F3F3;
+    border-radius: 4px;
+}
+
+.tabSectionInline {
+    display: inline-block;
+    background-color: #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 0px 4px;
+}
+
+.tab-indicator {
+    background: white;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tabs li {
+    padding: 1rem;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* 
+.tabs li.active {
+    border-bottom: 2px solid #f03a47;
+    font-weight: bold;
+} */
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--color-font-secondary);
+}
+
+.custom-table th {
+    padding: 1rem 10px;
+    border-bottom: 2px solid var(--color-secondary);
+    text-align: left;
+    color: var(--color-primary);
+}
+
+.custom-table td {
+    padding: 10px;
+    color: var(--color-primary);
+}
+
+.custom-table tr {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-table-row-line);
+    text-align: center;
+}
+
+.custom-compil-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.custom-compil-table th {
+    padding: 1rem;
+    border-bottom: 2px solid var(--color-table-heder-line);
+    text-align: left;
+}
+
+.custom-compil-table td {
+    padding: 10px;
+    text-align: center;
+}
+
+.custom-compil-table tr {
+    border-bottom: 1px solid var(--color-table-row-line);
+}
+
+.tab {
+    color: var(--color-page-deactive-tab-font);
+    margin-right: 2px;
+}
+
+.tab:hover {
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.tabs li::before {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--color-secondary);
+    /* border-top-left-radius: 10px; 
+    border-top-right-radius: 10px;  */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    /* Smooth transition */
+}
+
+.tabs li.selectedTab {
+    position: relative;
+    color: var(--color-secondary);
+    font-weight: bold;
+    /* font-family: var(--color-font-primary); */
+}
+
+.tabs li:hover {
+    position: relative;
+
+}
+
+.tabs li:hover::before {
+    opacity: 1 !important;
+}
+
+.tabs li.selectedTab::before {
+    opacity: 1;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+/* .selectedTab{
+    background-color: #D5493D;
+    color: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+} */
+
+.status-green div {
+    background-color: #8FD14F;
+    align-items: center;
+    border-radius: 4px;
+    width: 100%;
+    padding-left: 5px;
+}
+
+.status-yellow div {
+    background-color: #FAE391;
+    align-items: center;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.profile-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profilePic {
+    border-radius: 50px;
+    height: 24px;
+    width: 24px;
+}
+
+.profileName:hover {
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.status-engaged {
+    color: white;
+    background-color: #28a745;
+    padding: 0.5rem;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.status-dormant {
+    color: white;
+    background-color: #ffc107;
+    padding: 0.5rem;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.rtwButtonUnVerified {
+    background-color: #e39704;
+}
+
+.rtwVerifiedButton {
+    background-color: #057919;
+}
+
+.failButton {
+    text-align: center;
+    border: 1px solid #493100;
+    color: white;
+    width: 80px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background-color: #c60c0c;
+}
+
+.custom-header {
+    color: var(--color-page-subtitle-font);
+    /* Change the text color to red */
+}
+
+.right-to-work-modal .slds-modal__container {
+    max-width: 40rem;
+}
+
+.access-code {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.citizenship-status {
+    border-bottom: 1px solid #DCDFE3;
+    padding-bottom: 8px;
+}
+
+.custom-button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.custom-button {
+    padding: 5px 17px;
+    border: 1px solid var(--color-primary);
+    background-color: #ffffff;
+    color: var(--color-primary);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.reject-button {
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+
+}
+
+.validate-button {
+    background-color: var(--color-Active-button-bg);
+    color: var(--color-Active-button-font);
+    border: none;
+}
+
+.edit-button {
+    background: none;
+    border: none;
+    font-size: 21px;
+    cursor: pointer;
+    color: #333;
+    position: absolute;
+    top: 10px;
+    right: 2rem;
+    height: 14px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 21px;
+    cursor: pointer;
+    color: #333;
+    position: absolute;
+    top: 10px;
+    right: 1rem;
+}
+
+.generalTable {
+    width: 100%;
+
+}
+
+.complianceTable {
+    width: 100%;
+}
+
+/* div .col{
+    color: var(--color-tabel-colum-heder-font);
+}  */
+.onboarding-tracker-data tr {
+    color: var(--color-primary);
+}
+
+.onboarding-tracker-data tr:last-child {
+    border-bottom: unset !important;
+}
+
+.pointsLicence {
+    color: #fff;
+    border-radius: 50px;
+    background-color: green;
+    width: 20%;
+    text-align: center;
+}
+
+.subModalHeader {
+    border-bottom: 1px solid #DCDFE3;
+}
+
+.status-type-orange {
+    padding-right: 4px;
+    background: orange;
+    border-radius: 50px;
+    text-align: center;
+    color: #fff;
+    margin-right: 8px;
+    width: 20%;
+}
+
+.status-type-green {
+    padding-right: 4px;
+    background: green;
+    border-radius: 50px;
+    text-align: center;
+    color: #fff;
+    margin-right: 8px;
+    width: 11%;
+}
+
+
+/* File Upload Module */
+.image_container_left {
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+    border: 2px dashed #2C3F50;
+    width: 100%;
+}
+
+
+input[type="file"] {
+    height: 0;
+    overflow: hidden;
+    width: 0;
+}
+
+input[type="file"]+label {
+    background: var(--color-Active-button-bg);
+    border: none;
+    border-radius: 5px;
+    color: var(--color-Active-button-font);
+    cursor: pointer;
+    outline: none;
+    padding: 10px 40px;
+    position: relative;
+    transition: all 0.3s;
+    vertical-align: middle;
+}
+
+input[type="file"]:disabled+label {
+    background: gray;
+    color: #cccccc;
+    cursor: not-allowed;
+}
+
+.file-upload-footer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.cancel-button {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+
+.centered-img {
+    max-width: 40%;
+    height: 12px;
+    max-height: 100%;
+    padding-left: 5px;
+}
+
+.uploadIcon {
+    text-align: center;
+}
+
+.docView {
+    width: 80%;
+    /* height: 150px; */
+    Border-radius: 10px;
+}
+
+
+/* Container for the onboarding tasks */
+.onboarding-tasks-list {
+    display: flex;
+    gap: 2px;
+    /* Space between each dot */
+    justify-content: space-between;
+    width: 100%;
+}
+
+
+.task-dot {
+    position: relative;
+    display: inline-block;
+    /* Ensures proper alignment */
+}
+
+.tooltip {
+    visibility: hidden;
+    /* Hidden by default */
+    width: max-content;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 10px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 120%;
+    /* Position the tooltip below the image (can adjust this value if needed) */
+    left: 50%;
+    transform: translateX(-45%);
+
+    /* Tooltip arrow */
+    opacity: 0;
+    /* Initially invisible */
+    transition: opacity 0.3s;
+    /* Smooth fade-in effect */
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    /* Position arrow at the bottom of the image */
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+    /* Creates the upward-pointing arrow effect */
+}
+
+/* .task-dot:hover .box.arrow-top  {
+    display: block;
+    z-index: 100;
+} */
+
+.task-dot:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    /* Makes the tooltip visible */
+}
+
+
+.box {
+    width: 150px;
+    background-color: rgb(54, 51, 51);
+    color: #fff;
+    padding: 10px;
+    position: absolute;
+    margin: 9px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.box.arrow-top {
+    display: none;
+    top: 30px;
+    right: -69px;
+    transition: 1s ease-in-out;
+
+}
+
+
+.box.arrow-top:after {
+    content: " ";
+    position: absolute;
+    right: 60px;
+    top: -10px;
+    border-top: none;
+    border-right: 15px solid transparent;
+    border-left: 15px solid transparent;
+    border-bottom: 15px solid black;
+}
+
+.boxContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.boxName {
+    font-weight: bold;
+}
+
+.boxIconImage {
+    width: 35px;
+    margin-right: 10px;
+}
+
+
+.progressIcon {
+    width: 30px;
+}
+
+/* Different task status colors */
+.completed {
+    background-color: var(--color-secondary);
+    /* Green for completed */
+}
+
+.in-progress {
+    background-color: var(--color-button-verify-pending-bg);
+    ;
+    /* Yellow for in-progress */
+}
+
+.not-started {
+    background-color: #D8D8D8;
+    /* Gray for not-started */
+}
+
+.almost-completed {
+    background-color: #2a747d;
+    /* Teal for almost completed */
+}
+
+/* Container for the status buttons (Pass and Fail) */
+.pass_fail_btn {
+    width: 80px;
+    max-width: 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.status-button {
+    width: 50%;
+    background-color: unset;
+    border: unset !important;
+    border-radius: 0;
+    padding: 4px;
+}
+
+.status-button:not(:last-child) {
+    border-right: 1px solid black !important;
+}
+
+/* Pass button styling (Green) */
+.pass-button {
+    background-color: '';
+    color: var(--color-page-next-button-bg);
+    margin: 1px Black;
+}
+
+/* Fail button styling (Red) */
+.fail-button {
+    /* background-color: #EB5757; */
+    color: var(--color-chart-danger);
+}
+
+.slds-modal__container {
+    max-width: 60rem;
+}
+
+.profile-section {
+    text-align: center;
+}
+
+.profile-section h3 {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+}
+
+.contact-info,
+.compliance-info {
+    margin-top: 1.5rem;
+}
+
+.incident-report-section {
+    margin-left: 2rem;
+}
+
+.slds-modal__header h2 {
+    font-size: 1.75rem;
+}
+
+.modal-content {
+    display: flex;
+}
+
+.slds-modal__footer {
+    text-align: right;
+}
+
+.custom-modal {
+    max-width: 30rem;
+    /* Adjust the width of the modal */
+    width: 100%;
+    margin: 0 auto;
+}
+
+.custom-modal-body {
+    padding: 1.5rem;
+    /* Adjust padding inside the modal body */
+    text-align: center;
+    /* Center align the text */
+}
+
+.slds-modal__container {
+    border-radius: 0.5rem;
+    /* Add slight rounding to the modal corners */
+    //box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Add a subtle shadow for depth */
+}
+
+.slds-text-heading_small {
+    color: #333;
+    /* Darken the text for better readability */
+    font-weight: bold;
+}
+
+.custom-button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.custom-button {
+    padding: 5px 17px;
+    border: 1px solid var(--color-primary);
+    background-color: #ffffff;
+    color: var(--color-primary);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+
+
+.validate-button {
+    background-color: var(--color-Active-button-bg);
+    /* Red color for 'Yes' button */
+    color: var(--color-Active-button-font);
+    border: none;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 21px;
+    cursor: pointer;
+    color: var(--color-primary);
+    position: absolute;
+    top: 10px;
+    right: 1rem;
+}
+
+
+.record-menu {
+    max-width: 100%;
+    height: 15px;
+    cursor: pointer;
+    padding: 0px 10px;
+}
+
+/* .custom-table .record-menu-div{
+    /* width: 30px; 
+    text-align: center;
+} */
+
+.dropdownMenu {
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    z-index: 1000;
+    width: 130px;
+}
+
+.dropdownMenu ul li {
+    padding: 10px;
+    color: var(--color-primary);
+    cursor: pointer;
+}
+
+.dropdownMenu ul li:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border-radius: 6px;
+}
+
+.file-upload-modal {
+    width: 50%;
+    max-width: 50%;
+}
+
+.fileBtn button {
+    border: 1px solid var(--color-Active-button-bg) !important;
+    background-color: var(--color-Active-button-bg) !important;
+    color: var(--color-Active-button-font) !important;
+}
+
+.spinner-container {
+    position: relative;
+}
+
+.spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+}
+
+.rtwButton {
+    text-align: center;
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-button-verify-pending-bg);
+    width: 80px;
+    border-radius: 5px;
+    color: var(--color-nevbar-bg);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.rtwVerifiedButton {
+    text-align: center;
+    /* border: none; */
+    border: 1px solid var(--color-primary);
+    color: var(--color-nevbar-bg);
+    background-color: var(--color-button-verified-bg);
+    width: 80px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.Pagination_Contents {
+    padding: 10px 18px;
+    display: flex;
+    justify-content: end;
+}
+
+.previousButton {
+    background-color: var(--color-page-previous-button-bg);
+    color: var(--color-nevbar-bg);
+    font-family: var(--color-font-primary);
+    border: none !important;
+    border-radius: 5px;
+    padding: 4px 0px;
+    width: 80px;
+}
+
+.previousButton:disabled {
+    background-color: var(--color-page-previous-button-bg);
+    color: var(--color-nevbar-bg);
+    font-family: var(--color-font-primary);
+    border: none !important;
+    border-radius: 5px;
+    padding: 4px 0px;
+    width: 80px;
+}
+
+.nextButton {
+    background-color: var(--color-page-next-button-bg);
+    color: var(--color-nevbar-bg);
+    font-family: var(--color-font-primary);
+    border: none !important;
+    border-radius: 5px;
+    padding: 4px 0px;
+    width: 70px;
+}
+
+.nextButton:disabled {
+    background-color: var(--color-page-next-button-bg);
+    color: var(--color-nevbar-bg);
+    font-family: var(--color-font-primary);
+    border: none !important;
+    border-radius: 5px;
+    padding: 4px 0px;
+    width: 70px;
+}
+
+.currentPage {
+    padding: 0px 10px;
+    font-weight: bold;
+    color: var(--color-primary);
+    align-content: center;
+    font-family: var(--color-font-secondary);
+}
+
+.imageNotAvail {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imageNotAvaContainer {
+    width: 95%;
+    border-radius: 25px;
+    height: 200px;
+    padding: 10px;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #9C9EAD;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.fileupload {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.dl-sub-heading {
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dl-sub-heading span {
+    display: inline-block;
+    margin-right: 16px;
+}
+
+.client-name {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* updated css  */
+
+.modal-header {
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-soft);
+    background: white;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.action-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+/* .btn-request {
+    background: #fffcf0;
+    color: #856404;
+    border-color: #ffeeba;
+} */
+
+.btn-edit {
+    background: white;
+    color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.btn-download {
+    background: var(--primary-green);
+    color: white;
+}
+
+.btn:hover {
+    filter: brightness(0.95);
+}
+
+/* .driver-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+}
+
+.info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.info-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.info-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    width: fit-content;
+}*/
+.btn-request {
+    padding: 6px 16px;
+    border: 1px solid #d4a574;
+    border-radius: 6px;
+    background: #fef9f2;
+    font-size: 14px;
+    color: #8b6914;
+    cursor: pointer;
+    font-weight: 500;
+} 
+/* Container similar to old info-content */
+.driver-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 28px;
+    margin-bottom: 16px;
+}
+
+/* Each field block */
+.info-field {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label styling (same as old .label) */
+.info-label,
+.label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+/* Value styling */
+.info-value,
+.value {
+    font-size: 15px;
+    color: #0f172a;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+/* Badge base */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+/* Blue badge (RTW Category) */
+.badge-blue {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #dbeafe;
+}
+
+/* Gray badge */
+.badge-gray {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* Improve spacing for SLDS grid fields */
+.slds-col p strong {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.slds-col p {
+    font-size: 15px;
+    color: #0f172a;
+    font-weight: 600;
+    margin: 4px 0 0 0;
+}
+
+/* Section spacing */
+.slds-grid.slds-wrap > .slds-col {
+    margin-bottom: 16px;
+}
+
+/* Edit mode inputs spacing */
+lightning-input,
+lightning-combobox,
+lightning-textarea {
+    margin-top: 4px;
+}
+
+/* Make full width fields */
+.full-width {
+    grid-column: span 2;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .driver-info {
+        grid-template-columns: 1fr;
+    }
+}
