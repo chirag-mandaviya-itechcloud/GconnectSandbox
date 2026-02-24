@@ -544,5 +544,54 @@ global without sharing class ConnectAppController {
         public String bankWithName{get;set;}
     }
 
+    @AuraEnabled
+    public static void sendVerificationLinkEmail(String applicationId) {
+        try {
+            Application__c app = [SELECT Id, Email__c, First_Name__c, Last_Name__c, Access_Code__c, Share_Code__c, SubContractor_URL__c, Verification_URL__c  FROM Application__c WHERE Id = :applicationId LIMIT 1];
+            if(app != null) {
+                // get email template
+                EmailTemplate et;
+                if (app.Access_Code__c != null || app.Share_Code__c != null) {
+                    et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_Non_UK_verification' limit 1];
+                } else {
+                    et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_UK_Irish_verification' limit 1];
+                }
 
+                OrgWideEmailAddress[] owea = [SELECT Id,Address FROM OrgWideEmailAddress WHERE displayName =: label.noReplyOrgWideEmail];
+                List<Contact> lstContact=[select id from contact limit 1];
+                List<Messaging.SingleEmailMessage> mailList = new List<Messaging.SingleEmailMessage>();
+
+                if (String.isNotBlank(app.Email__c) && String.isNotBlank(app.SubContractor_URL__c) && !lstContact.isEmpty() && String.isNotBlank(app.Verification_URL__c)) {
+                    Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                    if (owea.size() > 0) {
+                        mail.setOrgWideEmailAddressId(owea.get(0).Id);
+                    }
+                    mail.setToAddresses(new String[]{app.Email__c});
+                    mail.setTemplateId(et.Id);
+                    mail.setTargetObjectId(lstContact[0].Id);
+                    mail.setWhatId(app.Id);
+                    mail.setTreatTargetObjectAsRecipient(false);
+                    mailList.add(mail);
+                } else{
+                    System.debug('Error: Email Not found');
+                }
+
+                if (!mailList.isEmpty()) {
+                    List<Messaging.SendEmailResult> sendResults = Messaging.sendEmail(mailList);
+                    for (Messaging.SendEmailResult result : sendResults) {
+                        if (result.isSuccess()) {
+                            System.debug('Email sent successfully.');
+                        } else {
+                            System.debug('Failed to send email: ' + result.getErrors()[0].getMessage());
+                        }
+                    }
+                } else {
+                    System.debug('No emails to send.');
+                }
+            }
+        } catch(Exception e) {
+            System.debug('Error sending verification email: ' + e.getMessage());
+            throw new AuraHandledException('Failed to send verification email: ' + e.getMessage());
+        }
+    }
 }
