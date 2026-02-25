@@ -232,6 +232,7 @@ export default class GConnectDriverProfile extends LightningElement {
     @track isTimeLimitedSelected;
     @track isNoRestrictionsSelected;
     @track isHasRestrictionsSelected;
+    @track copyButtonLabel = 'Copy';
 
     @track allowedRTWOptions = {
         'British Citizen': [
@@ -530,6 +531,20 @@ export default class GConnectDriverProfile extends LightningElement {
         // set selection state for UI
         this.isHasRestrictionsSelected = true;
         this.isNoRestrictionsSelected = false;
+    }
+
+    handleCopyCode() {
+        // Copy to clipboard
+        navigator.clipboard.writeText(this.recordData.Share_Code__c)
+            .then(() => {
+                this.copyButtonLabel = 'Copied!';
+                setTimeout(() => {
+                    this.copyButtonLabel = 'Copy';
+                }, 1500);
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
     }
 
     getDriverProfileData() {

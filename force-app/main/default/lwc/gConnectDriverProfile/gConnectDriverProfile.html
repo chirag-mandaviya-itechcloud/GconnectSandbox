@@ -1736,43 +1736,8 @@
                                                 <div class="slds-grid slds-wrap">
                                                     <div
                                                         class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
-                                                        <!-- <div class="contractor-field">
-                                                                <div class=" field-title">
-                                                                    Citizenship/Immigration Status</div>
-                                                                <div>
-                                                                    {recordData.Citizenship_Immigration_status__c}</div>
-                                                            </div> -->
                                                         <div class="contractor-field">
-                                                            <div class="field-title">RTW Category</div>
 
-                                                            <!-- <template if:false={rtwEditOpen}> -->
-                                                            <div>{recordData.Citizenship_Immigration_status__c}</div>
-                                                            <!-- </template> -->
-
-                                                            <!-- <template if:true={rtwEditOpen}>
-                                                                    <lightning-combobox
-                                                                        value={editCitizenshipStatus}
-                                                                        options={citiStatusOptions}
-                                                                        onchange={handleRTWPicklistChange}
-                                                                        data-field="Citizenship_Immigration_status__c">
-                                                                    </lightning-combobox>
-                                                                </template> -->
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
-                                                        <!-- <div class="contractor-field">
-                                                                    <div class=" field-title">Right to work
-                                                                        document</div>
-                                                                    <template if:true={recordData.hasRTWDoc}>
-                                                                        <div>
-                                                                            {recordData.Right_to_work_document__c}</div>
-                                                                    </template>
-                                                                    <template if:false={recordData.hasRTWDoc}>
-                                                                        <div>N/A</div>
-                                                                    </template>
-                                                                </div> -->
-                                                        <div class="contractor-field">
                                                             <div class="field-title">Right to work document</div>
 
                                                             <!-- <template if:false={rtwEditOpen}> -->
@@ -2078,6 +2043,50 @@
                                                                 </template> -->
                                                                 <template if:true={recordData.hasShareCode}>
                                                                     <template if:true={hasCompletedImageforShareCode}>
+
+                                                                        <div class="section-label">Share code</div>
+                                                                        <div class="share-code-display">
+                                                                            <div class="share-code-value">
+                                                                                {recordData.Share_Code__c}</div>
+                                                                            <button class="share-code-copy"
+                                                                                onclick={handleCopyCode}>
+                                                                                {copyButtonLabel}
+                                                                            </button>
+                                                                        </div>
+
+                                                                        <div class="verification-steps" id="v-steps">
+                                                                            <div class="verification-step">
+                                                                                <div class="v-step-content">
+                                                                                    <div class="v-step-title">Verify on
+                                                                                        gov.uk</div>
+                                                                                    <div class="v-step-desc">Enter the
+                                                                                        share code and date of birth on
+                                                                                        the Home Office employer
+                                                                                        checking
+                                                                                        service.</div>
+                                                                                    <br>
+                                                                                    <a href="https://www.gov.uk/view-right-to-work"
+                                                                                        target="_blank"
+                                                                                        class="verify-btn">
+                                                                                        <svg viewBox="0 0 24 24"
+                                                                                            fill="none"
+                                                                                            stroke="currentColor"
+                                                                                            stroke-width="2"
+                                                                                            stroke-linecap="round">
+                                                                                            <path
+                                                                                                d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
+                                                                                            <polyline
+                                                                                                points="15 3 21 3 21 9" />
+                                                                                            <line x1="10" y1="14"
+                                                                                                x2="21" y2="3" />
+                                                                                        </svg>
+                                                                                        Open gov.uk/view-right-to-work
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+
                                                                         <div class="rtw-verification-section">
                                                                             <div class="rtw-section-title">
                                                                                 <span class="rtw-asterisk">*</span>
@@ -2180,7 +2189,8 @@
                                                                                             </div>
                                                                                             <div
                                                                                                 class="rtw-restriction-text">
-                                                                                                Yes restrictions</div>
+                                                                                                Yes restrictions
+                                                                                            </div>
                                                                                         </label>
                                                                                     </div>
 
@@ -2211,7 +2221,8 @@
                                                                                                     </lightning-input>
                                                                                                     <span
                                                                                                         class="rtw-hours-label">hours
-                                                                                                        per week</span>
+                                                                                                        per
+                                                                                                        week</span>
                                                                                                 </div>
                                                                                             </div>
 

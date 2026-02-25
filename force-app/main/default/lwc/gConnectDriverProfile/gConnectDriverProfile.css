@@ -1361,3 +1361,128 @@
     font-size: 14px !important;
     resize: vertical !important;
 }
+
+.verification-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.verification-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.v-step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: #F5F6F8;
+    border: 1.5px solid #E2E6ED;
+    color: #8C95A6;
+}
+
+.v-step-number.active {
+    background: #00B67A;
+    border-color: #00B67A;
+    color: white;
+}
+
+.v-step-number.done {
+    background: #E8F8F0;
+    border-color: #00B67A;
+    color: #00B67A;
+}
+
+.v-step-content {
+    flex: 1;
+    padding-top: 3px;
+}
+
+.v-step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A2332;
+    margin-bottom: 4px;
+}
+
+.v-step-desc {
+    font-size: 13px;
+    color: #5A6577;
+    line-height: 1.45;
+}
+
+.verify-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #F0F4FF;
+    border: 1.5px solid #D4DEFF;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #3B5198;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    width: 100%;
+	margin-bottom: 10px;
+	margin-top: -10px;
+}
+
+.verify-btn:hover { background: #D4DEFF; }
+
+.verify-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #8C95A6;
+}
+
+.share-code-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 10px;
+    background: #F5F6F8;
+    border: 1px solid #E2E6ED;
+    border-radius: 8px;
+}
+
+.share-code-value {
+    font-family: 'DM Sans', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #1A2332;
+}
+
+.share-code-copy {
+    padding: 3px 5px;
+    border: 1px solid #E2E6ED;
+    border-radius: 6px;
+    background: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5A6577;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.share-code-copy:hover { border-color: #8C95A6; }
