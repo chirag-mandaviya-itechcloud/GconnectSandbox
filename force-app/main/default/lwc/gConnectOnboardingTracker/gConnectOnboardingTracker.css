@@ -1177,7 +1177,7 @@ lightning-textarea {
     margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px; /* slightly reduced gap to bring elements closer */
 }
 
 .rtw-asterisk {
@@ -1334,8 +1334,9 @@ lightning-textarea {
     font-size: 14px;
     font-weight: 500;
     color: #0b0c0c;
-    display: block;
-    /* margin-bottom: 8px; */
+    display: inline-block;
+    flex: 0 0 auto; /* size to content so input sits directly after label */
+    margin-right: 4px;
 }
 
 /* Hours Input */
@@ -1345,18 +1346,26 @@ lightning-textarea {
     gap: 8px;
 }
 
+.rtw-hours-input {
+    /* make the lightning-input host take a small fixed width */
+    flex: 0 0 56px; /* adjust this value to control middle width */
+    max-width: 80px;
+}
+
 .rtw-hours-input input {
-    width: 40px !important;
-    padding: 8px 10px !important;
+    width: 100% !important;
+    padding: 8px 6px !important;
     border: 2px solid #0b0c0c !important;
     border-radius: 4px !important;
     font-size: 14px !important;
-    display: inline;
+    box-sizing: border-box;
+    display: inline-block;
 }
 
 .rtw-hours-label {
     font-size: 14px;
     color: #0b0c0c;
+    flex: 1 1 auto;
 }
 
 /* Text Input */
