@@ -1635,12 +1635,12 @@
                                                         </div>
                                                     </div>
                                                 </template>
-                                                <template if:true={recordData.hasShareCode}>
+                                                <!-- <template if:true={recordData.hasShareCode}>
                                                     <div class="info-field">
                                                         <div class="info-label">Share Code</div>
                                                         <div class="badge badge-gray">{recordData.Share_Code__c}</div>
                                                     </div>
-                                                </template>
+                                                </template> -->
                                                 <template if:true={recordData.hasAccessCode}>
                                                     <div class="info-field">
                                                         <div class="info-label">Access Code</div>
@@ -1889,15 +1889,10 @@
                                                         <div class="contractor-field">
 
 
-                                                            <template if:true={recordData.hasAccessCode}>
+                                                            <!-- <template if:true={recordData.hasAccessCode}>
                                                                 <div class="field-title">Access Code</div>
                                                                 <div>{recordData.Access_Code__c}</div>
-                                                            </template>
-
-                                                            <template if:true={recordData.hasShareCode}>
-                                                                <div class="field-title">Share Code</div>
-                                                                <div>{recordData.Share_Code__c}</div>
-                                                            </template>
+                                                            </template> -->
                                                             <!-- <template if:false={rtwEditOpen}>
 
                                                                 </template>
