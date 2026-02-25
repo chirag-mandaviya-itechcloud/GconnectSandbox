@@ -7,7 +7,7 @@ import {
 import {
     CurrentPageReference
 } from 'lightning/navigation';
-import HEADER_ICONS from '@salesforce/resourceUrl/Header_Icons'; 
+import HEADER_ICONS from '@salesforce/resourceUrl/Header_Icons';
 import {
     ShowToastEvent
 } from 'lightning/platformShowToastEvent';
@@ -118,7 +118,7 @@ export default class GConnectDriverProfile extends LightningElement {
     @track currentPageInc = 1;
     @track recordsPerPageInc = 5;
 
-    // Custom Setting Flags 
+    // Custom Setting Flags
     @track isIncidentDisabled = false;
     @track isDeductionDisabled = false;
     @track isDriverRateDisabled = false;
@@ -130,7 +130,7 @@ export default class GConnectDriverProfile extends LightningElement {
     @track showRateModule = false;// UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
 
     @track roleWiseRate = 0;// UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
-    @track overrideRate ;// UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
+    @track overrideRate;// UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
     @track rateStatus = null;// UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
     @track newDriverRate;// UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
 
@@ -164,7 +164,7 @@ export default class GConnectDriverProfile extends LightningElement {
     @track imageLoading = true;
     @track imagesNotAvailable = false;
     @track imagesAvailable = false;
-    
+
 
     @track frontDocFiles = [];
     @track backDocFiles = [];
@@ -200,7 +200,7 @@ export default class GConnectDriverProfile extends LightningElement {
     @track typeOfVisa_option = [];
     @track documentNames = [];
     @track anyWorkRestrictions_option;
-    
+
     @track editCitizenshipStatus;
     @track editSettledStatus;
     @track editBiometric;
@@ -227,24 +227,24 @@ export default class GConnectDriverProfile extends LightningElement {
 
     @track originalDLFront = '';
     @track originalDLBack = '';
-    @track restrictedStatuses = [ 'British passport/UK National', 'EU/EEA/Swiss Citizen', 'Rest Of The World' ];
+    @track restrictedStatuses = ['British passport/UK National', 'EU/EEA/Swiss Citizen', 'Rest Of The World'];
 
     @track allowedRTWOptions = {
         'British Citizen': [
             {
                 label: 'British passport',
                 value: 'British passport',
-                documentType : ['British passport']
+                documentType: ['British passport']
             },
             {
                 label: 'Birth/Adoption Certificate + National Insurance document',
                 value: 'Birth/Adoption Certificate + National Insurance document',
-                documentType : ['Birth/Adoption Certificate' , 'National Insurance document']
+                documentType: ['Birth/Adoption Certificate', 'National Insurance document']
             },
             {
                 label: 'Certificate of registration/naturalisation + National Insurance document',
                 value: 'Certificate of registration/naturalisation + National Insurance document',
-                documentType : ['Birth/Adoption Certificate' , 'National Insurance document']
+                documentType: ['Birth/Adoption Certificate', 'National Insurance document']
             }
         ],
 
@@ -252,18 +252,22 @@ export default class GConnectDriverProfile extends LightningElement {
             {
                 label: 'Irish passport or passport card',
                 value: 'Irish passport or passport card',
-                documentType : ['Irish passport or passport card']
+                documentType: ['Irish passport or passport card']
             },
             {
                 label: 'Irish Birth/Adoption Certificate + National Insurance document',
                 value: 'Irish Birth/Adoption Certificate + National Insurance document',
-                documentType : ['Birth/Adoption Certificate' , 'National Insurance document']
+                documentType: ['Birth/Adoption Certificate', 'National Insurance document']
             }
         ]
     };
     @track isRTWVerfiedCheck = false;
     handleRTWVerifiedCheck(event) {
         this.isRTWVerfiedCheck = !this.isRTWVerfiedCheck;
+    }
+    handleRTWVerifiedName(event) {
+        const value = event.target.value;
+        this.verifiedRTWName = value && value.trim() !== '' ? value : null;
     }
     defaultActiveTabId;
     @wire(CurrentPageReference)
@@ -333,41 +337,41 @@ export default class GConnectDriverProfile extends LightningElement {
     constructor() {
         super();
         this.tabMenu = [{
-                id: '1',
-                label: 'Contractor Information',
-                selected: true,
-                enabled: true,
-            },
-            {
-                id: '2',
-                label: 'Contractor Availability',
-                selected: false,
-                enabled: true,
-            },// UnComment on 21-10-2025//// Commented On 16-10-2025 for Deduction and Incident to PROD
-            {
-                id: '3',
-                label: 'Financial Information',
-                selected: false,
-                enabled: true,
-            },
-            {
-                id: '4',
-                label: 'Incident / Deduction Log',
-                selected: false,
-                enabled: true,
-            }
+            id: '1',
+            label: 'Contractor Information',
+            selected: true,
+            enabled: true,
+        },
+        {
+            id: '2',
+            label: 'Contractor Availability',
+            selected: false,
+            enabled: true,
+        },// UnComment on 21-10-2025//// Commented On 16-10-2025 for Deduction and Incident to PROD
+        {
+            id: '3',
+            label: 'Financial Information',
+            selected: false,
+            enabled: true,
+        },
+        {
+            id: '4',
+            label: 'Incident / Deduction Log',
+            selected: false,
+            enabled: true,
+        }
         ];
 
         this.tabDocMenu = [{
-                id: '1',
-                label: 'Documents',
-                selected: true,
-            },
-            {
-                id: '2',
-                label: 'Contracts',
-                selected: false,
-            }
+            id: '1',
+            label: 'Documents',
+            selected: true,
+        },
+        {
+            id: '2',
+            label: 'Contracts',
+            selected: false,
+        }
         ];
     }
 
@@ -441,8 +445,8 @@ export default class GConnectDriverProfile extends LightningElement {
     getDriverProfileData() {
 
         getContractorDetails({
-                recordId: this.recordId
-            })
+            recordId: this.recordId
+        })
             .then(result => {
                 if (result != null) {
 
@@ -496,7 +500,7 @@ export default class GConnectDriverProfile extends LightningElement {
                     } else {
                         this.recordData.showPreviousAddress = false;
                     }
-                    
+
                     if (this.recordData.Emergency_Contact_Name__c ||
                         this.recordData.Emergency_Contract_Telephone_Number__c ||
                         this.recordData.Emergency_Contact_Relationship__c) {
@@ -515,17 +519,17 @@ export default class GConnectDriverProfile extends LightningElement {
                     const documentValue = this.recordData.Right_to_work_document__c;
 
                     // this.data[x].allowRTWEdit = !this.restrictedStatuses.includes(status);
-                    console.log('aLL >>  OUTPUT : ',JSON.parse(JSON.stringify(result[0])));
+                    console.log('aLL >>  OUTPUT : ', JSON.parse(JSON.stringify(result[0])));
                     let documentLength = 0;
                     // this.data[x].allowRTWEdit &&
-                    if (  status && documentValue && this.allowedRTWOptions[status] ) {
+                    if (status && documentValue && this.allowedRTWOptions[status]) {
                         const selectedOption = this.allowedRTWOptions[status].find(option => option.value === documentValue);
-                        console.log('aLL >>  OUTPUT : ',selectedOption);
+                        console.log('aLL >>  OUTPUT : ', selectedOption);
 
                         if (selectedOption && selectedOption.documentType) {
                             documentNames = [...selectedOption.documentType];
                             documentLength = selectedOption.documentType.length;
-                                    console.log('aLL >>  OUTPUT : ',selectedOption.documentType.length);
+                            console.log('aLL >>  OUTPUT : ', selectedOption.documentType.length);
                         }
                     }
 
@@ -533,7 +537,7 @@ export default class GConnectDriverProfile extends LightningElement {
 
                     this.recordData.rtwFrontDocumentName = documentNames[0] || 'Document';
                     this.recordData.rtwBackDocumentName = documentNames[1] || '';
-                    
+
                 } else {
                     console.error('No Driver Details Found!');
                 }
@@ -559,9 +563,9 @@ export default class GConnectDriverProfile extends LightningElement {
             });
 
         getRTWandDLfiles({
-                accountId: this.recordId,
-                fileType: 'DL'
-            })
+            accountId: this.recordId,
+            fileType: 'DL'
+        })
             .then(result => {
                 if (result != null) {
                     if (result.Front != null) {
@@ -601,7 +605,7 @@ export default class GConnectDriverProfile extends LightningElement {
                 this.rtwCheckImage = result.Check;
                 this.hasFrontRTWImage = !!result.Front;
                 this.hasBackRTWImage = !!result.Back;
-                console.log('getRTWandDLfiles >>  : ',result);
+                console.log('getRTWandDLfiles >>  : ', result);
                 this.hasRTWCheckImage = !!result.Check;
                 this.hasCompletedImageforShareCode = !!result.Check;
 
@@ -612,23 +616,23 @@ export default class GConnectDriverProfile extends LightningElement {
                 this.imagesNotAvailable = true;
             });
 
+    }
+
+    onchangeincidentDetails(event) {
+        const value = event.target.value.toLowerCase();
+
+        // Update the relevant property based on the name of the input field
+        if (event.target.name === 'SearchName') {
+            this.searchName = value;
         }
+        this.incidentLogList = this.orginalIncidentData.filter(contractor => {
+            const nameMatch = !this.searchName || contractor.Name.toLowerCase().includes(this.searchName);
+            return nameMatch;
+        });
+        this.currentPageInc = 1;
+        this.searchResultNotFound = (this.searchName && this.incidentLogList.length === 0);
 
-        onchangeincidentDetails(event) {
-            const value = event.target.value.toLowerCase();
-
-            // Update the relevant property based on the name of the input field
-            if (event.target.name === 'SearchName') {
-                this.searchName = value;
-            }
-            this.incidentLogList = this.orginalIncidentData.filter(contractor => {
-                const nameMatch = !this.searchName || contractor.Name.toLowerCase().includes(this.searchName);
-                return nameMatch;
-            });
-            this.currentPageInc = 1;
-            this.searchResultNotFound = (this.searchName && this.incidentLogList.length === 0);
-
-        }
+    }
 
     connectedCallback() {
         this.isSpinner = true;
@@ -649,13 +653,13 @@ export default class GConnectDriverProfile extends LightningElement {
         document.addEventListener('click', this.handleOutsideClick.bind(this));
 
         getUserContact({
-                userId: USER_ID
-            })
+            userId: USER_ID
+        })
             .then(result => {
                 this.contactId = result;
                 getEndUserMCDepotDetails({
-                        contactId: result
-                    })
+                    contactId: result
+                })
                     .then((result) => {
 
                         this.parsedResultForDepot = JSON.parse(result);
@@ -683,8 +687,8 @@ export default class GConnectDriverProfile extends LightningElement {
                     });
 
                 getMCDepotDetails({
-                        contactId: result
-                    })
+                    contactId: result
+                })
                     .then((response) => {
 
                         if (response != null) {
@@ -714,12 +718,12 @@ export default class GConnectDriverProfile extends LightningElement {
             .inputbold lightning-input label {
             font-weight: bold !important;
             color: var(--color-primary) !important;
-            }  
+            }
             .search_btn input {
             padding: 12px 45px !important;
             line-height: 20px !important;
             border-radius: 10px !important;
-            }   
+            }
             .admin_note label{
             display:none;
             }
@@ -744,9 +748,9 @@ export default class GConnectDriverProfile extends LightningElement {
                     width: max-content;
                 }
                 .file-upload-modal .slds-modal__container{
-                    max-width: 28rem !important; 
+                    max-width: 28rem !important;
                     box-shadow: unset !important;
-                } 
+                }
             `;
         setTimeout(() => {
             this.template.querySelector('.overrideStyle').appendChild(style);
@@ -765,7 +769,7 @@ export default class GConnectDriverProfile extends LightningElement {
             return contractor;
         });
     }
-  
+
 
     handleTabItemClick(event) {
         let currentTab = event.currentTarget.dataset.menuid;
@@ -785,7 +789,7 @@ export default class GConnectDriverProfile extends LightningElement {
             this.isFinacialSelect = true;
         } else if (selectedTab == 'Incident / Deduction Log') {
             this.isIncidentsSelect = true;
-        }else if (selectedTab == 'Invoices') {
+        } else if (selectedTab == 'Invoices') {
             this.isInvoicesSelect = true;
         } // UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
         else if (selectedTab == 'Contractor Availability') {
@@ -875,8 +879,8 @@ export default class GConnectDriverProfile extends LightningElement {
 
 
         updateAccountClient({
-                selectedContractorToUpdate: this.updateJsonData
-            })
+            selectedContractorToUpdate: this.updateJsonData
+        })
             .then(() => {
                 const toastEvt = new ShowToastEvent({
                     title: 'Success',
@@ -910,33 +914,33 @@ export default class GConnectDriverProfile extends LightningElement {
     handleDisengage(event) {
         this.isDisenegaeLoader = true;
         this.selectedDriverId = event.target.dataset.selectedId;
-        fetchDeductionRemainAmt({ 
-            applicationId: this.recordId, 
-            mainContractorId: this.recordData.Main_Contractor__c 
+        fetchDeductionRemainAmt({
+            applicationId: this.recordId,
+            mainContractorId: this.recordData.Main_Contractor__c
         })
-        .then(result => {
-            this.hasActiveDeduction = result.hasActiveDeduction;
-            //this.deductionList = result.deductions || [];
-            this.deductionList = result.deductions.map(d => ({
-                ...d,
-                balanceAmountFormatted: parseFloat(d.balanceAmount).toFixed(2)
-            }));
-            //this.totalRemainDeductionBalance = this.deductionList.reduce((sum, d) => sum + d.balanceAmount, 0);
-            const total = this.deductionList.reduce((sum, d) => sum + parseFloat(d.balanceAmount), 0);
+            .then(result => {
+                this.hasActiveDeduction = result.hasActiveDeduction;
+                //this.deductionList = result.deductions || [];
+                this.deductionList = result.deductions.map(d => ({
+                    ...d,
+                    balanceAmountFormatted: parseFloat(d.balanceAmount).toFixed(2)
+                }));
+                //this.totalRemainDeductionBalance = this.deductionList.reduce((sum, d) => sum + d.balanceAmount, 0);
+                const total = this.deductionList.reduce((sum, d) => sum + parseFloat(d.balanceAmount), 0);
 
-            this.totalRemainDeductionBalance = new Intl.NumberFormat('en-GB', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(total);
-            this.isDisenegaeLoader = false;
-        })
-        .catch(error => {
-            console.error('Error fetching deductions:', error);
-            this.hasActiveDeduction = false;
-            this.deductionList = [];
-            this.totalRemainDeductionBalance = 0;
-            this.isDisenegaeLoader = false;
-        });
+                this.totalRemainDeductionBalance = new Intl.NumberFormat('en-GB', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(total);
+                this.isDisenegaeLoader = false;
+            })
+            .catch(error => {
+                console.error('Error fetching deductions:', error);
+                this.hasActiveDeduction = false;
+                this.deductionList = [];
+                this.totalRemainDeductionBalance = 0;
+                this.isDisenegaeLoader = false;
+            });
         this.openDisengageConfirm = true;
 
     }
@@ -1014,8 +1018,8 @@ export default class GConnectDriverProfile extends LightningElement {
 
 
             createNewDepotAssociation({
-                    SCDetails: JSON.stringify(this.collectDetails)
-                })
+                SCDetails: JSON.stringify(this.collectDetails)
+            })
                 .then((response) => {
 
 
@@ -1045,9 +1049,9 @@ export default class GConnectDriverProfile extends LightningElement {
 
     getIncidentLogs() {
         getIncidentLogList({
-                contractorId: this.recordId,
-                contactId: this.contactId
-            })
+            contractorId: this.recordId,
+            contactId: this.contactId
+        })
             .then(result => {
                 if (result != null && result != undefined && result != '') {
                     this.orginalIncidentData = result;
@@ -1127,12 +1131,12 @@ export default class GConnectDriverProfile extends LightningElement {
         const recordId = event.currentTarget.dataset.selectedId;
 
         if (this.incidentViewIndex >= 0 && this.incidentViewIndex < this.incidentLogList.length) {
-            // Use splice to remove the object at incidentViewIndex  
+            // Use splice to remove the object at incidentViewIndex
             this.incidentLogList[this.incidentViewIndex].Void__c = true;
             updateIncidents({
-                    incidentIds: [recordId],
-                    incidentUpdateData: this.incidentLogList[this.incidentViewIndex]
-                })
+                incidentIds: [recordId],
+                incidentUpdateData: this.incidentLogList[this.incidentViewIndex]
+            })
                 .then(result => {
                     if (result === 'SUCCESS') {
 
@@ -1236,7 +1240,7 @@ export default class GConnectDriverProfile extends LightningElement {
         if (versionId) {
             link = `/mcsite/sfc/servlet.shepherd/version/download/${versionId}`;
         }
-        
+
         const a = document.createElement('a');
         a.href = link;
         a.target = '_blank';
@@ -1276,9 +1280,9 @@ export default class GConnectDriverProfile extends LightningElement {
 
         if (validData) {
             createRTWandDLDocument({
-                    accountId: accountId,
-                    documentType: docType
-                })
+                accountId: accountId,
+                documentType: docType
+            })
                 .then(result => {
                     let vfPageName;
                     let fileType;
@@ -1337,57 +1341,57 @@ export default class GConnectDriverProfile extends LightningElement {
     }
 
     // UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
-    handleViewRate(event){
+    handleViewRate(event) {
         this.fetchDriverRate();
         this.showRateModule = true;
     }
 
-    fetchDriverRate(){
+    fetchDriverRate() {
         getDriverRate({
             applicationId: this.recordId,
             mainContractorId: this.recordData.Main_Contractor__c,
             roleName: this.recordData.Role__c
         })
-        .then(result => {
-            if (result && result.error) {
-                this.showToast('Error', 'Error while fetching driver rate: ' + result.error, 'error');
-            } else {
-                // this.roleWiseRate = result?.defaultRate ?? 0;
-                this.roleWiseRate = result?.defaultRate != null
-                ? Number(result.defaultRate).toFixed(2)
-                : 0;
-                // this.overrideRate = result?.driverRate ?? '';
-                this.overrideRate = result?.driverRate != null
-                ? Number(result.driverRate).toFixed(2)
-                : '';
-                this.rateStatus = result?.rateStatus ?? 'Default';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching driver rate', error);
-            this.showToast('Error', 'Error while fetching driver rate: ' + error, 'error');
-        });
+            .then(result => {
+                if (result && result.error) {
+                    this.showToast('Error', 'Error while fetching driver rate: ' + result.error, 'error');
+                } else {
+                    // this.roleWiseRate = result?.defaultRate ?? 0;
+                    this.roleWiseRate = result?.defaultRate != null
+                        ? Number(result.defaultRate).toFixed(2)
+                        : 0;
+                    // this.overrideRate = result?.driverRate ?? '';
+                    this.overrideRate = result?.driverRate != null
+                        ? Number(result.driverRate).toFixed(2)
+                        : '';
+                    this.rateStatus = result?.rateStatus ?? 'Default';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching driver rate', error);
+                this.showToast('Error', 'Error while fetching driver rate: ' + error, 'error');
+            });
     }
 
-    handleDriverRateChange(event){
+    handleDriverRateChange(event) {
         // this.newDriverRate = event.target.value;
         this.newDriverRate = event.target.value === '' ? null : parseFloat(event.target.value);
     }
 
-    handleCloseRateModule(event){
+    handleCloseRateModule(event) {
         this.showRateModule = false;
     }
 
     handleSaveDriverRate(event) {
         if (this.newDriverRate != null && this.newDriverRate !== '') {
-            const regex = /^\d+(\.\d{1,2})?$/; 
+            const regex = /^\d+(\.\d{1,2})?$/;
             if (!regex.test(this.newDriverRate)) {
                 this.showToast(
                     'Error',
                     "Driver Rate must be a valid number with up to 2 decimal places.",
                     'error'
                 );
-                return; 
+                return;
             }
         }
         updateDriverRate({
@@ -1395,19 +1399,19 @@ export default class GConnectDriverProfile extends LightningElement {
             mainContractorId: this.recordData.Main_Contractor__c,
             driverRate: this.newDriverRate
         })
-        .then(result => {
-            
-            if (result && result.error) {
-                this.showToast('Error', result.error, 'error');
-            } else {
-                this.showToast('Success', result.message || 'Driver Rate updated.', 'success');
-                this.showRateModule = false;
-            }
-        })
-        .catch(error => {
-            console.error('Error updating driver rate', error);
-            this.showToast('Error',  "The value provided for the 'Driver Rate' is invalid.", 'error');
-        });
+            .then(result => {
+
+                if (result && result.error) {
+                    this.showToast('Error', result.error, 'error');
+                } else {
+                    this.showToast('Success', result.message || 'Driver Rate updated.', 'success');
+                    this.showRateModule = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error updating driver rate', error);
+                this.showToast('Error', "The value provided for the 'Driver Rate' is invalid.", 'error');
+            });
     }
 
     // Pagonation Methods Start --//
@@ -1521,10 +1525,10 @@ export default class GConnectDriverProfile extends LightningElement {
             ...option,
             checked: selectedValues.includes(option.value)
         }));
-        this.selectedOption = 'DL';  
+        this.selectedOption = 'DL';
         this.selectedContractorId = this.recordId;
         console.log('recordBasedLicenseCategory', this.recordBasedLicenseCategory);
-        
+
     }
 
     handleDLFieldChange(event) {
@@ -1571,7 +1575,7 @@ export default class GConnectDriverProfile extends LightningElement {
             case 'Driving_Licence_Issue_Date__c':
                 this.editIssueDate = value;
                 break;
-            
+
         }
     }
     onChangeLicenseDetails(event) {
@@ -1595,12 +1599,12 @@ export default class GConnectDriverProfile extends LightningElement {
         this.showDLFileUploadButton = false;
         this.showDLFileUploadButton = false;
         this.tempFrontFiles = [];
-        if (this.originalDLFront && this.originalDLBack) {    
+        if (this.originalDLFront && this.originalDLBack) {
             this.dlFrontImage = this.originalDLFront;
             this.dlBackImage = this.originalDLBack;
             this.hasFrontDLImage = true;
             this.hasBackDLImage = true;
-        } else {         
+        } else {
             this.dlFrontImage = '';
             this.dlBackImage = '';
             this.hasFrontDLImage = false;
@@ -1612,7 +1616,7 @@ export default class GConnectDriverProfile extends LightningElement {
     }
 
     async handleSaveDrivingLicence() {
-         const inputs = this.template.querySelectorAll('lightning-input');
+        const inputs = this.template.querySelectorAll('lightning-input');
 
         let isValid = true;
         inputs.forEach(input => {
@@ -1643,9 +1647,9 @@ export default class GConnectDriverProfile extends LightningElement {
 
             await this.refreshRTWAndDLImages('DL');
             this.recordData = {
-                    ...this.recordData,
-                    ...updateData
-                };
+                ...this.recordData,
+                ...updateData
+            };
 
             this.showToast('Success', 'Driving Licence updated successfully', 'success');
             this.handleDrivingLicenceEditCancel();
@@ -1663,7 +1667,7 @@ export default class GConnectDriverProfile extends LightningElement {
 
         this.resetFileUploadState();
 
-        this.selectedOption = this.selectedOption; 
+        this.selectedOption = this.selectedOption;
 
         if (this.selectedOption === 'DL') {
             this.showFrontBackRadioBtn = true;
@@ -1755,7 +1759,7 @@ export default class GConnectDriverProfile extends LightningElement {
 
         const data = childComp.getUploadDocs();
         if (!data) return;
-        console.log('file data',data);
+        console.log('file data', data);
 
         this.tempFrontFiles = [];
         this.tempBackFiles = [];
@@ -1770,7 +1774,7 @@ export default class GConnectDriverProfile extends LightningElement {
             this.isFileModuleError = true;
             return;
         }
-        console.log('tempFrontFiles',this.tempFrontFiles);
+        console.log('tempFrontFiles', this.tempFrontFiles);
         if (this.selectedOption === 'DL') {
             if (data.uploadBackFiles.length || data.capturedBackFiles.length) {
                 this.tempBackFiles = data.uploadBackFiles.length
@@ -1890,7 +1894,7 @@ export default class GConnectDriverProfile extends LightningElement {
         }
     }
 
- 
+
     resetFileUploadState() {
         this.frontDocFiles = [];
         this.backDocFiles = [];
@@ -1899,14 +1903,14 @@ export default class GConnectDriverProfile extends LightningElement {
         this.showImageCaptureModal = false;
         this.showFileUploadModal = false;
         this.allowedExtension = undefined;
-        
+
         this.isFileModuleError = false;
         this.fileModuleError = '';
 
         const child = this.template.querySelector('c-image-capture');
         child?.resetFiles?.();
     }
-    
+
     // handleRTWFieldChange(event) {
     //     const fieldMap = {
     //         'Citizenship_Immigration_status__c': 'citi_Immi_status',
@@ -2003,7 +2007,7 @@ export default class GConnectDriverProfile extends LightningElement {
         }
     }
 
-    // new 
+    // new
     showTimeLimitedSection = false;
     showRestrictionsSection = false;
 
@@ -2013,9 +2017,9 @@ export default class GConnectDriverProfile extends LightningElement {
         const fieldValue = event.target.value.trim();
         // this.hideValidateContent = false;
         // this.rightToWorkNotShowVerified = true;
-        if(fieldName === 'typeOfEVisa'){
+        if (fieldName === 'typeOfEVisa') {
             this.recordData.Type_of_e_visa__c = fieldValue;
-            if(fieldValue === 'Continuous right to work'){
+            if (fieldValue === 'Continuous right to work') {
                 this.showTimeLimitedSection = false;
                 this.showRestrictionsSection = false;
                 this.recordData.Permission_Expiry_Date__c = null;
@@ -2024,36 +2028,36 @@ export default class GConnectDriverProfile extends LightningElement {
                 this.recordData.Limited_To_Specific_Job_Types__c = null;
                 this.recordData.Other_Restrictions__c = null;
             }
-            if(fieldValue === 'Time-limited right to work'){
+            if (fieldValue === 'Time-limited right to work') {
                 this.showTimeLimitedSection = true;
             }
         }
 
         /* -------- ANY WORK RESTRICTIONS -------- */
 
-        if(fieldName === 'anyWorkRestrictions'){
+        if (fieldName === 'anyWorkRestrictions') {
             this.recordData.Any_work_restrictions__c = fieldValue;
-            if(fieldValue === 'Yes'){
+            if (fieldValue === 'Yes') {
                 this.showRestrictionsSection = true;
-            }else{
+            } else {
                 this.showRestrictionsSection = false;
                 this.recordData.Limited_To_X_Hours_Per_Week__c = null;
                 this.recordData.Limited_To_Specific_Job_Types__c = null;
                 this.recordData.Other_Restrictions__c = null;
             }
         }
-        if(fieldName === 'limitedHours'){
+        if (fieldName === 'limitedHours') {
             this.recordData.Limited_To_X_Hours_Per_Week__c = fieldValue;
         }
 
-        if(fieldName === 'specificJobs'){
+        if (fieldName === 'specificJobs') {
             this.recordData.Limited_To_Specific_Job_Types__c = fieldValue;
         }
 
-        if(fieldName === 'otherRestrictions'){
+        if (fieldName === 'otherRestrictions') {
             this.recordData.Other_Restrictions__c = fieldValue;
         }
-        if(fieldName === 'PermissionexpiryDate'){
+        if (fieldName === 'PermissionexpiryDate') {
             this.recordData.Permission_Expiry_Date__c = fieldValue;
         }
         // if (fieldName == 'expiryDate') {
@@ -2088,10 +2092,10 @@ export default class GConnectDriverProfile extends LightningElement {
         this.dateOfEntry = this.recordData.Date_of_Entry__c;
         // this.rtwDoc = this.recordData.Right_to_work_document__c;
 
-         this.editCitizenshipStatus = this.recordData.Citizenship_Immigration_status__c;
-        this.editSettledStatus =this.recordData.Settled_Status__c;
-        this.editBiometric =this.recordData.Biometric_Evidence__c;
-        this.editRTWDocument =this.recordData.Right_to_work_document__c;
+        this.editCitizenshipStatus = this.recordData.Citizenship_Immigration_status__c;
+        this.editSettledStatus = this.recordData.Settled_Status__c;
+        this.editBiometric = this.recordData.Biometric_Evidence__c;
+        this.editRTWDocument = this.recordData.Right_to_work_document__c;
 
         this.showRTWExpiryDate = this.recordData.hasOwnProperty('RTW_Expiry_Date__c') && this.recordData.RTW_Expiry_Date__c !== null ? true : false;
         this.selectedContractorId = this.recordId;
@@ -2109,9 +2113,9 @@ export default class GConnectDriverProfile extends LightningElement {
 
     async handleSaveRTW() {
         const isBritish =
-                this.recordData.Citizenship_Immigration_status__c ===
-                'British passport/UK National';
-       if (this.showRTWExpiryDate && this.expiryDate) {
+            this.recordData.Citizenship_Immigration_status__c ===
+            'British passport/UK National';
+        if (this.showRTWExpiryDate && this.expiryDate) {
             const selectedDate = new Date(this.expiryDate);
             selectedDate.setHours(0, 0, 0, 0);
 
@@ -2128,20 +2132,23 @@ export default class GConnectDriverProfile extends LightningElement {
             }
         }
 
-        let updateData = { Id: this.recordId,
+        let updateData = {
+            Id: this.recordId,
             Date_of_Entry__c: this.dateOfEntry,
             Citizenship_Immigration_status__c: this.editCitizenshipStatus,
             Settled_Status__c: this.editSettledStatus,
             Biometric_Evidence__c: this.editBiometric,
             Right_to_work_document__c: this.editRTWDocument,
             RTW_Expiry_Date__c: this.expiryDate,
-            Type_of_e_visa__c:this.recordData.Type_of_e_visa__c,
-            Permission_Expiry_Date__c:this.recordData.Permission_Expiry_Date__c ? this.recordData.Permission_Expiry_Date__c: null,
-            Any_work_restrictions__c:this.recordData.Any_work_restrictions__c ? this.recordData.Any_work_restrictions__c: null,
-            Limited_To_X_Hours_Per_Week__c:this.recordData.Limited_To_X_Hours_Per_Week__c ? this.recordData.Limited_To_X_Hours_Per_Week__c: null,
-            Limited_To_Specific_Job_Types__c:this.recordData.Limited_To_Specific_Job_Types__c ? this.recordData.Limited_To_Specific_Job_Types__c: null,
-            Other_Restrictions__c:this.recordData.Other_Restrictions__c ? this.recordData.Other_Restrictions__c: null
-         };
+            Type_of_e_visa__c: this.recordData.Type_of_e_visa__c,
+            Permission_Expiry_Date__c: this.recordData.Permission_Expiry_Date__c ? this.recordData.Permission_Expiry_Date__c : null,
+            Any_work_restrictions__c: this.recordData.Any_work_restrictions__c ? this.recordData.Any_work_restrictions__c : null,
+            Limited_To_X_Hours_Per_Week__c: this.recordData.Limited_To_X_Hours_Per_Week__c ? this.recordData.Limited_To_X_Hours_Per_Week__c : null,
+            Limited_To_Specific_Job_Types__c: this.recordData.Limited_To_Specific_Job_Types__c ? this.recordData.Limited_To_Specific_Job_Types__c : null,
+            Other_Restrictions__c: this.recordData.Other_Restrictions__c ? this.recordData.Other_Restrictions__c : null,
+            is_Right_to_Work_Verify__c: true,
+            RTW_Verified_by__c: this.verifiedRTWName
+        };
 
         if (this.showRTWAccessCode) {
             if (!this.accessCode) {
@@ -2152,8 +2159,8 @@ export default class GConnectDriverProfile extends LightningElement {
             updateData.RTW_Expiry_Date__c = null;
         }
 
-        if(!isBritish || (isBritish && this.recordData?.Right_to_work_document__c === 'British passport')){
-            
+        if (!isBritish || (isBritish && this.recordData?.Right_to_work_document__c === 'British passport')) {
+
             if (this.showRTWExpiryDate) {
                 if (!this.expiryDate) {
                     this.showToast('Error', 'Expiry Date is required', 'error');
@@ -2172,7 +2179,7 @@ export default class GConnectDriverProfile extends LightningElement {
             });
 
             if (this.tempFrontFiles?.length) {
-                await this.commitUploadedFiles(); 
+                await this.commitUploadedFiles();
             }
 
             await this.refreshRTWAndDLImages('RTW');
@@ -2231,7 +2238,7 @@ export default class GConnectDriverProfile extends LightningElement {
     }
 
 
-   async refreshRTWAndDLImages(fileType) {
+    async refreshRTWAndDLImages(fileType) {
         this.imageLoading = true;
 
         try {
@@ -2272,7 +2279,7 @@ export default class GConnectDriverProfile extends LightningElement {
             this.imageLoading = false;
         }
     }
-    get haveAnyCode(){
+    get haveAnyCode() {
         return (this.recordData?.hasShareCode || this.recordData?.hasAccessCode);
     }
     async commitUploadedFiles() {
@@ -2313,7 +2320,7 @@ export default class GConnectDriverProfile extends LightningElement {
 
             await saveUplodededFiles({
                 parentId: this.recordId,
-                fileName: fileTitle,         
+                fileName: fileTitle,
                 base64Data: file.base64Data,
                 contentType: file.fileType,
                 docType: docType
