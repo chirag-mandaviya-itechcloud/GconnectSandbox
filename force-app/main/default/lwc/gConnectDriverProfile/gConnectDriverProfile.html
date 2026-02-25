@@ -1955,7 +1955,7 @@
 
                                                 <div class="slds-grid slds-wrap">
                                                     <div
-                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                        class="slds-col slds-large-size_1-of-1 slds-medium-size_6-of-12 slds-size_6-of-12">
                                                         <div class="contractor-field">
                                                             <!-- ===== VIEW MODE ===== -->
                                                             <template if:false={rtwEditOpen}>
@@ -2009,7 +2009,7 @@
                                                             </template>
 
                                                             <template if:true={rtwEditOpen}>
-                                                                <template if:true={recordData.hasShareCode}>
+                                                                <!-- <template if:true={recordData.hasShareCode}>
                                                                     <template if:true={hasCompletedImageforShareCode}>
                                                                         <div
                                                                             class="slds-col slds-size_1-of-1 slds-p-bottom_small">
@@ -2075,7 +2075,186 @@
                                                                             </div>
                                                                         </template>
                                                                     </template>
+                                                                </template> -->
+                                                                <template if:true={recordData.hasShareCode}>
+                                                                    <template if:true={hasCompletedImageforShareCode}>
+                                                                        <div class="rtw-verification-section">
+                                                                            <div class="rtw-section-title">
+                                                                                <span class="rtw-asterisk">*</span>
+                                                                                VERIFICATION OUTCOME
+                                                                                <span
+                                                                                    class="rtw-required-badge">REQUIRED</span>
+                                                                            </div>
+
+                                                                            <!-- Radio Buttons: Continuous vs Time-Limited -->
+                                                                            <div class="rtw-radio-group">
+                                                                                <label class={getContinuousRTWClass}
+                                                                                    onclick={handleSelectContinuousRTW}>
+                                                                                    <div
+                                                                                        class="rtw-radio-input-wrapper">
+                                                                                        <input type="radio"
+                                                                                            name="verification"
+                                                                                            value="Continuous right to work"
+                                                                                            checked={isContinuousSelected}
+                                                                                            class="rtw-radio-input">
+                                                                                    </div>
+                                                                                    <span
+                                                                                        class="rtw-radio-label">Continuous
+                                                                                        right to work — no
+                                                                                        restrictions</span>
+                                                                                </label>
+
+                                                                                <label class={getTimeLimitedRTWClass}
+                                                                                    onclick={handleSelectTimeLimitedRTW}>
+                                                                                    <div
+                                                                                        class="rtw-radio-input-wrapper">
+                                                                                        <input type="radio"
+                                                                                            name="verification"
+                                                                                            value="Time-limited right to work"
+                                                                                            checked={isTimeLimitedSelected}
+                                                                                            class="rtw-radio-input">
+                                                                                    </div>
+                                                                                    <span
+                                                                                        class="rtw-radio-label">Time-limited
+                                                                                        right to work</span>
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <!-- Time-Limited Section (shows when Time-limited selected) -->
+                                                                            <template if:true={showTimeLimitedSection}>
+                                                                                <!-- Permission Expiry Date -->
+                                                                                <div class="rtw-date-input-group">
+                                                                                    <div class="rtw-date-label">
+                                                                                        Permission expiry date
+                                                                                        <span
+                                                                                            class="rtw-required-badge">REQUIRED</span>
+                                                                                    </div>
+                                                                                    <lightning-input type="date"
+                                                                                        name="PermissionexpiryDate"
+                                                                                        value={recordData.Permission_Expiry_Date__c}
+                                                                                        onchange={onChangeRTWDetails}
+                                                                                        class="rtw-date-picker">
+                                                                                    </lightning-input>
+                                                                                </div>
+
+                                                                                <!-- Work Restrictions Section -->
+                                                                                <div class="rtw-restrictions-section">
+                                                                                    <div class="rtw-section-title">
+                                                                                        Work restrictions
+                                                                                        <span
+                                                                                            class="rtw-required-badge">REQUIRED</span>
+                                                                                    </div>
+
+                                                                                    <!-- Radio Buttons: No vs Yes Restrictions -->
+                                                                                    <div
+                                                                                        class="rtw-restriction-radio-group">
+                                                                                        <label
+                                                                                            class={getNoRestrictionsClass}
+                                                                                            onclick={handleSelectNoRestrictions}>
+                                                                                            <div
+                                                                                                class="rtw-radio-input-wrapper">
+                                                                                                <input type="radio"
+                                                                                                    name="restrictions"
+                                                                                                    value="No"
+                                                                                                    checked={isNoRestrictionsSelected}
+                                                                                                    class="rtw-radio-input">
+                                                                                            </div>
+                                                                                            <div
+                                                                                                class="rtw-restriction-text">
+                                                                                                No
+                                                                                                restrictions</div>
+                                                                                        </label>
+
+                                                                                        <label
+                                                                                            class={getHasRestrictionsClass}
+                                                                                            onclick={handleSelectHasRestrictions}>
+                                                                                            <div
+                                                                                                class="rtw-radio-input-wrapper">
+                                                                                                <input type="radio"
+                                                                                                    name="restrictions"
+                                                                                                    value="Yes"
+                                                                                                    checked={isHasRestrictionsSelected}
+                                                                                                    class="rtw-radio-input">
+                                                                                            </div>
+                                                                                            <div
+                                                                                                class="rtw-restriction-text">
+                                                                                                Yes restrictions</div>
+                                                                                        </label>
+                                                                                    </div>
+
+                                                                                    <!-- Restriction Details (shows when Yes selected) -->
+                                                                                    <template
+                                                                                        if:true={showRestrictionsSection}>
+                                                                                        <div
+                                                                                            class="rtw-restriction-details">
+                                                                                            <!-- Limited Hours -->
+                                                                                            <div
+                                                                                                class="rtw-restriction-item">
+                                                                                                <div
+                                                                                                    class="rtw-hours-input-group">
+                                                                                                    <label
+                                                                                                        class="rtw-restriction-item-label">Limited
+                                                                                                        to:</label>
+                                                                                                    <lightning-input
+                                                                                                        type="number"
+                                                                                                        name="limitedHours"
+                                                                                                        value={recordData.Limited_To_X_Hours_Per_Week__c}
+                                                                                                        onchange={onChangeRTWDetails}
+                                                                                                        placeholder="20"
+                                                                                                        maxlength="3"
+                                                                                                        min="0"
+                                                                                                        step="0.5"
+                                                                                                        class="rtw-hours-input"
+                                                                                                        variant="label-hidden">
+                                                                                                    </lightning-input>
+                                                                                                    <span
+                                                                                                        class="rtw-hours-label">hours
+                                                                                                        per week</span>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                            <!-- Job Types -->
+                                                                                            <div
+                                                                                                class="rtw-restriction-item">
+                                                                                                <label
+                                                                                                    class="rtw-restriction-item-label">Limited
+                                                                                                    to
+                                                                                                    specific job
+                                                                                                    types</label>
+                                                                                                <lightning-input
+                                                                                                    type="text"
+                                                                                                    name="specificJobs"
+                                                                                                    value={recordData.Limited_To_Specific_Job_Types__c}
+                                                                                                    onchange={onChangeRTWDetails}
+                                                                                                    placeholder="e.g. Skilled Worker only"
+                                                                                                    class="rtw-text-input"
+                                                                                                    variant="label-hidden">
+                                                                                                </lightning-input>
+                                                                                            </div>
+
+                                                                                            <!-- Other Restrictions -->
+                                                                                            <div
+                                                                                                class="rtw-restriction-item">
+                                                                                                <label
+                                                                                                    class="rtw-restriction-item-label">Other
+                                                                                                    restriction</label>
+                                                                                                <lightning-textarea
+                                                                                                    name="otherRestrictions"
+                                                                                                    value={recordData.Other_Restrictions__c}
+                                                                                                    onchange={onChangeRTWDetails}
+                                                                                                    placeholder="Describe the restriction"
+                                                                                                    class="rtw-textarea-input"
+                                                                                                    variant="label-hidden">
+                                                                                                </lightning-textarea>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </template>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </template>
                                                                 </template>
+
 
                                                                 <template if:true={showRTWFileUploadButton}>
                                                                     <div class="frontBackFileUpload"
@@ -2093,7 +2272,7 @@
                                                                     </div>
                                                                 </template>
                                                                 <label class="confirm-row"
-                                                                    style="width:200%; margin-top:10px;">
+                                                                    style="width:100%; margin-top:10px;">
                                                                     <input type="checkbox" checked={isRTWVerfiedCheck}
                                                                         onchange={handleRTWVerifiedCheck}>
 

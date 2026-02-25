@@ -228,6 +228,10 @@ export default class GConnectDriverProfile extends LightningElement {
     @track originalDLFront = '';
     @track originalDLBack = '';
     @track restrictedStatuses = ['British passport/UK National', 'EU/EEA/Swiss Citizen', 'Rest Of The World'];
+    @track isContinuousSelected;
+    @track isTimeLimitedSelected;
+    @track isNoRestrictionsSelected;
+    @track isHasRestrictionsSelected;
 
     @track allowedRTWOptions = {
         'British Citizen': [
@@ -442,6 +446,98 @@ export default class GConnectDriverProfile extends LightningElement {
         }
     }
 
+    // Class getters for label styling
+    get getContinuousRTWClass() {
+        return `rtw-radio-option ${this.isContinuousSelected ? 'rtw-selected' : ''}`.trim();
+    }
+
+    get getTimeLimitedRTWClass() {
+        return `rtw-radio-option ${this.isTimeLimitedSelected ? 'rtw-selected' : ''}`.trim();
+    }
+
+    get getNoRestrictionsClass() {
+        return `rtw-restriction-option ${this.isNoRestrictionsSelected ? 'rtw-selected' : ''}`.trim();
+    }
+
+    get getHasRestrictionsClass() {
+        return `rtw-restriction-option ${this.isHasRestrictionsSelected ? 'rtw-selected' : ''}`.trim();
+    }
+
+    handleSelectContinuousRTW() {
+        const contractorIndex = this.selectedContractor.currentClickIndex;
+
+        // Update both selectedContractor and data array
+        this.recordData.Type_of_e_visa__c = 'Continuous right to work';
+
+        // Hide sections
+        this.showTimeLimitedSection = false;
+        this.recordData.showTimeLimitedSection = false;
+
+        this.showRestrictionsSection = false;
+        this.recordData.showRestrictionsSection = false;
+
+        // Clear time-limited fields in both selectedContractor and data array
+        this.recordData.Permission_Expiry_Date__c = null;
+
+        this.recordData.Any_work_restrictions__c = null;
+
+        this.recordData.Limited_To_X_Hours_Per_Week__c = null;
+
+        this.recordData.Limited_To_Specific_Job_Types__c = null;
+
+        this.recordData.Other_Restrictions__c = null;
+        // set selection state for UI
+        this.isContinuousSelected = true;
+        this.isTimeLimitedSelected = false;
+        this.isNoRestrictionsSelected = false;
+        this.isHasRestrictionsSelected = false;
+    }
+
+    handleSelectTimeLimitedRTW() {
+        // Update both selectedContractor and data array
+        this.recordData.Type_of_e_visa__c = 'Time-limited right to work';
+
+        // Show time-limited section
+        this.showTimeLimitedSection = true;
+        this.recordData.showTimeLimitedSection = true;
+        // set selection state for UI
+        this.isTimeLimitedSelected = true;
+        this.isContinuousSelected = false;
+    }
+
+    handleSelectNoRestrictions() {
+
+        // Update both selectedContractor and data array
+        this.recordData.Any_work_restrictions__c = 'No';
+
+        // Hide restrictions section
+        this.showRestrictionsSection = false;
+        this.recordData.showRestrictionsSection = false;
+
+        // Clear restriction fields in both selectedContractor and data array
+        this.recordData.Limited_To_X_Hours_Per_Week__c = null;
+
+        this.recordData.Limited_To_Specific_Job_Types__c = null;
+
+        this.recordData.Other_Restrictions__c = null;
+        // set selection state for UI
+        this.isNoRestrictionsSelected = true;
+        this.isHasRestrictionsSelected = false;
+    }
+
+    handleSelectHasRestrictions() {
+
+        // Update both selectedContractor and data array
+        this.recordData.Any_work_restrictions__c = 'Yes';
+
+        // Show restrictions section
+        this.showRestrictionsSection = true;
+        this.recordData.showRestrictionsSection = true;
+        // set selection state for UI
+        this.isHasRestrictionsSelected = true;
+        this.isNoRestrictionsSelected = false;
+    }
+
     getDriverProfileData() {
 
         getContractorDetails({
@@ -467,8 +563,12 @@ export default class GConnectDriverProfile extends LightningElement {
                     this.recordData.Other_Restrictions__c = this.recordData.hasOwnProperty('Other_Restrictions__c') && this.recordData.Other_Restrictions__c !== null ? this.recordData.Other_Restrictions__c : '';
 
                     this.recordData.Any_work_restrictions__c = this.recordData.hasOwnProperty('Any_work_restrictions__c') && this.recordData.Any_work_restrictions__c !== null ? this.recordData.Any_work_restrictions__c : '';
+                    this.isHasRestrictionsSelected = this.recordData.Any_work_restrictions__c === 'Yes' ? true : false;
+                    this.isNoRestrictionsSelected = this.recordData.Any_work_restrictions__c === 'No' ? true : false;
                     this.recordData.Permission_Expiry_Date__c = this.recordData.hasOwnProperty('Permission_Expiry_Date__c') && this.recordData.Permission_Expiry_Date__c !== null ? this.recordData.Permission_Expiry_Date__c : '';
                     this.recordData.Type_of_e_visa__c = this.recordData.hasOwnProperty('Type_of_e_visa__c') && this.recordData.Type_of_e_visa__c !== null ? this.recordData.Type_of_e_visa__c : '';
+                    this.isContinuousSelected = this.recordData.Type_of_e_visa__c === 'Continuous right to work' ? true : false;
+                    this.isTimeLimitedSelected = this.recordData.Type_of_e_visa__c === 'Time-limited right to work' ? true : false;
                     this.recordData.hasShareCode = this.recordData.hasOwnProperty('Share_Code__c') && this.recordData.Share_Code__c !== null ? true : false;
                     this.recordData.hasAccessCode = this.recordData.hasOwnProperty('Access_Code__c') && this.recordData.Access_Code__c !== null ? true : false;
                     this.recordData.hasSettledStatus = this.recordData.hasOwnProperty('Settled_Status__c') && this.recordData.Settled_Status__c !== null ? true : false;
@@ -537,6 +637,13 @@ export default class GConnectDriverProfile extends LightningElement {
 
                     this.recordData.rtwFrontDocumentName = documentNames[0] || 'Document';
                     this.recordData.rtwBackDocumentName = documentNames[1] || '';
+
+                    if (this.isTimeLimitedSelected) {
+                        this.showTimeLimitedSection = true;
+                    }
+                    if (this.isHasRestrictionsSelected) {
+                        this.showRestrictionsSection = true;
+                    }
 
                 } else {
                     console.error('No Driver Details Found!');

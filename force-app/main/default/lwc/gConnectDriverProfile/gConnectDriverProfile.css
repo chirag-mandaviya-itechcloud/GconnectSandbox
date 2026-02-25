@@ -466,7 +466,7 @@
 }
 
 /* .custom-table .record-menu-div{
-    /* width: 30px; 
+    /* width: 30px;
     text-align: center;
 } */
 
@@ -541,7 +541,7 @@
 
 /* .imageDiv{
     width: 50%;
-    
+
 } */
 
 .imageDiv img {
@@ -962,7 +962,7 @@
 }
 
 .confirmModal .custom-header {
-    color: var( --color-secondary); 
+    color: var( --color-secondary);
     font-family: var(--color-font-primary);
     font-weight: bold;
 }
@@ -1137,4 +1137,227 @@
     font-size: 14px;
     color: #0b0c0c;
     line-height: 1.4;
+}
+
+/* Verification Section */
+.rtw-verification-section {
+    margin-bottom: 24px;
+}
+
+.rtw-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0b0c0c;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px; /* slightly reduced gap to bring elements closer */
+}
+
+.rtw-asterisk {
+    color: #d4351c;
+    font-weight: 600;
+}
+
+.rtw-required-badge {
+    background: #d4351c;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 6px;
+}
+
+/* Radio Groups */
+.rtw-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.rtw-radio-option {
+    border: 2px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rtw-radio-option:hover {
+    border-color: #d4d4d4;
+}
+
+.rtw-radio-option.rtw-selected {
+    border-color: #00703c;
+    background: #f0f8f5;
+}
+
+.rtw-radio-input-wrapper {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.rtw-radio-input {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #00703c;
+}
+
+.rtw-radio-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #0b0c0c;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* Date Input Section */
+.rtw-date-input-group {
+    margin-top: 16px;
+    padding: 10px;
+    background: #fef7f7;
+    border: 1px solid #f3e5e5;
+    border-radius: 6px;
+}
+
+.rtw-date-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0b0c0c;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rtw-date-picker input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #0b0c0c !important;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Adjust vertical alignment of the permission expiry date picker */
+.rtw-date-picker {
+    margin-top: -13px;
+}
+
+/* Restrictions Section */
+.rtw-restrictions-section {
+    margin-top: 16px;
+}
+
+.rtw-restriction-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.rtw-restriction-option {
+    border: 2px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rtw-restriction-option:hover {
+    border-color: #d4d4d4;
+}
+
+.rtw-restriction-option.rtw-selected {
+    border-color: #00703c;
+    background: #f0f8f5;
+}
+
+.rtw-restriction-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #0b0c0c;
+    cursor: pointer;
+}
+
+/* Restriction Details Box */
+.rtw-restriction-details {
+    margin-top: 16px;
+    padding: 10px;
+    background: #f8f8f8;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+}
+
+.rtw-restriction-item {
+    margin-bottom: 15px;
+}
+
+.rtw-restriction-item:last-child {
+    margin-bottom: 0;
+}
+
+.rtw-restriction-item-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #0b0c0c;
+    display: inline-block;
+    flex: 0 0 auto; /* size to content so input sits directly after label */
+    margin-right: 4px;
+}
+
+/* Hours Input */
+.rtw-hours-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rtw-hours-input {
+    /* make the lightning-input host take a small fixed width */
+    flex: 0 0 56px; /* adjust this value to control middle width */
+    max-width: 80px;
+}
+
+.rtw-hours-input input {
+    width: 100% !important;
+    padding: 8px 6px !important;
+    border: 2px solid #0b0c0c !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.rtw-hours-label {
+    font-size: 14px;
+    color: #0b0c0c;
+    flex: 1 1 auto;
+}
+
+/* Text Input */
+.rtw-text-input input {
+    width: 100% !important;
+    padding: 8px 10px !important;
+    border: 2px solid #0b0c0c !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+}
+
+/* Textarea Input */
+.rtw-textarea-input textarea {
+    width: 100% !important;
+    min-height: 80px !important;
+    padding: 8px 10px !important;
+    border: 2px solid #0b0c0c !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    resize: vertical !important;
 }
