@@ -464,17 +464,14 @@ export default class GConnectDriverProfile extends LightningElement {
     }
 
     handleSelectContinuousRTW() {
-        const contractorIndex = this.selectedContractor.currentClickIndex;
 
         // Update both selectedContractor and data array
         this.recordData.Type_of_e_visa__c = 'Continuous right to work';
 
         // Hide sections
         this.showTimeLimitedSection = false;
-        this.recordData.showTimeLimitedSection = false;
 
         this.showRestrictionsSection = false;
-        this.recordData.showRestrictionsSection = false;
 
         // Clear time-limited fields in both selectedContractor and data array
         this.recordData.Permission_Expiry_Date__c = null;
@@ -499,7 +496,6 @@ export default class GConnectDriverProfile extends LightningElement {
 
         // Show time-limited section
         this.showTimeLimitedSection = true;
-        this.recordData.showTimeLimitedSection = true;
         // set selection state for UI
         this.isTimeLimitedSelected = true;
         this.isContinuousSelected = false;
@@ -512,7 +508,6 @@ export default class GConnectDriverProfile extends LightningElement {
 
         // Hide restrictions section
         this.showRestrictionsSection = false;
-        this.recordData.showRestrictionsSection = false;
 
         // Clear restriction fields in both selectedContractor and data array
         this.recordData.Limited_To_X_Hours_Per_Week__c = null;
@@ -532,7 +527,6 @@ export default class GConnectDriverProfile extends LightningElement {
 
         // Show restrictions section
         this.showRestrictionsSection = true;
-        this.recordData.showRestrictionsSection = true;
         // set selection state for UI
         this.isHasRestrictionsSelected = true;
         this.isNoRestrictionsSelected = false;
