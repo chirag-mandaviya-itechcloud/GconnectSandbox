@@ -175,6 +175,12 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
     @track showFrontBackRadioBtn = true;
 
+    // Radio selection state for new RTW UI
+    @track isContinuousSelected = false;
+    @track isTimeLimitedSelected = false;
+    @track isNoRestrictionsSelected = false;
+    @track isHasRestrictionsSelected = false;
+
     // @track isRTWCheckFileUploded = false;
     @track isRTWCheckFileUploded = true;
     @track showRTWCheckError = false;
@@ -345,7 +351,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
             this.selectedContractor?.nationalInsurance
         );
     }
-    
+
 
     FetchMCandSCDetails() {
         this.isLoading = true;
@@ -1424,101 +1430,132 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         window.open(targetUrl, '_blank');
     }
     // CORRECTED HANDLER METHODS FOR RADIO BUTTONS
-// These handle the clicks on radio buttons in the new UI
+    // These handle the clicks on radio buttons in the new UI
 
-/**
- * Handle selection of Continuous Right to Work
- */
-handleSelectContinuousRTW() {
-    const contractorIndex = this.selectedContractor.currentClickIndex;
-    
-    // Update both selectedContractor and data array
-    this.selectedContractor.Type_of_e_visa__c = 'Continuous right to work';
-    this.data[contractorIndex].Type_of_e_visa__c = 'Continuous right to work';
-    
-    // Hide sections
-    this.showTimeLimitedSection = false;
-    this.selectedContractor.showTimeLimitedSection = false;
-    this.data[contractorIndex].showTimeLimitedSection = false;
-    
-    this.showRestrictionsSection = false;
-    this.selectedContractor.showRestrictionsSection = false;
-    this.data[contractorIndex].showRestrictionsSection = false;
-    
-    // Clear time-limited fields in both selectedContractor and data array
-    this.selectedContractor.Permission_Expiry_Date__c = null;
-    this.data[contractorIndex].Permission_Expiry_Date__c = null;
-    
-    this.selectedContractor.Any_work_restrictions__c = null;
-    this.data[contractorIndex].Any_work_restrictions__c = null;
-    
-    this.selectedContractor.Limited_To_X_Hours_Per_Week__c = null;
-    this.data[contractorIndex].Limited_To_X_Hours_Per_Week__c = null;
-    
-    this.selectedContractor.Limited_To_Specific_Job_Types__c = null;
-    this.data[contractorIndex].Limited_To_Specific_Job_Types__c = null;
-    
-    this.selectedContractor.Other_Restrictions__c = null;
-    this.data[contractorIndex].Other_Restrictions__c = null;
-}
+    /**
+     * Handle selection of Continuous Right to Work
+     */
+    handleSelectContinuousRTW() {
+        const contractorIndex = this.selectedContractor.currentClickIndex;
 
-/**
- * Handle selection of Time-Limited Right to Work
- */
-handleSelectTimeLimitedRTW() {
-    const contractorIndex = this.selectedContractor.currentClickIndex;
-    
-    // Update both selectedContractor and data array
-    this.selectedContractor.Type_of_e_visa__c = 'Time-limited right to work';
-    this.data[contractorIndex].Type_of_e_visa__c = 'Time-limited right to work';
-    
-    // Show time-limited section
-    this.showTimeLimitedSection = true;
-    this.selectedContractor.showTimeLimitedSection = true;
-    this.data[contractorIndex].showTimeLimitedSection = true;
-}
+        // Update both selectedContractor and data array
+        this.selectedContractor.Type_of_e_visa__c = 'Continuous right to work';
+        this.data[contractorIndex].Type_of_e_visa__c = 'Continuous right to work';
 
-/**
- * Handle selection of No Restrictions
- */
-handleSelectNoRestrictions() {
-    const contractorIndex = this.selectedContractor.currentClickIndex;
-    
-    // Update both selectedContractor and data array
-    this.selectedContractor.Any_work_restrictions__c = 'No';
-    this.data[contractorIndex].Any_work_restrictions__c = 'No';
-    
-    // Hide restrictions section
-    this.showRestrictionsSection = false;
-    this.selectedContractor.showRestrictionsSection = false;
-    this.data[contractorIndex].showRestrictionsSection = false;
-    
-    // Clear restriction fields in both selectedContractor and data array
-    this.selectedContractor.Limited_To_X_Hours_Per_Week__c = null;
-    this.data[contractorIndex].Limited_To_X_Hours_Per_Week__c = null;
-    
-    this.selectedContractor.Limited_To_Specific_Job_Types__c = null;
-    this.data[contractorIndex].Limited_To_Specific_Job_Types__c = null;
-    
-    this.selectedContractor.Other_Restrictions__c = null;
-    this.data[contractorIndex].Other_Restrictions__c = null;
-}
+        // Hide sections
+        this.showTimeLimitedSection = false;
+        this.selectedContractor.showTimeLimitedSection = false;
+        this.data[contractorIndex].showTimeLimitedSection = false;
 
-/**
- * Handle selection of Has Restrictions
- */
-handleSelectHasRestrictions() {
-    const contractorIndex = this.selectedContractor.currentClickIndex;
-    
-    // Update both selectedContractor and data array
-    this.selectedContractor.Any_work_restrictions__c = 'Yes';
-    this.data[contractorIndex].Any_work_restrictions__c = 'Yes';
-    
-    // Show restrictions section
-    this.showRestrictionsSection = true;
-    this.selectedContractor.showRestrictionsSection = true;
-    this.data[contractorIndex].showRestrictionsSection = true;
-}
+        this.showRestrictionsSection = false;
+        this.selectedContractor.showRestrictionsSection = false;
+        this.data[contractorIndex].showRestrictionsSection = false;
+
+        // Clear time-limited fields in both selectedContractor and data array
+        this.selectedContractor.Permission_Expiry_Date__c = null;
+        this.data[contractorIndex].Permission_Expiry_Date__c = null;
+
+        this.selectedContractor.Any_work_restrictions__c = null;
+        this.data[contractorIndex].Any_work_restrictions__c = null;
+
+        this.selectedContractor.Limited_To_X_Hours_Per_Week__c = null;
+        this.data[contractorIndex].Limited_To_X_Hours_Per_Week__c = null;
+
+        this.selectedContractor.Limited_To_Specific_Job_Types__c = null;
+        this.data[contractorIndex].Limited_To_Specific_Job_Types__c = null;
+
+        this.selectedContractor.Other_Restrictions__c = null;
+        this.data[contractorIndex].Other_Restrictions__c = null;
+        // set selection state for UI
+        this.isContinuousSelected = true;
+        this.isTimeLimitedSelected = false;
+        this.isNoRestrictionsSelected = false;
+        this.isHasRestrictionsSelected = false;
+    }
+
+    /**
+     * Handle selection of Time-Limited Right to Work
+     */
+    handleSelectTimeLimitedRTW() {
+        const contractorIndex = this.selectedContractor.currentClickIndex;
+
+        // Update both selectedContractor and data array
+        this.selectedContractor.Type_of_e_visa__c = 'Time-limited right to work';
+        this.data[contractorIndex].Type_of_e_visa__c = 'Time-limited right to work';
+
+        // Show time-limited section
+        this.showTimeLimitedSection = true;
+        this.selectedContractor.showTimeLimitedSection = true;
+        this.data[contractorIndex].showTimeLimitedSection = true;
+        // set selection state for UI
+        this.isTimeLimitedSelected = true;
+        this.isContinuousSelected = false;
+    }
+
+    /**
+     * Handle selection of No Restrictions
+     */
+    handleSelectNoRestrictions() {
+        const contractorIndex = this.selectedContractor.currentClickIndex;
+
+        // Update both selectedContractor and data array
+        this.selectedContractor.Any_work_restrictions__c = 'No';
+        this.data[contractorIndex].Any_work_restrictions__c = 'No';
+
+        // Hide restrictions section
+        this.showRestrictionsSection = false;
+        this.selectedContractor.showRestrictionsSection = false;
+        this.data[contractorIndex].showRestrictionsSection = false;
+
+        // Clear restriction fields in both selectedContractor and data array
+        this.selectedContractor.Limited_To_X_Hours_Per_Week__c = null;
+        this.data[contractorIndex].Limited_To_X_Hours_Per_Week__c = null;
+
+        this.selectedContractor.Limited_To_Specific_Job_Types__c = null;
+        this.data[contractorIndex].Limited_To_Specific_Job_Types__c = null;
+
+        this.selectedContractor.Other_Restrictions__c = null;
+        this.data[contractorIndex].Other_Restrictions__c = null;
+        // set selection state for UI
+        this.isNoRestrictionsSelected = true;
+        this.isHasRestrictionsSelected = false;
+    }
+
+    /**
+     * Handle selection of Has Restrictions
+     */
+    handleSelectHasRestrictions() {
+        const contractorIndex = this.selectedContractor.currentClickIndex;
+
+        // Update both selectedContractor and data array
+        this.selectedContractor.Any_work_restrictions__c = 'Yes';
+        this.data[contractorIndex].Any_work_restrictions__c = 'Yes';
+
+        // Show restrictions section
+        this.showRestrictionsSection = true;
+        this.selectedContractor.showRestrictionsSection = true;
+        this.data[contractorIndex].showRestrictionsSection = true;
+        // set selection state for UI
+        this.isHasRestrictionsSelected = true;
+        this.isNoRestrictionsSelected = false;
+    }
+
+    // Class getters for label styling
+    get getContinuousRTWClass() {
+        return `rtw-radio-option ${this.isContinuousSelected ? 'rtw-selected' : ''}`.trim();
+    }
+
+    get getTimeLimitedRTWClass() {
+        return `rtw-radio-option ${this.isTimeLimitedSelected ? 'rtw-selected' : ''}`.trim();
+    }
+
+    get getNoRestrictionsClass() {
+        return `rtw-restriction-option ${this.isNoRestrictionsSelected ? 'rtw-selected' : ''}`.trim();
+    }
+
+    get getHasRestrictionsClass() {
+        return `rtw-restriction-option ${this.isHasRestrictionsSelected ? 'rtw-selected' : ''}`.trim();
+    }
 
     handleRTWEditClick(event) {
         this.hideValidateButton = !this.hideValidateButton;
@@ -1527,28 +1564,50 @@ handleSelectHasRestrictions() {
         this.selectedContractorId = event.currentTarget.dataset.selectedId;
         this.selectedOption = 'RTW';
         // CRITICAL: Initialize section visibility flags when entering edit mode
-    if (this.rightToWorkEditOpen) {
-        // Initialize showTimeLimitedSection based on existing Type_of_e_visa__c value
-        if (this.selectedContractor.Type_of_e_visa__c === 'Time-limited right to work') {
-            this.showTimeLimitedSection = true;
-            this.selectedContractor.showTimeLimitedSection = true;
-            
-            // Initialize showRestrictionsSection based on existing Any_work_restrictions__c value
-            if (this.selectedContractor.Any_work_restrictions__c === 'Yes') {
-                this.showRestrictionsSection = true;
-                this.selectedContractor.showRestrictionsSection = true;
+        if (this.rightToWorkEditOpen) {
+            // Initialize showTimeLimitedSection based on existing Type_of_e_visa__c value
+            if (this.selectedContractor.Type_of_e_visa__c === 'Time-limited right to work') {
+                this.showTimeLimitedSection = true;
+                this.selectedContractor.showTimeLimitedSection = true;
+
+                // Initialize showRestrictionsSection based on existing Any_work_restrictions__c value
+                if (this.selectedContractor.Any_work_restrictions__c === 'Yes') {
+                    this.showRestrictionsSection = true;
+                    this.selectedContractor.showRestrictionsSection = true;
+                } else {
+                    this.showRestrictionsSection = false;
+                    this.selectedContractor.showRestrictionsSection = false;
+                }
             } else {
+                // If Continuous or no value, hide both sections
+                this.showTimeLimitedSection = false;
+                this.selectedContractor.showTimeLimitedSection = false;
                 this.showRestrictionsSection = false;
                 this.selectedContractor.showRestrictionsSection = false;
             }
-        } else {
-            // If Continuous or no value, hide both sections
-            this.showTimeLimitedSection = false;
-            this.selectedContractor.showTimeLimitedSection = false;
-            this.showRestrictionsSection = false;
-            this.selectedContractor.showRestrictionsSection = false;
+            // Initialize radio selection booleans for UI classes
+            if (this.selectedContractor.Type_of_e_visa__c === 'Time-limited right to work') {
+                this.isTimeLimitedSelected = true;
+                this.isContinuousSelected = false;
+            } else if (this.selectedContractor.Type_of_e_visa__c === 'Continuous right to work') {
+                this.isContinuousSelected = true;
+                this.isTimeLimitedSelected = false;
+            } else {
+                this.isContinuousSelected = false;
+                this.isTimeLimitedSelected = false;
+            }
+
+            if (this.selectedContractor.Any_work_restrictions__c === 'Yes') {
+                this.isHasRestrictionsSelected = true;
+                this.isNoRestrictionsSelected = false;
+            } else if (this.selectedContractor.Any_work_restrictions__c === 'No') {
+                this.isNoRestrictionsSelected = true;
+                this.isHasRestrictionsSelected = false;
+            } else {
+                this.isNoRestrictionsSelected = false;
+                this.isHasRestrictionsSelected = false;
+            }
         }
-    }
         let previousHideValidateContent = this.hideValidateContent;
         if (this.selectedContractor.isRTWExpired == false) {
             this.hideValidateContent = false;

@@ -88,7 +88,7 @@
     font-size: 16px;
 }
 
-/* 
+/*
 .tabs li.active {
     border-bottom: 2px solid #f03a47;
     font-weight: bold;
@@ -157,7 +157,7 @@
     width: 100%;
     height: 4px;
     background: var(--color-secondary);
-    /* border-top-left-radius: 10px; 
+    /* border-top-left-radius: 10px;
     border-top-right-radius: 10px;  */
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -731,7 +731,7 @@ input[type="file"]:disabled+label {
 }
 
 /* .custom-table .record-menu-div{
-    /* width: 30px; 
+    /* width: 30px;
     text-align: center;
 } */
 
@@ -1010,7 +1010,7 @@ input[type="file"]:disabled+label {
     color: #8b6914;
     cursor: pointer;
     font-weight: 500;
-} 
+}
 /* Container similar to old info-content */
 .driver-info {
     display: grid;
@@ -1164,7 +1164,7 @@ lightning-textarea {
     color: #8b6914;
     cursor: pointer;
     font-weight: 500;
-} 
+}
 /* Verification Section */
 .rtw-verification-section {
     margin-bottom: 24px;
@@ -1206,11 +1206,11 @@ lightning-textarea {
 .rtw-radio-option {
     border: 2px solid #e5e5e5;
     border-radius: 6px;
-    padding: 12px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
 }
 
@@ -1246,7 +1246,7 @@ lightning-textarea {
 /* Date Input Section */
 .rtw-date-input-group {
     margin-top: 16px;
-    padding: 16px;
+    padding: 10px;
     background: #fef7f7;
     border: 1px solid #f3e5e5;
     border-radius: 6px;
@@ -1256,7 +1256,6 @@ lightning-textarea {
     font-size: 13px;
     font-weight: 600;
     color: #0b0c0c;
-    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 4px;
