@@ -1269,6 +1269,11 @@ lightning-textarea {
     font-size: 14px;
 }
 
+/* Adjust vertical alignment of the permission expiry date picker */
+.rtw-date-picker {
+    margin-top: -13px;
+}
+
 /* Restrictions Section */
 .rtw-restrictions-section {
     margin-top: 16px;
@@ -1284,11 +1289,11 @@ lightning-textarea {
 .rtw-restriction-option {
     border: 2px solid #e5e5e5;
     border-radius: 6px;
-    padding: 12px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
 }
 
@@ -1311,14 +1316,14 @@ lightning-textarea {
 /* Restriction Details Box */
 .rtw-restriction-details {
     margin-top: 16px;
-    padding: 16px;
+    padding: 10px;
     background: #f8f8f8;
     border-radius: 6px;
     border: 1px solid #e5e5e5;
 }
 
 .rtw-restriction-item {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .rtw-restriction-item:last-child {
@@ -1330,7 +1335,7 @@ lightning-textarea {
     font-weight: 500;
     color: #0b0c0c;
     display: block;
-    margin-bottom: 8px;
+    /* margin-bottom: 8px; */
 }
 
 /* Hours Input */
@@ -1341,11 +1346,12 @@ lightning-textarea {
 }
 
 .rtw-hours-input input {
-    width: 100px !important;
+    width: 40px !important;
     padding: 8px 10px !important;
     border: 2px solid #0b0c0c !important;
     border-radius: 4px !important;
     font-size: 14px !important;
+    display: inline;
 }
 
 .rtw-hours-label {

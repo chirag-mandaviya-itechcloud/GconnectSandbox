@@ -737,263 +737,248 @@
                              NEW DEMO UI - EDIT MODE ONLY
                              Shows when rightToWorkEditOpen = true
                              ======================================== -->
-                        <template if:true={rightToWorkEditOpen}>
-                            <div class="rtw-verification-section">
-                                <div class="rtw-section-title">
-                                    <span class="rtw-asterisk">*</span>
-                                    VERIFICATION OUTCOME
-                                    <span class="rtw-required-badge">REQUIRED</span>
-                                </div>
-
-                                <!-- Radio Buttons: Continuous vs Time-Limited -->
-                                <div class="rtw-radio-group">
-                                    <label class={getContinuousRTWClass} onclick={handleSelectContinuousRTW}>
-                                        <div class="rtw-radio-input-wrapper">
-                                            <input type="radio" 
-                                                   name="verification" 
-                                                   value="Continuous right to work"
-                                                   checked={isContinuousSelected}
-                                                   class="rtw-radio-input">
-                                        </div>
-                                        <span class="rtw-radio-label">Continuous right to work — no restrictions</span>
-                                    </label>
-                                    
-                                    <label class={getTimeLimitedRTWClass} onclick={handleSelectTimeLimitedRTW}>
-                                        <div class="rtw-radio-input-wrapper">
-                                            <input type="radio" 
-                                                   name="verification" 
-                                                   value="Time-limited right to work"
-                                                   checked={isTimeLimitedSelected}
-                                                   class="rtw-radio-input">
-                                        </div>
-                                        <span class="rtw-radio-label">Time-limited right to work</span>
-                                    </label>
-                                </div>
-
-                                <!-- Time-Limited Section (shows when Time-limited selected) -->
-                                <template if:true={showTimeLimitedSection}>
-                                    <!-- Permission Expiry Date -->
-                                    <div class="rtw-date-input-group">
-                                        <div class="rtw-date-label">
-                                            Permission expiry date
-                                            <span class="rtw-required-badge">REQUIRED</span>
-                                        </div>
-                                        <lightning-input
-                                            type="date"
-                                            name="PermissionexpiryDate"
-                                            value={selectedContractor.Permission_Expiry_Date__c}
-                                            onchange={onChangeRTWDetails}
-                                            class="rtw-date-picker">
-                                        </lightning-input>
-                                    </div>
-
-                                    <!-- Work Restrictions Section -->
-                                    <div class="rtw-restrictions-section">
+                                <template if:true={rightToWorkEditOpen}>
+                                    <div class="rtw-verification-section">
                                         <div class="rtw-section-title">
-                                            Work restrictions
+                                            <span class="rtw-asterisk">*</span>
+                                            VERIFICATION OUTCOME
                                             <span class="rtw-required-badge">REQUIRED</span>
                                         </div>
-                                        
-                                        <!-- Radio Buttons: No vs Yes Restrictions -->
-                                        <div class="rtw-restriction-radio-group">
-                                            <label class={getNoRestrictionsClass} onclick={handleSelectNoRestrictions}>
+
+                                        <!-- Radio Buttons: Continuous vs Time-Limited -->
+                                        <div class="rtw-radio-group">
+                                            <label class={getContinuousRTWClass} onclick={handleSelectContinuousRTW}>
                                                 <div class="rtw-radio-input-wrapper">
-                                                    <input type="radio" 
-                                                           name="restrictions" 
-                                                           value="No"
-                                                           checked={isNoRestrictionsSelected}
-                                                           class="rtw-radio-input">
+                                                    <input type="radio" name="verification"
+                                                        value="Continuous right to work" checked={isContinuousSelected}
+                                                        class="rtw-radio-input">
                                                 </div>
-                                                <div class="rtw-restriction-text">No restrictions</div>
+                                                <span class="rtw-radio-label">Continuous right to work — no
+                                                    restrictions</span>
                                             </label>
 
-                                            <label class={getHasRestrictionsClass} onclick={handleSelectHasRestrictions}>
+                                            <label class={getTimeLimitedRTWClass} onclick={handleSelectTimeLimitedRTW}>
                                                 <div class="rtw-radio-input-wrapper">
-                                                    <input type="radio" 
-                                                           name="restrictions" 
-                                                           value="Yes"
-                                                           checked={isHasRestrictionsSelected}
-                                                           class="rtw-radio-input">
+                                                    <input type="radio" name="verification"
+                                                        value="Time-limited right to work"
+                                                        checked={isTimeLimitedSelected} class="rtw-radio-input">
                                                 </div>
-                                                <div class="rtw-restriction-text">Yes restrictions</div>
+                                                <span class="rtw-radio-label">Time-limited right to work</span>
                                             </label>
                                         </div>
 
-                                        <!-- Restriction Details (shows when Yes selected) -->
-                                        <template if:true={showRestrictionsSection}>
-                                            <div class="rtw-restriction-details">
-                                                <!-- Limited Hours -->
-                                                <div class="rtw-restriction-item">
-                                                    <label class="rtw-restriction-item-label">Limited to:</label>
-                                                    <div class="rtw-hours-input-group">
-                                                        <lightning-input
-                                                            type="number"
-                                                            name="limitedHours"
-                                                            value={selectedContractor.Limited_To_X_Hours_Per_Week__c}
-                                                            onchange={onChangeRTWDetails}
-                                                            placeholder="20"
-                                                            min="0"
-                                                            step="0.5"
-                                                            class="rtw-hours-input">
-                                                        </lightning-input>
-                                                        <span class="rtw-hours-label">hours per week</span>
+                                        <!-- Time-Limited Section (shows when Time-limited selected) -->
+                                        <template if:true={showTimeLimitedSection}>
+                                            <!-- Permission Expiry Date -->
+                                            <div class="rtw-date-input-group">
+                                                <div class="rtw-date-label">
+                                                    Permission expiry date
+                                                    <span class="rtw-required-badge">REQUIRED</span>
+                                                </div>
+                                                <lightning-input type="date" name="PermissionexpiryDate"
+                                                    value={selectedContractor.Permission_Expiry_Date__c}
+                                                    onchange={onChangeRTWDetails} class="rtw-date-picker">
+                                                </lightning-input>
+                                            </div>
+
+                                            <!-- Work Restrictions Section -->
+                                            <div class="rtw-restrictions-section">
+                                                <div class="rtw-section-title">
+                                                    Work restrictions
+                                                    <span class="rtw-required-badge">REQUIRED</span>
+                                                </div>
+
+                                                <!-- Radio Buttons: No vs Yes Restrictions -->
+                                                <div class="rtw-restriction-radio-group">
+                                                    <label class={getNoRestrictionsClass}
+                                                        onclick={handleSelectNoRestrictions}>
+                                                        <div class="rtw-radio-input-wrapper">
+                                                            <input type="radio" name="restrictions" value="No"
+                                                                checked={isNoRestrictionsSelected}
+                                                                class="rtw-radio-input">
+                                                        </div>
+                                                        <div class="rtw-restriction-text">No restrictions</div>
+                                                    </label>
+
+                                                    <label class={getHasRestrictionsClass}
+                                                        onclick={handleSelectHasRestrictions}>
+                                                        <div class="rtw-radio-input-wrapper">
+                                                            <input type="radio" name="restrictions" value="Yes"
+                                                                checked={isHasRestrictionsSelected}
+                                                                class="rtw-radio-input">
+                                                        </div>
+                                                        <div class="rtw-restriction-text">Yes restrictions</div>
+                                                    </label>
+                                                </div>
+
+                                                <!-- Restriction Details (shows when Yes selected) -->
+                                                <template if:true={showRestrictionsSection}>
+                                                    <div class="rtw-restriction-details">
+                                                        <!-- Limited Hours -->
+                                                        <div class="rtw-restriction-item">
+                                                            <div class="rtw-hours-input-group">
+                                                                <label class="rtw-restriction-item-label">Limited
+                                                                    to:</label>
+                                                                <lightning-input type="number" name="limitedHours"
+                                                                    value={selectedContractor.Limited_To_X_Hours_Per_Week__c}
+                                                                    onchange={onChangeRTWDetails} placeholder="20"
+                                                                    maxlength="3" min="0" step="0.5"
+                                                                    class="rtw-hours-input" variant="label-hidden">
+                                                                </lightning-input>
+                                                                <span class="rtw-hours-label">hours per week</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Job Types -->
+                                                        <div class="rtw-restriction-item">
+                                                            <label class="rtw-restriction-item-label">Limited to
+                                                                specific job types</label>
+                                                            <lightning-input type="text" name="specificJobs"
+                                                                value={selectedContractor.Limited_To_Specific_Job_Types__c}
+                                                                onchange={onChangeRTWDetails}
+                                                                placeholder="e.g. Skilled Worker only"
+                                                                class="rtw-text-input" variant="label-hidden">
+                                                            </lightning-input>
+                                                        </div>
+
+                                                        <!-- Other Restrictions -->
+                                                        <div class="rtw-restriction-item">
+                                                            <label class="rtw-restriction-item-label">Other
+                                                                restriction</label>
+                                                            <lightning-textarea name="otherRestrictions"
+                                                                value={selectedContractor.Other_Restrictions__c}
+                                                                onchange={onChangeRTWDetails}
+                                                                placeholder="Describe the restriction"
+                                                                class="rtw-textarea-input" variant="label-hidden">
+                                                            </lightning-textarea>
+                                                        </div>
                                                     </div>
-                                                </div>
-
-                                                <!-- Job Types -->
-                                                <div class="rtw-restriction-item">
-                                                    <label class="rtw-restriction-item-label">Limited to specific job types</label>
-                                                    <lightning-input
-                                                        type="text"
-                                                        name="specificJobs"
-                                                        value={selectedContractor.Limited_To_Specific_Job_Types__c}
-                                                        onchange={onChangeRTWDetails}
-                                                        placeholder="e.g. Skilled Worker only"
-                                                        class="rtw-text-input">
-                                                    </lightning-input>
-                                                </div>
-
-                                                <!-- Other Restrictions -->
-                                                <div class="rtw-restriction-item">
-                                                    <label class="rtw-restriction-item-label">Other restriction</label>
-                                                    <lightning-textarea
-                                                        name="otherRestrictions"
-                                                        value={selectedContractor.Other_Restrictions__c}
-                                                        onchange={onChangeRTWDetails}
-                                                        placeholder="Describe the restriction"
-                                                        class="rtw-textarea-input">
-                                                    </lightning-textarea>
-                                                </div>
+                                                </template>
                                             </div>
                                         </template>
                                     </div>
                                 </template>
-                            </div>
-                        </template>
 
-                        <!-- ========================================
+                                <!-- ========================================
                              READ-ONLY MODE - OLD LOGIC
                              Shows when rightToWorkEditOpen = false
                              ======================================== -->
-                        <template if:false={rightToWorkEditOpen}>
-                            <div class="slds-grid slds-wrap slds-p-top_small">
-                                <template if:true={selectedContractor.hasSettledStatus}>
-                                    <div class="slds-col slds-size_1-of-2">
-                                        <p><strong>Settled Status:</strong></p>
-                                        <p>{selectedContractor.Settled_Status__c}</p>
-                                    </div>
-                                </template>
-
-                                <template if:true={selectedContractor.hasShareCode}>
-                                    <template if:true={selectedContractor.hasEVisa}>
-                                        <div class="slds-col slds-size_1-of-2">
-                                            <p><strong>Type of eVisa:</strong></p>
-                                            <template if:false={rightToWorkEditOpen}>
-                                                <p>{selectedContractor.Type_of_e_visa__c}</p>
-                                            </template>
-                                        </div>
-                                    </template>
-
-                                    <template if:true={selectedContractor.showTimeLimitedSection}>
-                                        <template if:true={selectedContractor.hasEVisa}>
+                                <template if:false={rightToWorkEditOpen}>
+                                    <div class="slds-grid slds-wrap slds-p-top_small">
+                                        <template if:true={selectedContractor.hasSettledStatus}>
                                             <div class="slds-col slds-size_1-of-2">
-                                                <p><strong>Permission Expiry Date:</strong></p>
+                                                <p><strong>Settled Status:</strong></p>
+                                                <p>{selectedContractor.Settled_Status__c}</p>
+                                            </div>
+                                        </template>
+
+                                        <template if:true={selectedContractor.hasShareCode}>
+                                            <template if:true={selectedContractor.hasEVisa}>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <p><strong>Type of eVisa:</strong></p>
+                                                    <template if:false={rightToWorkEditOpen}>
+                                                        <p>{selectedContractor.Type_of_e_visa__c}</p>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+                                            <template if:true={selectedContractor.showTimeLimitedSection}>
+                                                <template if:true={selectedContractor.hasEVisa}>
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p><strong>Permission Expiry Date:</strong></p>
+                                                        <template if:false={rightToWorkEditOpen}>
+                                                            <p>{selectedContractor.Permission_Expiry_Date__c}</p>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </template>
+
+                                            <template if:true={selectedContractor.showTimeLimitedSection}>
+                                                <template if:true={selectedContractor.hasEVisa}>
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p><strong>Any Work Restrictions:</strong></p>
+                                                        <template if:false={rightToWorkEditOpen}>
+                                                            <p>{selectedContractor.Any_work_restrictions__c}</p>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </template>
+
+                                            <template if:true={selectedContractor.showRestrictionsSection}>
+                                                <template if:true={selectedContractor.showTimeLimitedSection}>
+                                                    <template if:true={selectedContractor.hasEVisa}>
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <p><strong>Limited To X Hours Per Week:</strong></p>
+                                                            <template if:false={rightToWorkEditOpen}>
+                                                                <p>{selectedContractor.Limited_To_X_Hours_Per_Week__c}
+                                                                </p>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                            </template>
+
+                                            <template if:true={selectedContractor.showRestrictionsSection}>
+                                                <template if:true={selectedContractor.showTimeLimitedSection}>
+                                                    <template if:true={selectedContractor.hasEVisa}>
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <p><strong>Limited To Specific Job Types:</strong></p>
+                                                            <template if:false={rightToWorkEditOpen}>
+                                                                <p>{selectedContractor.Limited_To_Specific_Job_Types__c}
+                                                                </p>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                            </template>
+
+                                            <template if:true={selectedContractor.showRestrictionsSection}>
+                                                <template if:true={selectedContractor.showTimeLimitedSection}>
+                                                    <template if:true={selectedContractor.hasEVisa}>
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <p><strong>Other Restrictions:</strong></p>
+                                                            <template if:false={rightToWorkEditOpen}>
+                                                                <p>{selectedContractor.Other_Restrictions__c}</p>
+                                                            </template>
+                                                        </div>
+                                                    </template>
+                                                </template>
+                                            </template>
+                                        </template>
+
+                                        <template if:true={selectedContractor.hasBiometric}>
+                                            <div class="slds-col slds-size_1-of-2 slds-p-top_small">
+                                                <p><strong>Biometric Evidence:</strong></p>
+                                                <p>{selectedContractor.Biometric_Evidence__c}</p>
+                                            </div>
+                                        </template>
+
+                                        <template if:true={selectedContractor.hasEntryDate}>
+                                            <div class="slds-col slds-size_1-of-2 slds-p-top_small">
+                                                <p><strong>Date Of Entry:</strong></p>
+                                                <p>{selectedContractor.Date_of_Entry__c}</p>
+                                            </div>
+                                        </template>
+
+                                        <template if:true={selectedContractor.hasExpiryDate}>
+                                            <div class="slds-col slds-size_1-of-2 slds-p-top_small">
+                                                <p><strong>Date Of Expiry:</strong></p>
                                                 <template if:false={rightToWorkEditOpen}>
-                                                    <p>{selectedContractor.Permission_Expiry_Date__c}</p>
+                                                    <p>{selectedContractor.RTW_Expiry_Date__c}</p>
+                                                </template>
+                                                <template if:true={rightToWorkEditOpen}>
+                                                    <lightning-input class="expiryDate-edit"
+                                                        message-when-value-missing="Please add Date of Expiry"
+                                                        required="true" placeholder="DD/MM/YYYY" date-style="short"
+                                                        data-passvalidation={selectedContractor.bypassValidation}
+                                                        type="date" name="expiryDate" onchange={onChangeRTWDetails}
+                                                        value={selectedContractor.RTW_Expiry_Date__c}>
+                                                    </lightning-input>
                                                 </template>
                                             </div>
                                         </template>
-                                    </template>
-
-                                    <template if:true={selectedContractor.showTimeLimitedSection}>
-                                        <template if:true={selectedContractor.hasEVisa}>
-                                            <div class="slds-col slds-size_1-of-2">
-                                                <p><strong>Any Work Restrictions:</strong></p>
-                                                <template if:false={rightToWorkEditOpen}>
-                                                    <p>{selectedContractor.Any_work_restrictions__c}</p>
-                                                </template>
-                                            </div>
-                                        </template>
-                                    </template>
-
-                                    <template if:true={selectedContractor.showRestrictionsSection}>
-                                        <template if:true={selectedContractor.showTimeLimitedSection}>
-                                            <template if:true={selectedContractor.hasEVisa}>
-                                                <div class="slds-col slds-size_1-of-2">
-                                                    <p><strong>Limited To X Hours Per Week:</strong></p>
-                                                    <template if:false={rightToWorkEditOpen}>
-                                                        <p>{selectedContractor.Limited_To_X_Hours_Per_Week__c}</p>
-                                                    </template>
-                                                </div>
-                                            </template>
-                                        </template>
-                                    </template>
-
-                                    <template if:true={selectedContractor.showRestrictionsSection}>
-                                        <template if:true={selectedContractor.showTimeLimitedSection}>
-                                            <template if:true={selectedContractor.hasEVisa}>
-                                                <div class="slds-col slds-size_1-of-2">
-                                                    <p><strong>Limited To Specific Job Types:</strong></p>
-                                                    <template if:false={rightToWorkEditOpen}>
-                                                        <p>{selectedContractor.Limited_To_Specific_Job_Types__c}</p>
-                                                    </template>
-                                                </div>
-                                            </template>
-                                        </template>
-                                    </template>
-
-                                    <template if:true={selectedContractor.showRestrictionsSection}>
-                                        <template if:true={selectedContractor.showTimeLimitedSection}>
-                                            <template if:true={selectedContractor.hasEVisa}>
-                                                <div class="slds-col slds-size_1-of-2">
-                                                    <p><strong>Other Restrictions:</strong></p>
-                                                    <template if:false={rightToWorkEditOpen}>
-                                                        <p>{selectedContractor.Other_Restrictions__c}</p>
-                                                    </template>
-                                                </div>
-                                            </template>
-                                        </template>
-                                    </template>
-                                </template>
-
-                                <template if:true={selectedContractor.hasBiometric}>
-                                    <div class="slds-col slds-size_1-of-2 slds-p-top_small">
-                                        <p><strong>Biometric Evidence:</strong></p>
-                                        <p>{selectedContractor.Biometric_Evidence__c}</p>
                                     </div>
                                 </template>
-
-                                <template if:true={selectedContractor.hasEntryDate}>
-                                    <div class="slds-col slds-size_1-of-2 slds-p-top_small">
-                                        <p><strong>Date Of Entry:</strong></p>
-                                        <p>{selectedContractor.Date_of_Entry__c}</p>
-                                    </div>
-                                </template>
-
-                                <template if:true={selectedContractor.hasExpiryDate}>
-                                    <div class="slds-col slds-size_1-of-2 slds-p-top_small">
-                                        <p><strong>Date Of Expiry:</strong></p>
-                                        <template if:false={rightToWorkEditOpen}>
-                                            <p>{selectedContractor.RTW_Expiry_Date__c}</p>
-                                        </template>
-                                        <template if:true={rightToWorkEditOpen}>
-                                            <lightning-input 
-                                                class="expiryDate-edit"
-                                                message-when-value-missing="Please add Date of Expiry"
-                                                required="true" 
-                                                placeholder="DD/MM/YYYY" 
-                                                date-style="short"
-                                                data-passvalidation={selectedContractor.bypassValidation}
-                                                type="date" 
-                                                name="expiryDate" 
-                                                onchange={onChangeRTWDetails}
-                                                value={selectedContractor.RTW_Expiry_Date__c}>
-                                            </lightning-input>
-                                        </template>
-                                    </div>
-                                </template>
-                            </div>
-                        </template>
                                 <template if:true={showFileUploadButton}>
                                     <div class="frontBackFileUpload">
                                         <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-top_x-small"
