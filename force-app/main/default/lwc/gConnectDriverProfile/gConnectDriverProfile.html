@@ -1,0 +1,2235 @@
+<template>
+    <div class="overrideStyle"></div>
+    <div class="target-div" style="position: relative;">
+        <template if:true={recordData}>
+
+            <div class="pageContainer slds-p-top_large slds-p-right_xx-large slds-p-left_xx-large">
+                <div class="left-right-section ">
+                    <div class="left-panel">
+                        <div class="left-panel-inside" style="font-family: var(--color-font-secondary);">
+                            <div class="profile-details">
+                                <div class="profile-image">
+                                    <template if:true={recordData.hasProfilePic}>
+                                        <img class="profilePic" src={recordData.ProfilePic_Base64}></img>
+                                    </template>
+                                    <template if:false={recordData.hasProfilePic}>
+                                        <lightning-avatar variant="circle" size="large"
+                                            fallback-icon-name="standard:user"></lightning-avatar>
+                                    </template>
+                                </div>
+                                <div class="profile-name">
+                                    <!-- <label class="slds-text-heading_small">{recordData.Client_Name__c}</label> -->
+                                    <label class="slds-text-heading_small">{recordData.Name}</label>
+                                </div>
+                                <div style="font-family: var(--color-font-secondary);color: #9C9EAD;">
+                                    <label class="field-name">Contractor Status:&nbsp;</label> <label
+                                        class="field-value"><b>
+                                            {recordData.App_SC_Status__c}</b> </label>
+                                </div>
+                                <div class="depot-info">
+                                    <!-- <template if:true={recordData.hasdepotIcon}>
+                                        <img class="depotIcon field-name" src={recordData.Depot_logo__c}></img>
+                                    </template>
+                                    <template if:false={recordData.hasdepotIcon}>
+                                        <label class="field-name">N/A</label>
+                                    </template> -->
+                                    <label class="field-value"
+                                        style="text-align: left;width: 45%;">{recordData.End_User_Name__c}</label>
+                                    <label class="field-value"
+                                        style="width: 45%;text-align: right;">{recordData.Depot_Name__c}</label>
+                                </div>
+                            </div>
+                            <template if:true={recordData.isStatusEngaged}>
+                                <div class="contractor-number">
+                                    <label>Contractor Number</label> <label><b>{recordData.Generate_ID__c}</b></label>
+                                </div>
+                            </template>
+                            <!-- // UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD -->
+                            <template if:false={isDriverRateDisabled}>
+                                <div class="rate-info">
+                                    <label class="linkView" onclick={handleViewRate}>View Rate</label>
+                                </div>
+                            </template> 
+                            <template if:true={showRateModule}>
+                                <section role="dialog" tabindex="-1"
+                                    class="slds-modal slds-fade-in-open custom-modal confirmModal" >
+                                    <div class="slds-modal__container" style="max-width: 25rem;">
+                                        <header class="slds-modal__header dialogueHeader">
+                                            <button class="close-button" onclick={handleCloseRateModule}>×</button>
+                                            <h2 class="slds-text-heading_medium custom-header">Driver Rate Information</h2>
+                                        </header>
+                                        <div class="slds-modal__content slds-p-around_medium">
+                                            <div class="slds-col ">
+                                                <div style="font-size: medium;padding: 5px 10px;display: flex;">
+                                                    <label class="field-name">Role Wise Rate :&nbsp;&nbsp;</label> <label class="field-value" style="font-weight: bold;">£ {roleWiseRate} </label>
+                                                </div>
+                                            </div>
+                                            <div class="slds-col ">
+                                                <div style="font-size: medium;padding: 5px 10px;display: flex;" class="inputbold">
+                                                    
+                                                    <lightning-input type="number" value={overrideRate} label="Driver Rate £"
+                                                        step="0.01" min="0" onchange={handleDriverRateChange}>
+                                                    </lightning-input> 
+                                                    <div class="save-button" style="padding-top: 24px;">
+                                                        &nbsp;&nbsp;<button class="slds-button btnSave"
+                                                            onclick={handleSaveDriverRate}>Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <footer class="slds-modal__footer dialogueFooter">
+                                            <div class="custom-button-group file-upload-footer">
+                                            </div>
+                                        </footer>
+                                    </div>
+                                </section>
+                                <div class="slds-backdrop slds-backdrop_open"></div>
+                            </template>
+
+                            <div class="contractor-info">
+                                <div class="section-title">Contractor Information</div>
+                                <div class="section-data">
+                                    <div class="data">
+                                        <label class="field-name">Name</label>
+                                        <label class="field-value">{recordData.Name}</label>
+                                    </div>
+                                    <div class="data">
+                                        <label class="field-name">Phone</label> <label
+                                            class="field-value">{recordData.Phone}</label>
+                                    </div>
+                                    <div class="data">
+                                        <label class="field-name">Email</label> <label
+                                            class="field-value">{recordData.Email__c}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="compliance-info">
+                                <div class="section-title">Compliance Information</div>
+                                <div class="section-data">
+                                    <div class="data">
+                                        <label class="field-name">NI Number</label> <label
+                                            class="field-value">{recordData.National_Insurance_Number__c}</label>
+                                    </div>
+                                    <div class="data">
+                                        <label class="field-name">UTR Number</label> <label
+                                            class="field-value">{recordData.URT_Number_Entry__c}</label>
+                                    </div>
+                                    <div class="data">
+                                        <label class="field-name">VAT Number</label> <label
+                                            class="field-value">{recordData.VAT_Number_Entry__c}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <template if:true={isContractorSelect}>
+                                <div class="engagement-info">
+                                    <div class="section-title">Engagement Details</div>
+                                    <div class="section-data">
+                                        <div class="data">
+                                            <label class="field-name">Engaged Date</label> <label
+                                                class="field-value">{recordData.Engaged_Date}</label>
+                                        </div>
+                                        <div class="data">
+                                            <label class="field-name">Disengaged Date</label> <label
+                                                class="field-value">{recordData.Disengaged_Date}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <!-- <div class="contact-info">
+                                <div class="section-title">Contact Information</div>
+                                <div class="section-data">
+                                    <table>
+                                        <tr>
+                                            <td style="width: 80%;">
+                                                <div>
+                                                    <div class="field-name" style="margin-bottom: 10px;">Background Check</div> 
+                                                    <div class="field-name" style="margin-bottom: 10px;">Toxicology Check</div> 
+                                                    <div class="field-name" style="margin-bottom: 10px;">DVLA Check</div>   
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <div style="margin-bottom: 10px;">
+                                                        <template if:true={recordData.hasBGCheckAvailable}>
+                                                            <template if:true={recordData.isBGCheckPassed}>
+                                                                <div class="Passed-Download">
+                                                                    <div><label class="field-value" style="color: #24D495;font-weight: bold;">{recordData.Background_Check_Status__c}</label></div>
+                                                                    <div><img class="fileDownload-btn" src={fileDownloadIcon} data-doc-type="BgCheck"
+                                                                        onclick={handleDownloadDoc}></img></div>
+                                                                    
+                                                                </div>
+                                                            </template>
+                                                            <template if:false={recordData.isBGCheckPassed}>
+                                                                <label class="field-value" style="color: #D5493D;font-weight: bold;">{recordData.Background_Check_Status__c}</label>
+                                                            </template>
+                                                        </template>
+                                                        <template if:false={recordData.hasBGCheckAvailable}>
+                                                            <label class="field-value" style="font-weight: bold;">PENDING</label>
+                                                        </template>
+                                                        
+                                                    </div>
+                                                    <div style="margin-bottom: 10px;">
+                                                        <template if:true={recordData.hasToxicAvailable}>
+                                                            <template if:true={recordData.isToxicPassed}>
+                                                                <div class="Passed-Download">
+                                                                    <div><label class="field-value" style="color: #24D495;font-weight: bold;">{recordData.Toxicology_Status__c}</label></div>
+                                                                    <div><img class="fileDownload-btn" src={fileDownloadIcon} data-doc-type="TxCheck"
+                                                                        onclick={handleDownloadDoc}></img></div>
+                                                                </div>
+                                                            </template>
+                                                            <template if:false={recordData.isToxicPassed}>
+                                                                <label class="field-value" style="color: #D5493D;font-weight: bold;">{recordData.Toxicology_Status__c}</label>
+                                                            </template>
+                                                        </template>
+                                                        <template if:false={recordData.hasToxicAvailable}>
+                                                            <label class="field-value" style="font-weight: bold;">PENDING</label>
+                                                        </template>
+                                                    </div>
+                                                    <div style="margin-bottom: 10px;">
+                                                        <template if:true={recordData.isDVLAPassed}>
+                                                            <div class="Passed-Download">
+                                                                <label class="field-value" style="color: #24D495;font-weight: bold;">PASSED</label>
+                                                                <img class="fileDownload-btn" src={fileDownloadIcon} data-doc-type="DvlaCheck"
+                                                                            onclick={handleDownloadDoc}></img>
+                                                            </div>
+                                                        </template>
+                                                        <template if:false={recordData.isDVLAPassed}>
+                                                            <label class="field-value" style="color: #D5493D;font-weight: bold;">FAIL</label>
+                                                        </template>
+                                                    </div>
+    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                     <div class="data">
+                                        <label class="field-name">Background Check</label> 
+                                        <div>
+                                            <template if:true={recordData.isBGCheckPassed}>
+                                                <div class="Passed-Download">
+                                                    <div><label class="field-value" style="color: #24D495;font-weight: bold;">{recordData.Background_Check_Status__c}</label></div>
+                                                    <div><img class="fileDownload-btn" src={fileDownloadIcon} data-doc-type="BgCheck"
+                                                        onclick={handleDownloadDoc}></img></div>
+                                                    
+                                                </div>
+                                                
+                                            </template>
+                                            <template if:false={recordData.isBGCheckPassed}>
+                                                <label class="field-value" style="color: #D5493D;font-weight: bold;">{recordData.Background_Check_Status__c}</label>
+                                            </template>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="data">
+                                        <label class="field-name">Toxicology Check</label>  
+                                        <div>
+                                            <template if:true={recordData.isToxicPassed}>
+                                                <div class="Passed-Download">
+                                                    <div><label class="field-value" style="color: #24D495;font-weight: bold;">{recordData.Toxicology_Status__c}</label></div>
+                                                    <div><img class="fileDownload-btn" src={fileDownloadIcon} data-doc-type="TxCheck"
+                                                        onclick={handleDownloadDoc}></img></div>
+                                                </div>
+                                                
+                                            </template>
+                                            <template if:false={recordData.isToxicPassed}>
+                                                <label class="field-value" style="color: #D5493D;font-weight: bold;">{recordData.Toxicology_Status__c}</label>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="data">
+                                        <label class="field-name">DVLA Check</label>  
+                                        <template if:true={recordData.isDVLAPassed}>
+                                            <div class="Passed-Download">
+                                                <label class="field-value" style="color: #24D495;font-weight: bold;">PASSED</label>
+                                                <img class="fileDownload-btn" src={fileDownloadIcon} data-doc-type="DvlaCheck"
+                                                            onclick={handleDownloadDoc}></img>
+                                            </div>
+                                        </template>
+                                        <template if:false={recordData.isDVLAPassed}>
+                                            <label class="field-value" style="color: #D5493D;font-weight: bold;">FAIL</label>
+                                        </template>
+                                    </div> 
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <!-- <div class="right-panel" style="height: calc(100vh - 100px);"> -->
+                    <div class="right-panel">
+                        <div class="tab-section">
+                            <ul style="display: flex;font-family: var(--color-font-primary);font-size: 16px;"
+                                class="tabMenu-list">
+                                <template for:each={tabMenu} for:item="tabItem">
+                                    <template if:true={tabItem.enabled}>
+                                        <template if:true={tabItem.selected}>
+                                            <li key={tabItem.id} class="Information activeMenuTab" style={liWidthStyle}
+                                                data-tab-name={tabItem.label} onclick={handleTabItemClick}
+                                                data-menuid={tabItem.id}>
+                                                <div class="tab">{tabItem.label}</div>
+                                            </li>
+                                        </template>
+                                        <template if:false={tabItem.selected}>
+                                            <li key={tabItem.id} class="Information" data-tab-name={tabItem.label}
+                                                style={liWidthStyle} onclick={handleTabItemClick}
+                                                data-menuid={tabItem.id}>
+                                                <div class="tab">{tabItem.label}</div>
+                                            </li>
+                                        </template>
+                                    </template>
+                                </template>
+                            </ul>
+                        </div>
+
+                        <div class="tabMenu-section" style="font-family: var(--color-font-secondary);">
+
+                            <template if:true={isContractorSelect}>
+
+
+                                <div class="section-button">
+                                    <template if:true={recordData.isStatusEngaged}>
+                                        <div class="profile_btn"><button onclick={handleNewDepot}>Assign New
+                                                Depot</button></div>
+                                    </template>
+
+                                    <template if:true={recordData.isStatusDisengaged}>
+                                        <div class="profile_btn"><button onclick={handleDisengage}>Disengage</button>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <template if:true={openDisengageConfirm}>
+                                    
+                                    <section role="dialog" tabindex="-1"
+                                        class="slds-modal slds-fade-in-open custom-modal confirmModal">
+                                        
+                                        <div class="slds-modal__container">
+                                            <header class="slds-modal__header dialogueHeader">
+                                                <button class="close-button" onclick={closeConfirmModal}>×</button>
+                                                <h2 class="slds-text-heading_medium custom-header">Disengaged Confirm</h2>
+                                            </header>
+                                            <div class="slds-modal__content slds-p-around_medium">
+                                                <!-- <div style="text-align: center; margin-bottom: 16px;">
+                                                    <label class="field-name" style="font-weight: bold;">Driver Name: </label>
+                                                    <label class="field-value">{recordData.Name}</label>
+                                                </div> -->
+                                                <template if:true={isDisenegaeLoader}>
+                                                    <div class="overlay" style="background: transparent;">
+                                                        <lightning-spinner alternative-text="Uploading" size="small" style="background: transparent;"></lightning-spinner>
+                                                    </div>
+                                                </template>
+                                                <template if:false={hasActiveDeduction}>
+                                                    <div class="slds-col slds-align_absolute-center">
+                                                        <p>Are you sure you want to disengage <strong >{recordData.Name}</strong>?</p>
+                                                    </div>
+                                                </template>
+                                                <template if:true={hasActiveDeduction}>
+                                                    <div class="slds-col slds-align_absolute-center" style="color:red;">
+                                                        <p>There is an Active/Paused deduction for <strong>{recordData.Name}</strong> : £ {totalRemainDeductionBalance} </p>
+                                                    </div>
+                                                    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-top_small">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col"><div class="slds-truncate">Name</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Deduction Type</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Balance Amount (£)</div></th>
+                                                                <th scope="col"><div class="slds-truncate">Status</div></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <template for:each={deductionList} for:item="ded">
+                                                                <tr key={ded.Name}>
+                                                                    <td><div class="slds-truncate">{ded.name}</div></td>
+                                                                    <td><div class="slds-truncate">{ded.deductionType}</div></td>
+                                                                    <!-- <td><div class="slds-truncate">{ded.balanceAmount}</div></td> -->
+                                                                    <td><div class="slds-truncate">{ded.balanceAmountFormatted}</div></td>
+                                                                    <td><div class="slds-truncate">{ded.status}</div></td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </template>
+                                            </div>
+                                            <footer class="slds-modal__footer dialogueFooter">
+                                                <div class="custom-button-group file-upload-footer">
+                                                    <button name="cancelDelete" class="custom-button cancel-button"
+                                                        onclick={closeConfirmModal}>No</button>
+                                                    <button name="confirmDelete" class="custom-button validate-button"
+                                                        onclick={handleDisengageClick}>Yes</button>
+                                                </div>
+                                            </footer>
+                                        </div>
+                                    </section>
+                                    <div class="slds-backdrop slds-backdrop_open"></div>
+                                </template>
+
+                                <div class="Personal-section">
+                                    <div class="slds-p-around_medium">
+                                        <div class="menu-section-title">Personal Information</div>
+                                        <div class=menu-section-data>
+                                            <div class="slds-grid slds-wrap">
+                                                <div
+                                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                    <div class="contractor-field">
+                                                        <div class=" field-title">First Name</div>
+                                                        <div>{recordData.First_Name__c}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                    <div class="contractor-field">
+                                                        <div class=" field-title">Last Name</div>
+                                                        <div>{recordData.Last_Name__c}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                    <div class="contractor-field">
+                                                        <div class=" field-title">Date of Birth</div>
+                                                        <div>{recordData.Date_of_Birth}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-grid slds-wrap">
+                                                <div
+                                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                    <div class="contractor-field">
+                                                        <div class=" field-title">Driver Role</div>
+                                                        <div>{recordData.Role__c}</div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                    <div class="contractor-field">
+                                                        <div class=" field-title">External Id</div>
+                                                        <div>N/A</div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                    <div class="contractor-field">
+                                                        <div class=" field-title">Preferred Language
+                                                        </div>
+                                                        <div>
+                                                            {recordData.Preffered_Language__c}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <template if:true={recordData.showEmergencyContact}>
+                                                <div class="emergency-section slds-m-top_medium">
+                                                    <div class="menu-section-title" style="border-top: 1px solid #DCDFE3;padding-top: 10px;">Emergency Contact </div>
+                                                    <div class="menu-section-data">
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                                <div class="contractor-field">
+                                                                    <div class=" field-title">Emergency Contact Name</div>
+                                                                    <div>{recordData.Emergency_Contact_Name__c}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                                <div class="contractor-field">
+                                                                    <div class=" field-title">Contact Number</div>
+                                                                    <div>{recordData.Emergency_Contract_Telephone_Number__c}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_4-of-12">
+                                                                <div class="contractor-field">
+                                                                    <div class=" field-title">Relationship</div>
+                                                                    <div>{recordData.Emergency_Contact_Relationship__c}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                           
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            
+                                            <div class="slds-grid slds-wrap">
+                                                <div
+                                                    class="slds-col slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-size_12-of-12">
+                                                    <div class="contractor-field">
+                                                        <div class=" field-title">Main Contractor Notes
+                                                        </div>
+                                                        <lightning-textarea rows="1" class="admin_note"
+                                                            onchange={handleContractorChange} name="adminNotes"
+                                                            value={recordData.Admin_Notes__c}
+                                                            message-when-value-missing="Please Enter Admin Note"
+                                                            required="true"
+                                                            style="width: 100%;">{recordData.Admin_Notes__c}
+                                                        </lightning-textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="save-button">
+                                            <button class="slds-button btnSave"
+                                                onclick={handleSaveContractor}>Save</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="Address-section">
+                                    <div class="slds-p-around_medium" style="display: flex; width: 100%">
+                                        <div class="current-address">
+                                            <div class="menu-section-title">Current Address Details</div>
+                                            <div class=menu-section-data>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div
+                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                        <div class="contractor-field">
+                                                            <div class=" field-title">Address Line 1
+                                                            </div>
+                                                            <div>
+                                                                {recordData.Address_Line_1__c}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                        <div class="contractor-field">
+                                                            <div class=" field-title">Address Line 2
+                                                            </div>
+                                                            <div>
+                                                                {recordData.Address_Line_2__c}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div
+                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                        <div class="contractor-field">
+                                                            <div class=" field-title">Town</div>
+                                                            <div>{recordData.Town__c}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                        <div class="contractor-field">
+                                                            <div class=" field-title">Country</div>
+                                                            <div>{recordData.Country__c}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div
+                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                        <div class="contractor-field">
+                                                            <div class=" field-title">Postcode</div>
+                                                            <div>{recordData.Postcode__c}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <template if:true={recordData.showPreviousAddress}>
+                                            <div class="previous-address">
+                                                <div class="menu-section-title">Previous Address Details</div>
+                                                <div class=menu-section-data>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Address Line 1
+                                                                </div>
+                                                                <div>
+                                                                    {recordData.Previous_Address_Line_1__c}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Address Line 2
+                                                                </div>
+                                                                <div>
+                                                                    {recordData.Previous_Address_Line_2__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Town</div>
+                                                                <div>
+                                                                    {recordData.Previous_Town__c}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Country</div>
+                                                                <div>
+                                                                    {recordData.Previous_Country__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Postcode</div>
+                                                                <div>
+                                                                    {recordData.Previous_Postcode__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                    </div>
+                                </div>
+
+                            </template>
+
+                            <template if:true={isFinacialSelect}>
+
+                                <div class="finacialContainer">
+                                    <c-g-connect-driver-finance-info
+                                        record-id={recordId}></c-g-connect-driver-finance-info>
+                                </div>
+                            </template>
+
+                            <!-- <template if:true={isVehicleSelect}>
+                                <div class="comingsoon-section">
+                                    <c-g-connect-coming-soon></c-g-connect-coming-soon>
+                                </div>
+                            </template> -->
+
+                            <template if:true={isIncidentsSelect}>
+
+                                <div class="section-button">
+                                    <!-- <div class="search-section">
+                                        <lightning-input placeholder="Search By Ref." class="search_btn"
+                                            variant="label-hidden" name="SearchName" type="search"
+                                            onchange={onchangeincidentDetails} style="width: 100%;"
+                                            value={incidentSearchValue}></lightning-input>
+                                    </div> -->
+                                    <template if:true={recordData.isStatusEngaged}>
+                                        <div class="profile_btn"><button onclick={handleNewIncident}>+ New
+                                                Incident</button></div>
+                                    </template>
+
+                                </div>
+
+                                <div class="incident-log-data">
+                                    <div class="incident-log-div" style="overflow-x:auto">
+                                        <table class="incident-log-table">
+                                            <thead>
+                                                <tr>
+                                                    <!-- <th scope="table-col" style="width: 2%;">Ref.</th>
+                                                    <th scope="table-col" style="width: 8%;">End User</th>
+                                                    <th scope="table-col" style="width: 10%;">Depot</th> -->
+                                                    <!-- 1 -->
+                                                    <!-- <th scope="table-col" style="width: 10%;">Date of Incident</th> -->
+                                                    <th scope="col" style="width: 10%;">
+                                                        <div class="col" title="Date of Incident">Date of Incident
+                                                            <img src={ascDscIcon} data-field="Date_of_Incident__c" class="centered-img"
+                                                                onclick={handleIncidentSort}>
+                                                        </div>
+                                                    </th>
+                                                    <!-- 2 -->
+                                                    <th scope="table-col" style="width: 10%;">Type</th>
+                                                    <!-- 3 -->
+                                                    <th scope="table-col" style="width: 10%;">Requested Date</th>
+                                                    <!-- 4 -->
+                                                    <th scope="col" style="width: 10%;">
+                                                        <div class="col" title="Deduction Type">Status
+                                                            <img src={ascDscIcon} data-field="Status__c" class="centered-img"
+                                                                onclick={handleIncidentSort}>
+                                                        </div>
+                                                    </th>
+                                                    <!-- 5 -->
+                                                    <th scope="table-col" style="width: 15%;">Accepted / Declined Date
+                                                    </th>
+                                                    <!-- 6 -->
+                                                     <th scope="col" style="width: 10%;">
+                                                        <div class="col" title="Depot">Depot
+                                                            <img src={ascDscIcon} data-field="Depot__c" class="centered-img"
+                                                                onclick={handleIncidentSort}>
+                                                        </div>
+                                                    </th>
+                                                    <!-- <th scope="col" style="width: 10%;">
+                                                        <div class="col" title="Deduction Type">Ref.
+                                                            <img src={ascDscIcon} data-field="Name" class="centered-img"
+                                                                onclick={handleIncidentSort}>
+                                                        </div>
+                                                    </th>
+                                                    <th scope="col" style="width: 10%;">
+                                                        <div class="col" title="End User">End User
+                                                            <img src={ascDscIcon} data-field="End_User__c" class="centered-img"
+                                                                onclick={handleIncidentSort}>
+                                                        </div>
+                                                    </th> -->
+                                                   
+
+                                                    
+                                                    <!-- <th scope="table-col" style="width: 10%;">Status</th> -->
+                                                    
+
+                                                    
+                                                    <th scope="table-col" style="width: 15%;">Action</th>
+                                                    <th scope="table-col" style="width: 4%;">
+                                                        <div class="table-col"></div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="incident-record-data">
+                                                <template if:true={incidentLogsAvailiable}>
+                                                    <template for:each={paginatedData} for:item="record"
+                                                        for:index="index">
+                                                        <tr key={record.Id}>
+                                                            <!--1 -->
+                                                            <td>{record.DateofIncident}</td>
+                                                            <!-- 2 -->
+                                                            <td>{record.Type__c}</td>
+                                                            <!--3 -->
+                                                            <td>{record.RequestedDate}</td>
+                                                            <!--4-->
+                                                            <td>{record.Status__c}</td>
+                                                            <!--5-->
+                                                            <td>{record.AcceptDeclineDate}</td>
+                                                            <!--6-->
+                                                            <td>{record.Depot__r.Name}</td>
+                                                           
+                                                            <!-- <td>{record.Name}</td>
+                                                            <td>{record.End_User__r.Name}</td>
+                                                             -->
+                                                            
+                                                            <td>
+                                                                <div style="display: flex; ">
+                                                                    <div class="pass_fail_btn">
+
+                                                                        <template
+                                                                            if:true={record.acceptDeclineBtnEnable}>
+
+                                                                            <button name="passBgCheck"
+                                                                                data-index={index}
+                                                                                class="status-button pass-button"
+                                                                                data-btntype="Accepted"
+                                                                                data-selected-id={record.Id}
+                                                                                onclick={handeleAcceptDecline}>
+                                                                                Accept
+                                                                            </button>
+                                                                            <button name="failBgCheck"
+                                                                                data-index={index}
+                                                                                class="status-button fail-button"
+                                                                                data-btntype="Decline"
+                                                                                data-selected-id={record.Id}
+                                                                                onclick={handeleAcceptDecline}>
+                                                                                Decline
+                                                                            </button>
+                                                                        </template>
+                                                                        <template
+                                                                            if:false={record.acceptDeclineBtnEnable}>
+                                                                            <button name="passBgCheck"
+                                                                                data-index={index}
+                                                                                class="status-button pass-button "
+                                                                                style="color:gray"
+                                                                                data-btntype="Accepted"
+                                                                                data-selected-id={record.Id}
+                                                                                disabled>Accept</button>
+                                                                            <button name="failBgCheck"
+                                                                                data-index={index}
+                                                                                class="status-button fail-button "
+                                                                                style="color:gray"
+                                                                                data-btntype="Decline"
+                                                                                data-selected-id={record.Id}
+                                                                                disabled>Decline</button>
+                                                                        </template>
+
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td style="padding: 0px">
+                                                                <div class="record-menu-div">
+                                                                    <div>
+                                                                        <!-- <lightning-button-icon
+																																						icon-name="utility:threedots_vertical"
+																																						variant="border-filled"
+																																						alternative-text="More actions"
+																																						onclick={handleIncidentMenuClick}
+																																						data-selected-id={record.Id}
+																																						data-index={index}
+																																						class="action-button">
+																																				</lightning-button-icon> -->
+                                                                        <img class="record-menu" src={recordMenuIcon}
+                                                                            onclick={handleIncidentMenuClick}
+                                                                            data-selected-id={record.Id}
+                                                                            data-index={index}></img>
+                                                                    </div>
+                                                                    <template if:true={record.visibleRecordMenu}>
+                                                                        <div class="dropdownMenuIncident">
+                                                                            <ul class="dropdownMenuList">
+                                                                                <li class="dropdownMenuItem"
+                                                                                    onclick={handleIncidentViewEditClick}
+                                                                                    data-selected-id={record.Id}
+                                                                                    data-action-type="view">
+                                                                                    <div class="menu-item">
+                                                                                        <img src={viewIcon}
+                                                                                            alt="View Icon"
+                                                                                            class="menu-icon" />
+                                                                                        <span>View Incident</span>
+                                                                                    </div>
+                                                                                </li>
+                                                                                <template
+                                                                                    if:true={recordData.isStatusEngaged}>
+                                                                                    <!-- <template if:true={record.acceptDeclineBtnEnable}> -->
+                                                                                    <li class="dropdownMenuItem"
+                                                                                        onclick={handleIncidentViewEditClick}
+                                                                                        data-selected-id={record.Id}
+                                                                                        data-action-type="edit">
+                                                                                        <div class="menu-item">
+                                                                                            <img src={editIcon}
+                                                                                                alt="Edit Icon"
+                                                                                                class="menu-icon" />
+                                                                                            <span>Edit Incident</span>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <!-- </template> -->
+                                                                                </template>
+
+
+                                                                                <!--<li class="dropdownMenuItem" onclick={handleIncidentDeleteClick} data-selected-id={record.Id} data-action-type="delete">
+																																										<div class="menu-item">
+																																												<img src={deleteIcon} alt="Delete Icon" class="menu-icon" />
+																																												<span>Delete Incident</span>
+																																										</div>
+																																								</li> -->
+                                                                            </ul>
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </template>
+                                                <template if:false={incidentLogsAvailiable}>
+                                                    <tr>
+                                                        <td colspan="6"
+                                                            style="font-weight: bold;color: var(--color-primary);">No
+                                                            incident logs available.</td>
+                                                    </tr>
+                                                </template>
+                                                <template if:true={searchResultNotFound}>
+                                                    <tr>
+                                                        <td colspan="6" style="font-weight: bold;color: red;">No
+                                                            matching record found.</td>
+                                                    </tr>
+                                                </template>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="Pagination_Contents">
+                                        <template if:true={disablePreviousButton}>
+                                            <button class="previousButton" onclick={handlePreviousPage}
+                                                disabled>Previous</button>
+                                        </template>
+                                        <template if:false={disablePreviousButton}>
+                                            <button class="previousButton"
+                                                onclick={handlePreviousPage}>Previous</button>
+                                        </template>
+
+                                        <!-- <span class="currentPage"> Page {currentPage} of {totalPages} </span> -->
+                                        <div style="display: flex;">
+                                            <span class="currentPage"> Page </span><lightning-input type="number"
+                                                variant="label-hidden" style="width: 45px; "
+                                                onchange={handleOnchangeInput} value={currentPageInc} min="1"
+                                                max={totalPages} onkeydown={handleOnchangeInput}></lightning-input><span
+                                                class="currentPage">of {totalPages}</span>
+                                        </div>
+                                        <template if:true={disableNextButton}>
+                                            <button class="nextButton" onclick={handleNextPage} disabled>Next</button>
+                                        </template>
+                                        <template if:false={disableNextButton}>
+                                            <button class="nextButton" onclick={handleNextPage}>Next</button>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template if:true={showViewIncidentModal}>
+                                <c-g-connect-view-edit-incident incident-id={selectedIncidentId} contact-id={contactId}
+                                    app-id={recordId} incident-data={incidentViewRecord}
+                                    edit-mode-enabled={showEditIncidentModal} view-mode-enabled={showViewIncidentModal}
+                                    oncallclosemethod={closeIncidentModal}>
+                                </c-g-connect-view-edit-incident>
+                                <!-- <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open custom-modal view-incident-modal">
+
+                                        <div class="slds-modal__container">
+                                            <header class="slds-modal__header dialogueHeader">
+                                                <h2 class="slds-text-heading_medium custom-header">VIEW INCIDENT DETAILS</h2>
+                                                <button class="slds-button slds-button_icon slds-modal__close close-button" title="Close" onclick={closeViewIncidentModal}>
+                                                    <img src={crossIcon} alt="Close" class="success-arrow-icon" />
+                                                </button>
+                                            </header>
+
+                                            <div class="slds-modal__content slds-p-around_medium">
+                                                <div class="slds-grid slds-wrap slds-gutters incidentViewSpace">
+                                                    <div class="slds-col slds-size_1-of-2 ">
+                                                        <p><strong>Ref.:</strong></p> <p>{incidentViewRecord.Name}</p>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-2 ">
+                                                        <p><strong>Title:</strong></p> <p>{incidentViewRecord.Title__c}</p>
+                                                    </div>
+                                                 </div>
+
+                                                 <div class="slds-grid slds-wrap slds-gutters incidentViewSpace">
+                                                    <div class="slds-col slds-size_1-of-2 ">
+                                                        <p><strong>Type:</strong></p> <p>{incidentViewRecord.Type__c}</p>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p><strong>Requested Date:</strong></p> <p>{incidentViewRecord.Requested_Date__c}</p>
+                                                    </div>
+                                                 </div>
+
+                                                 <div class="slds-grid slds-wrap slds-gutters incidentViewSpace">
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p><strong>Accepted Date:</strong></p> <p>{incidentViewRecord.Accepted_Date__c}</p>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p><strong>Comment:</strong></p> <p>{incidentViewRecord.Comment__c}</p>
+                                                    </div>
+                                                 </div>
+
+                                                 <div class="slds-grid slds-wrap slds-gutters incidentViewSpace">
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p><strong>Status:</strong></p> <p>{incidentViewRecord.Status__c}</p>
+                                                    </div>    
+                                                 </div>   
+                                            </div>
+
+                                            
+                                            <footer class="slds-modal__footer centered-footer dialogueFooter">
+                                                <button class="slds-button slds-button_brand closeFooter-button" onclick={closeViewIncidentModal}>Close</button>
+                                            </footer>
+                                        </div>
+                                    </section>
+                                    <div class="slds-backdrop slds-backdrop_open"></div> -->
+                            </template>
+
+
+                            <template if:true={showEditIncidentModal}>
+                                <c-g-connect-view-edit-incident incident-id={selectedIncidentId} contact-id={contactId}
+                                    app-id={recordId} incident-data={incidentViewRecord}
+                                    edit-mode-enabled={showEditIncidentModal} view-mode-enabled={showViewIncidentModal}
+                                    oncallclosemethod={closeIncidentModal}>
+                                </c-g-connect-view-edit-incident>
+                                <!-- <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open custom-modal">
+                                    <div class="slds-modal__container">
+                                        
+                                        <header class="slds-modal__header dialogueHeader">
+                                            <h2 class="slds-text-heading_medium custom-header">Edit Incident</h2>
+                                            <button class="slds-button slds-button_icon slds-modal__close close-button" title="Close" onclick={closeEditIncidentModal}>
+                                                <img src={crossIcon} alt="Close" class="success-arrow-icon" />
+                                            </button>
+                                        </header>
+
+                                        
+                                        <div class="slds-modal__content slds-p-around_medium">
+                                            <lightning-input
+                                                label="Ref."
+                                                value={incidentViewRecord.Name}
+                                                onchange={handleInputChange}
+                                                data-field="Name"
+                                            ></lightning-input>
+
+                                            <lightning-input
+                                                label="Title"
+                                                value={incidentViewRecord.Title__c}
+                                                onchange={handleInputChange}
+                                                data-field="Title__c"
+                                                message-when-value-missing="Please select the Title" required="true"
+                                            ></lightning-input>
+
+                                            <lightning-combobox
+                                                label="Type"
+                                                value={incidentViewRecord.Type__c}
+                                                placeholder="Select Type"
+                                                options={type_option}
+                                                onchange={handleInputChange}
+                                                data-field="Type__c"
+                                                message-when-value-missing="Please select the Type" required="true"
+                                            ></lightning-combobox>
+
+                                            <lightning-input
+                                                type="date"
+                                                label="Requested Date"
+                                                value={incidentViewRecord.Requested_Date__c}
+                                                onchange={handleInputChange}
+                                                data-field="Requested_Date__c"
+                                            ></lightning-input>
+
+                                            <lightning-input
+                                                type="date"
+                                                label="Accepted Date"
+                                                value={incidentViewRecord.Accepted_Date__c}
+                                                onchange={handleInputChange}
+                                                data-field="Accepted_Date__c"
+                                            ></lightning-input>
+
+                                            <lightning-textarea
+                                                label="Comment"
+                                                value={incidentViewRecord.Comment__c}
+                                                onchange={handleInputChange}
+                                                data-field="Comment__c"
+                                            ></lightning-textarea>
+
+                                            <lightning-combobox
+                                                label="Status"
+                                                value={incidentViewRecord.Status__c}
+                                                placeholder="Select a Status"
+                                                options={status_option}
+                                                onchange={handleInputChange}
+                                                data-field="Status__c"
+                                            ></lightning-combobox>
+                                        </div>
+
+                                        
+                                        <footer class="slds-modal__footer centered-footer dialogueFooter">
+                                            <button class="slds-button slds-button_brand continue-button" onclick={handleSaveIncident}>Save</button>
+                                            <button class="slds-button slds-button_neutral" onclick={closeEditIncidentModal}>Cancel</button>
+                                        </footer>
+                                    </div>
+                                </section>
+                                <div class="slds-backdrop slds-backdrop_open"></div> -->
+                            </template>
+
+                            <!-- // UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD -->
+                            <template if:true={isAvailabilitySelect}>
+
+                                <div class="containerAvailability">
+                                    <c-g-connect-driver-availability record-id={recordId} contact-id={contactId}
+                                        driver-details={recordData}></c-g-connect-driver-availability>
+                                </div>
+                            </template>
+                            
+
+
+                            <template if:true={isInvoicesSelect}>
+                                <div class="comingsoon-section">
+                                    <c-g-connect-coming-soon></c-g-connect-coming-soon>
+                                </div>
+                            </template>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="down-Panel">
+                    <template if:true={isContractorSelect}>
+                        <div class="doctab-menu">
+                            <ul style="display: flex;font-family: var(--color-font-primary);font-size: 17px;"
+                                class="docMenu-list">
+                                <template for:each={tabDocMenu} for:item="tabItem">
+                                    <template if:true={tabItem.selected}>
+                                        <li key={tabItem.id} class="activeDocMenu" data-tab-name={tabItem.label}
+                                            onclick={handleDocTabItemClick} data-docmenuid={tabItem.id}>
+                                            <div class="tab">{tabItem.label}</div>
+                                        </li>
+                                    </template>
+                                    <template if:false={tabItem.selected}>
+                                        <li key={tabItem.id} data-tab-name={tabItem.label}
+                                            onclick={handleDocTabItemClick} data-docmenuid={tabItem.id}>
+                                            <div class="tab">{tabItem.label}</div>
+                                        </li>
+                                    </template>
+
+                                </template>
+                            </ul>
+                        </div>
+
+                        <template if:true={isDocumentSelect}>
+
+                            <div class="doc-menu-title">Contractor Documentation</div>
+                            <div class="document-menu-section">
+                                <div class="image-section" style="display: flex;">
+
+                                    <!-- DL data -->
+                                    <div class="image-section-data dl-section">
+                                        <div class="customHeaderFlex">
+                                            <p class="image-section-title">Driving Licence</p>
+                                            <div>
+                                                <button class="slds-button btnDwl" 
+                                                    onclick={handleDrivingLicenceEditOpen}>Edit</button>
+                                                <button class="slds-button btnDwl" data-doctype="GConnect DL"
+                                                    onclick={handleDownload}>Download</button>
+                                            </div>
+                                        </div>
+                                        <template if:true={showError}>
+                                            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                                                <div class="slds-modal__container">
+                                                    <!-- Modal Header -->
+                                                    <header class="slds-modal__header slds-theme_error">
+                                                        <h2 class="slds-modal__title slds-hyphenate">Error</h2>
+                                                    </header>
+
+                                                    <!-- Modal Body -->
+                                                    <div class="slds-modal__content slds-p-around_medium"
+                                                        id="modal-content-id">
+                                                        <p>{errorMessage}</p>
+                                                    </div>
+
+                                                    <!-- Modal Footer -->
+                                                    <footer class="slds-modal__footer">
+                                                        <button class="slds-button slds-button_neutral"
+                                                            onclick={closeErrorModal}>Close</button>
+                                                    </footer>
+                                                </div>
+                                            </section>
+                                            <!-- Backdrop -->
+                                            <div class="slds-backdrop slds-backdrop_open"></div>
+                                        </template>
+
+                                        <div class="driving-licence-details">
+                                            <div class="driving-licence-images">
+                                                <div class="imageDiv">
+                                                    <template if:true={hasFrontDLImage}>
+                                                        <img src={dlFrontImage} class="frontImage"></img>
+                                                    </template>
+                                                    <template if:false={hasFrontDLImage}>
+                                                        <div class="imageNotAvaContainer">
+                                                            No Image Uploaded
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                                <div class="imageDiv">
+                                                    <template if:true={hasBackDLImage}>
+                                                        <img src={dlBackImage} class="backImage"></img>
+                                                    </template>
+                                                    <template if:false={hasBackDLImage}>
+                                                        <div class="imageNotAvaContainer">
+                                                            No Image Uploaded
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="driving-licence-data">
+                                                <!-- <template if:false={drivingLicenseEditOpen}>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Country</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">DVLA Check</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Number</div>
+                                                                <div>
+                                                                    {recordData.Driving_Licence_Number__c}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Last Checked</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Issue Date</div>
+                                                                <div>
+                                                                    {recordData.Driving_Licence_Issue_Date__c}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Next Check</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Expiry</div>
+                                                                <div>
+                                                                    {recordData.Driving_Licence_Expiry_Date__c}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Points on Licence
+                                                                </div>
+                                                                <div>
+                                                                    {recordData.Points_on_Licence__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Type</div>
+                                                                <div>
+                                                                    {recordData.Type_of_licence__c}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Vehicles Can Drive
+                                                                </div>
+                                                                <div>{recordData.Additional_licence_categories__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template> -->
+
+                                                <template if:false={drivingLicenseEditOpen}>
+                                                     <!-- commenting -->
+                                                   <!-- <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Country</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div>
+                                                       
+                                                         <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">DVLA Check</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div> 
+                                                    </div>-->
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Type</div>
+                                                                <div>{recordData.Type_of_licence__c}
+                                                                   </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Number</div>
+                                                                <div>
+                                                                     {recordData.Driving_Licence_Number__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Issue Date</div>
+                                                                <div>
+                                                                    {recordData.Driving_Licence_Issue_Date__c}</div>
+                                                            </div>
+                                                        </div>
+                                                       <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Driving Licence
+                                                                    Expiry</div>
+                                                                <div>
+                                                                    {recordData.Driving_Licence_Expiry_Date__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Points on Licence
+                                                                </div>
+                                                                <div>
+                                                                    {recordData.Points_on_Licence__c}</div>
+                                                            </div>
+                                                        </div>
+                                                         <!-- commenting -->
+                                                        <!-- <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Next Check</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div> -->
+                                                        
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <!-- commenting -->
+                                                        <!-- <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Last Checked</div>
+                                                                <div>N/A</div>
+                                                            </div>
+                                                        </div> -->
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <div class=" field-title">Vehicles Can Drive
+                                                                </div>
+                                                                <div>{recordData.Additional_licence_categories__c}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+
+                                                <!-- <template if:true={drivingLicenseEditOpen}>
+                                                    <div class="slds-grid slds-wrap slds-gutters_small slds-var-p-top_small">
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="text"
+                                                                label="Driving Licence Number"
+                                                                value={editDrivingLicenceNumber}
+                                                                onchange={handleDLFieldChange}
+                                                                data-field="Driving_Licence_Number__c">
+                                                            </lightning-input>
+                                                        </div>
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="date"
+                                                                date-style="short"
+                                                                label="Driving Licence Expiry"
+                                                                value={editDrivingLicenceExpiry}
+                                                                onchange={handleDLFieldChange}
+                                                                data-field="Driving_Licence_Expiry_Date__c">
+                                                            </lightning-input>
+                                                        </div>
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <div class="slds-var-p-top_small">
+                                                                <lightning-combobox
+                                                                    label="Type of licence:"
+                                                                    name="typeOfLicense"
+                                                                    class="typeOfLicense"
+                                                                    value={editDrivingLicenceType}
+                                                                    onchange={onChangeLicenseDetails}
+                                                                    options={licenseTypes_option}
+                                                                    placeholder="Select Type"
+                                                                    required
+                                                                    message-when-value-missing="Please select">
+                                                                </lightning-combobox>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="number"
+                                                                label="Points On Licence"
+                                                                value={editPointsOnLicence}
+                                                                onchange={handleDLFieldChange}
+                                                                required="true"
+                                                                message-when-value-missing="Please add Points on Licence"
+                                                                data-field="Points_on_Licence__c">
+                                                            </lightning-input>
+                                                        </div>
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="date"
+                                                                label="Issue Date"
+                                                                date-style="short"
+                                                                value={editIssueDate}
+                                                                onchange={handleDLFieldChange}
+                                                                data-field="Driving_Licence_Issue_Date__c"
+                                                                required
+                                                                message-when-value-missing="Issue Date is required">
+                                                            </lightning-input>
+                                                        </div>
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-var-p-top_small">
+                                                            <p class="key" style="font-size:14px;color:#696969;">Vehicle Can Drive:</p>
+
+                                                            <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                                                <template for:each={recordBasedLicenseCategory} for:item="cbOption">
+                                                                    <div key={cbOption.value}
+                                                                        class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-small-size_12-of-12 slds-var-m-bottom_small">
+
+                                                                        <lightning-input
+                                                                            type="checkbox"
+                                                                            label={cbOption.value}
+                                                                            value={cbOption.value}
+                                                                            checked={cbOption.checked}
+                                                                            onchange={onChangeLicenseDetails}
+                                                                            class="cBox licenseCategory"
+                                                                            name="licenseCategory">
+                                                                        </lightning-input>
+
+                                                                    </div>
+                                                                    
+                                                                </template> -->
+                                                                <template if:true={drivingLicenseEditOpen}>
+                                                    <div class="slds-grid slds-wrap slds-gutters_small slds-var-p-top_small">
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <!-- <div class="slds-var-p-top_small"> -->
+                                                                <lightning-combobox
+                                                                    label="Type of licence:"
+                                                                    name="typeOfLicense"
+                                                                    class="typeOfLicense"
+                                                                    value={editDrivingLicenceType}
+                                                                    onchange={onChangeLicenseDetails}
+                                                                    options={licenseTypes_option}
+                                                                    placeholder="Select Type"
+                                                                    required
+                                                                    message-when-value-missing="Please select">
+                                                                </lightning-combobox>
+                                                            <!-- </div> -->
+                                                        </div>
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="text"
+                                                                label="Driving Licence Number"
+                                                                value={editDrivingLicenceNumber}
+                                                                onchange={handleDLFieldChange}
+                                                                data-field="Driving_Licence_Number__c">
+                                                            </lightning-input>
+                                                        </div>
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="date"
+                                                                label="Issue Date"
+                                                                date-style="short"
+                                                                value={editIssueDate}
+                                                                onchange={handleDLFieldChange}
+                                                                data-field="Driving_Licence_Issue_Date__c"
+                                                                required
+                                                                message-when-value-missing="Issue Date is required">
+                                                            </lightning-input>
+                                                        </div>
+                                                        
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="date"
+                                                                date-style="short"
+                                                                label="Driving Licence Expiry"
+                                                                value={editDrivingLicenceExpiry}
+                                                                onchange={handleDLFieldChange}
+                                                                data-field="Driving_Licence_Expiry_Date__c">
+                                                            </lightning-input>
+                                                        </div>
+
+                                                        
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12">
+                                                            <lightning-input
+                                                                type="number"
+                                                                label="Points On Licence"
+                                                                value={editPointsOnLicence}
+                                                                onchange={handleDLFieldChange}
+                                                                required="true"
+                                                                message-when-value-missing="Please add Points on Licence"
+                                                                data-field="Points_on_Licence__c">
+                                                            </lightning-input>
+                                                        </div>
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-var-p-top_small">
+                                                            <p class="key" style="font-size:14px;color:#696969;">Vehicle Can Drive:</p>
+
+                                                            <div class="slds-grid slds-wrap slds-var-p-top_small">
+                                                                <template for:each={recordBasedLicenseCategory} for:item="cbOption">
+                                                                    <div key={cbOption.value}
+                                                                        class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-small-size_12-of-12 slds-var-m-bottom_small">
+
+                                                                        <lightning-input
+                                                                            type="checkbox"
+                                                                            label={cbOption.value}
+                                                                            value={cbOption.value}
+                                                                            checked={cbOption.checked}
+                                                                            onchange={onChangeLicenseDetails}
+                                                                            class="cBox licenseCategory"
+                                                                            name="licenseCategory">
+                                                                        </lightning-input>
+
+                                                                    </div>
+                                                                    
+                                                                </template>
+                                                                <template if:true={showDLFileUploadButton}>
+                                                                    <div class="frontBackFileUpload" style="padding-top: 15px;">
+                                                                        <!-- <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-top_x-small"style="padding-top: 31px;"> -->
+                                                                            <lightning-button
+                                                                                icon-name="utility:upload"
+                                                                                variant="brand"
+                                                                                class="fileBtn"
+                                                                                label="File Upload"
+                                                                                onclick={clickDLUpload}>
+                                                                            </lightning-button>
+                                                                        <!-- </div> -->
+                                                                    </div>
+                                                                </template>
+                                                                <template if:true={isDLFileUploadOpen}>
+                                                                        <section
+                                                                            role="dialog"
+                                                                            class="fileUploadModal slds-modal slds-fade-in-open"
+                                                                            onclick={stopModalClick}>
+
+                                                                            <div class="slds-modal__container file-upload-modal"
+                                                                                onclick={stopModalClick}>
+
+                                                                                <header class="slds-modal__header">
+                                                                                    <button
+                                                                                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                                                                        onclick={handleFileCancel}>
+                                                                                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                                                                                    </button>
+                                                                                    <h2 class="slds-text-heading_medium">Upload Documents</h2>
+                                                                                </header>
+
+                                                                                <div class="slds-modal__content slds-p-around_medium">
+                                                                                    <c-image-capture
+                                                                                        record-id={selectedContractorId}
+                                                                                        show-file-upload={showFileUploadModal}
+                                                                                        show-profile={showProfileUploadModal}
+                                                                                        show-capture-file={showImageCaptureModal}
+                                                                                        show-doc-error={isFileModuleError}
+                                                                                        show-error-message={fileModuleError}
+                                                                                        show-front-back-radio-btn={showFrontBackRadioBtn}>
+                                                                                    </c-image-capture>
+                                                                                </div>
+
+                                                                                <footer class="slds-modal__footer">
+                                                                                    <button class="slds-button slds-button_neutral" onclick={handleFileCancel}>Cancel</button>
+                                                                                    <button class="slds-button slds-button_brand" onclick={handleSaveFiles}>Save</button>
+                                                                                </footer>
+
+                                                                            </div>
+                                                                        </section>
+
+                                                                        <div class="slds-backdrop slds-backdrop_open"></div>
+                                                                    </template>
+
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="slds-col slds-size_12-of-12 slds-var-p-top_small" style="display:flex; gap:10px;">
+                                                            <button class="slds-button reject-button"
+                                                                onclick={handleDrivingLicenceEditCancel}>
+                                                                Cancel
+                                                            </button>
+                                                            <button class="slds-button btnSave"
+                                                                onclick={handleSaveDrivingLicence}>
+                                                                Save
+                                                            </button>
+                                                        </div>
+
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <!-- RTW data -->
+                                    <div class="image-section-data rtw-section">
+                                        <div class="customHeaderFlex">
+                                            <div class="image-section-title">Right to Work</div>
+                                            <div >
+                                                <button class="slds-button btnDwl" 
+                                                    onclick={handleRTWEditOpen}>Edit
+                                                </button>
+                                                <button class="slds-button btnDwl" data-doctype="GConnect RTW"
+                                                    onclick={handleDownload}>Download</button>
+                                            </div>
+                                        </div>
+                                        <hr class="slds-m-vertical_small" />
+                                        <div class="slds-m-bottom_small">
+
+                                            <div class="driver-info" style="padding-left: 2%;">
+                                                <div class="info-field">
+                                                    <template if:true={recordData.Name}>
+                                                        <div class="info-label">Driver Name:</div>
+                                                        <div class="info-value">{recordData.Name}</div>
+                                                    </template>
+                                                </div>
+                                                <div class="info-field">
+                                                    <template if:true={recordData.National_Insurance_Number__c}>
+                                                        <div class="info-label">NI Number:</div>
+                                                        <div class="info-value">{recordData.National_Insurance_Number__c}</div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="driver-info" style="padding-left: 2%;">
+                                                    <div class="info-field">
+                                                        <div class="label">RTW Category</div>
+                                                        <div class="badge badge-blue">
+                                                            {recordData.Citizenship_Immigration_status__c}</div>
+                                                    </div>
+                                                    <template if:true={recordData.hasRTWDoc}>
+                                                        <div class="info-field">
+                                                            <div class="info-label">Evidence Type</div>
+                                                            <div class="info-value">{recordData.Right_to_work_document__c}</div>
+                                                        </div>
+                                                    </template>
+                                                    <template if:true={recordData.hasShareCode}>
+                                                        <div class="info-field">
+                                                            <div class="info-label">Share Code</div>
+                                                            <div class="badge badge-gray">{recordData.Share_Code__c}</div>
+                                                        </div>
+                                                    </template>
+                                                    <template if:true={recordData.hasAccessCode}>
+                                                        <div class="info-field">
+                                                            <div class="info-label">Access Code</div>
+                                                            <div class="badge badge-gray">{recordData.Access_Code__c}</div>
+                                                        </div>
+                                                    </template>
+                                            </div>
+                                            <hr class="slds-m-vertical_small" />
+                                        </div>
+                                        <div class="rtw-details">
+                                                <div class="rtw-images">
+                                                    <div class="spinner-container ">
+
+                                                        <lightning-spinner
+                                                            if:true={imageLoading}
+                                                            alternative-text="Loading"
+                                                            size="small"
+                                                            class="spinner-overlay">
+                                                        </lightning-spinner>
+                                   
+                                                        <template if:true={imagesNotAvailable}>
+                                                            <div class="imageNotAvaContainer">
+                                                                No Image Uploaded
+                                                            </div>
+                                                        </template>
+
+                                                        <template if:true={imagesAvailable}>
+                                                            <template if:true={haveAnyCode}>
+                                                                <div class="imageDiv">
+                                                                    <template if:true={hasRTWCheckImage}>
+                                                                        <div align="right">
+                                                                            <img 
+                                                                            src={fileDownloadIcon}
+                                                                            data-link={rtwCheckImage}
+                                                                            onclick={handleRTWDownload}
+                                                                            alt="Download"
+                                                                            title="Download"
+                                                                            style="cursor: pointer; height: 45px; width: 45px;"
+                                                                            />
+                                                                        </div>
+                                                                        <img
+                                                                            src={rtwCheckImage}
+                                                                            class="frontImage"
+                                                                            alt="RTW Check Document" />
+                                                                    </template>
+
+                                                                    <template if:false={hasRTWCheckImage}>
+                                                                        <div class="imageNotAvaContainer">
+                                                                            No Image Uploaded
+                                                                        </div>
+                                                                    </template>
+                                                                </div>
+                                                            </template>
+
+                                                            <template if:false={haveAnyCode}>
+                                                                <div class="imageDiv">
+                                                                    <p>
+                                                                        <strong>{recordData.rtwFrontDocumentName}:</strong>
+                                                                    </p>
+                                                                    <template if:true={hasFrontRTWImage}>
+                                                                        <img
+                                                                            src={rtwFrontImage}
+                                                                            class="frontImage"
+                                                                            alt="RTW Front Document" />
+                                                                    </template>
+
+                                                                    <template if:false={hasFrontRTWImage}>
+                                                                        <div class="imageNotAvaContainer">
+                                                                            No Image Uploaded
+                                                                        </div>
+                                                                    </template>
+
+                                                                    <template if:true={recordData.doubleRTWImage}>
+                                                                            <div class="backDoc slds-p-top_small">
+                                                                                <p>
+                                                                                    <strong>{recordData.rtwBackDocumentName}:</strong>
+                                                                                </p>
+                                                                                <div style="width: 100%;">
+                                                                                    <template if:true={hasBackRTWImage}>
+                                                                                        <img src={rtwBackImage} alt="Front of RTW" class="docView" />
+                                                                                    </template>
+                                                                                    <template if:false={hasBackRTWImage}>
+                                                                                        <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image Not Uploaded </div>
+                                                                                    </template>
+                                                                                </div>
+                                                                            </div>
+                                                                        </template>
+
+                                                                    
+                                                                </div>
+                                                            </template>
+
+                                                        </template>
+                                                    </div>
+
+                                                </div>
+                                                <!-- <template if:false={rtwEditOpen}> -->
+                                                <div class="rtw-data">
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <!-- <div class="contractor-field">
+                                                                <div class=" field-title">
+                                                                    Citizenship/Immigration Status</div>
+                                                                <div>
+                                                                    {recordData.Citizenship_Immigration_status__c}</div>
+                                                            </div> -->
+                                                            <div class="contractor-field">
+                                                                <div class="field-title">RTW Category</div>
+
+                                                                <!-- <template if:false={rtwEditOpen}> -->
+                                                                    <div>{recordData.Citizenship_Immigration_status__c}</div>
+                                                                <!-- </template> -->
+
+                                                                <!-- <template if:true={rtwEditOpen}>
+                                                                    <lightning-combobox
+                                                                        value={editCitizenshipStatus}
+                                                                        options={citiStatusOptions}
+                                                                        onchange={handleRTWPicklistChange}
+                                                                        data-field="Citizenship_Immigration_status__c">
+                                                                    </lightning-combobox>
+                                                                </template> -->
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                <!-- <div class="contractor-field">
+                                                                    <div class=" field-title">Right to work
+                                                                        document</div>
+                                                                    <template if:true={recordData.hasRTWDoc}>
+                                                                        <div>
+                                                                            {recordData.Right_to_work_document__c}</div>
+                                                                    </template>
+                                                                    <template if:false={recordData.hasRTWDoc}>
+                                                                        <div>N/A</div>
+                                                                    </template>
+                                                                </div> -->
+                                                                <div class="contractor-field">
+                                                                    <div class="field-title">Right to work document</div>
+
+                                                                    <!-- <template if:false={rtwEditOpen}> -->
+                                                                        <template if:true={recordData.hasRTWDoc}>
+                                                                            <div>{recordData.Right_to_work_document__c}</div>
+                                                                        </template>
+                                                                        <template if:false={recordData.hasRTWDoc}>
+                                                                            <div>N/A</div>
+                                                                        </template>
+                                                                    <!-- </template> -->
+
+                                                                    <!-- <template if:true={rtwEditOpen}>
+                                                                        <lightning-combobox
+                                                                            value={editRTWDocument}
+                                                                            options={rtwDocOptions}
+                                                                            placeholder="Select document"
+                                                                            onchange={handleRTWPicklistChange}
+                                                                            data-field="Right_to_work_document__c">
+                                                                        </lightning-combobox>
+                                                                    </template> -->
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                    <template if:true={recordData.hasRestrictedStatus}>
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div
+                                                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                <!-- <div class="contractor-field">
+                                                                    <div class=" field-title">Settled Status
+                                                                    </div>
+                                                                    <template if:true={recordData.hasSettledStatus}>
+                                                                        <div>
+                                                                            {recordData.Settled_Status__c}</div>
+                                                                    </template>
+                                                                    <template if:false={recordData.hasSettledStatus}>
+                                                                        <div>N/A</div>
+                                                                    </template>
+                                                                </div> -->
+                                                                    <div class="contractor-field">
+                                                                        <div class="field-title">Settled Status</div>
+
+                                                                        <!-- <template if:false={rtwEditOpen}> -->
+                                                                            <template if:true={recordData.hasSettledStatus}>
+                                                                                <div>
+                                                                                    {recordData.Settled_Status__c}</div>
+                                                                            </template>
+                                                                            <template if:false={recordData.hasSettledStatus}>
+                                                                                <div>N/A</div>
+                                                                            </template>
+                                                                        <!-- </template> -->
+
+                                                                        <!-- <template if:true={rtwEditOpen}>
+                                                                            <lightning-combobox
+                                                                                value={editSettledStatus}
+                                                                                options={settledStatusOptions}
+                                                                                onchange={handleRTWPicklistChange}
+                                                                                data-field="Settled_Status__c">
+                                                                            </lightning-combobox>
+                                                                        </template> -->
+                                                                    </div>
+                                                            </div>
+                                                            <div
+                                                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                <!-- <div class="contractor-field">
+                                                                    <div class=" field-title">Biometric Evidence
+                                                                    </div>
+                                                                    <template if:true={recordData.hasBiometric}>
+                                                                        <div>
+                                                                            {recordData.Biometric_Evidence__c}</div>
+                                                                    </template>
+                                                                    <template if:false={recordData.hasBiometric}>
+                                                                        <div>N/A</div>
+                                                                    </template>
+                                                                </div> -->
+                                                                <div class="contractor-field">
+                                                                    <div class="field-title">Biometric Evidence</div>
+
+                                                                    <!-- <template if:false={rtwEditOpen}> -->
+                                                                        <template if:true={recordData.hasBiometric}>
+                                                                        <div>
+                                                                            {recordData.Biometric_Evidence__c}</div>
+                                                                        </template>
+                                                                        <template if:false={recordData.hasBiometric}>
+                                                                            <div>N/A</div>
+                                                                        </template>
+                                                                    <!-- </template> -->
+
+                                                                    <!-- <template if:true={rtwEditOpen}>
+                                                                        <lightning-combobox
+                                                                            value={editBiometric}
+                                                                            options={biometricOptions}
+                                                                            onchange={handleRTWPicklistChange}
+                                                                            data-field="Biometric_Evidence__c">
+                                                                        </lightning-combobox>
+                                                                    </template> -->
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <template if:true={recordData.hasRestrictedStatus}>
+                                                            <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                <!-- <div class="contractor-field">
+                                                                    <div class=" field-title">Date Of Entry</div>
+                                                                    <template if:true={recordData.hasEntryDate}>
+                                                                        <div>
+                                                                            {recordData.Date_of_Entry__c}</div>
+                                                                    </template>
+                                                                    <template if:false={recordData.hasEntryDate}>
+                                                                        <div>N/A</div>
+                                                                    </template>
+                                                                </div> -->
+                                                                <div class="contractor-field">
+                                                                    <div class="field-title">Date Of Entry</div>
+
+                                                                    <!-- <template if:false={rtwEditOpen}> -->
+                                                                        <template if:true={recordData.hasEntryDate}>
+                                                                            <div>
+                                                                                {recordData.Date_of_Entry__c}</div>
+                                                                        </template>
+                                                                        <template if:false={recordData.hasEntryDate}>
+                                                                            <div>N/A</div>
+                                                                        </template>
+                                                                    <!-- </template> -->
+
+                                                                    <!-- <template if:true={rtwEditOpen}>
+                                                                        <lightning-input
+                                                                            type="date"
+                                                                            date-style="short"
+                                                                            value={dateOfEntry}
+                                                                            onchange={handleRTWFieldChange}
+                                                                            data-field="Date_of_Entry__c">
+                                                                        </lightning-input>
+                                                                    </template> -->
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </template>
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <!-- <div class="contractor-field">
+                                                                <template if:true={recordData.hasAccessCode}>
+                                                                    <div class="field-title">Access Code</div>
+                                                                    <div>{recordData.Access_Code__c}</div>
+                                                                </template>
+                                                            </div> -->
+                                                            <div class="contractor-field">
+
+                                                                
+                                                                <template if:true={recordData.hasAccessCode}>
+                                                                    <div class="field-title">Access Code</div>
+                                                                    <div>{recordData.Access_Code__c}</div>
+                                                                </template>
+
+                                                                <template if:true={recordData.hasShareCode}>
+                                                                    <div class="field-title">Share Code</div>
+                                                                    <div>{recordData.Share_Code__c}</div>
+                                                                </template>
+                                                                <!-- <template if:false={rtwEditOpen}>
+                                                                    
+                                                                </template>
+
+                                                                <template if:true={rtwEditOpen}>
+                                                                    <template if:true={showRTWAccessCode}>
+                                                                        <lightning-input
+                                                                            label="Access Code"
+                                                                            value={accessCode}
+                                                                            maxlength="9"
+                                                                            data-field="Access_Code__c"
+                                                                            onchange={handleRTWFieldChange}
+                                                                            required>
+                                                                        </lightning-input>
+                                                                    </template>
+                                                                </template> -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div
+                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                            <div class="contractor-field">
+                                                                <!-- ===== VIEW MODE ===== -->
+                                                                <template if:false={rtwEditOpen}>
+                                                                    <!-- <div class="slds-grid slds-wrap"> -->
+                                                                        
+                                                                        <!-- Show Expiry Date ONLY when there is NO Access Code -->
+                                                                        <template if:false={recordData.hasAccessCode}>
+                                                                                
+                                                                                <template if:true={recordData.hasExpiryDate}>
+                                                                                    <div class="field-title">Date Of Expiry</div>
+                                                                                    <div>{recordData.RTW_Expiry_Date__c}</div>
+                                                                                </template>
+                                                                                <!-- <template if:false={recordData.hasExpiryDate}>
+                                                                                    <div>N/A</div>
+                                                                                </template> -->
+                                                                        </template>
+
+                                                                        <!-- Show Access Code ONLY when Access Code exists -->
+                                                                        <!-- <template if:true={recordData.hasAccessCode}>
+                                                                                <div class="field-title">Access Code</div>
+                                                                                <div>{recordData.Access_Code__c}</div>
+                                                                        </template> -->
+                                                                    <!-- </div> -->
+                                                                </template>
+
+
+                                                                <!-- ===== EDIT MODE ===== -->
+                                                                 <!-- ===== ACCESS CODE (EDIT MODE) ===== -->
+                                                                <template if:true={rtwEditOpen}>
+                                                                    <!-- <template if:true={showRTWAccessCode}>
+                                                                        <lightning-input
+                                                                            label="Access Code"
+                                                                            name="accessCode"
+                                                                            value={accessCode}
+                                                                            data-field="Access_Code__c"
+                                                                            maxlength="9"
+                                                                            required
+                                                                            onchange={onChangeRTWField}>
+                                                                        </lightning-input>
+                                                                    </template> -->
+
+                                                                    <!-- ===== EXPIRY DATE ONLY ===== -->
+                                                                    <template if:true={showRTWExpiryDate}>
+                                                                        <lightning-input
+                                                                            type="date"
+                                                                            label="Expiry Date"
+                                                                            date-style="short"
+                                                                            data-field="RTW_Expiry_Date__c"
+                                                                            name="expiryDate"
+                                                                            value={expiryDate}
+                                                                            required
+                                                                            onchange={onChangeRTWField}>
+                                                                        </lightning-input>
+                                                                    </template>
+                                                                </template>
+
+                                                                <template if:true={rtwEditOpen}> 
+                                                                    <template if:true={recordData.hasShareCode}>
+                                                                        <template if:true={hasCompletedImageforShareCode}>
+                                                                            <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                                                                                <lightning-combobox
+                                                                                    name="typeOfEVisa"
+                                                                                    label="Type of eVisa"
+                                                                                    value={recordData.Type_of_e_visa__c}
+                                                                                    options={typeOfVisa_option}
+                                                                                    onchange={onChangeRTWDetails}>
+                                                                                </lightning-combobox>
+                                                                            </div>
+
+                                                                            <template if:true={showTimeLimitedSection}>
+                                                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                                                                                    <lightning-input
+                                                                                        type="date"
+                                                                                        name="PermissionexpiryDate"
+                                                                                        label="Permission Expiry Date"
+                                                                                        value={recordData.Permission_Expiry_Date__c}
+                                                                                        onchange={onChangeRTWDetails}>
+                                                                                    </lightning-input>
+                                                                                </div>
+
+                                                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_small">
+                                                                                    <lightning-combobox
+                                                                                        name="anyWorkRestrictions"
+                                                                                        label="Any Work Restrictions"
+                                                                                        value={recordData.Any_work_restrictions__c}
+                                                                                        options={anyWorkRestrictions_option}
+                                                                                        onchange={onChangeRTWDetails}>
+                                                                                    </lightning-combobox>
+                                                                                </div>
+                                                                            </template>
+
+                                                                            <template if:true={showRestrictionsSection}>
+                                                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
+                                                                                    <lightning-input
+                                                                                        label="Limited To X Hours Per Week"
+                                                                                        name="limitedHours"
+                                                                                        value={recordData.Limited_To_X_Hours_Per_Week__c}
+                                                                                        onchange={onChangeRTWDetails}>
+                                                                                    </lightning-input>
+                                                                                </div>
+
+                                                                                <div class="slds-col slds-size_1-of-1 slds-p-bottom_x-small">
+                                                                                    <lightning-input
+                                                                                        label="Limited To Specific Job Types"
+                                                                                        name="specificJobs"
+                                                                                        value={recordData.Limited_To_Specific_Job_Types__c}
+                                                                                        onchange={onChangeRTWDetails}>
+                                                                                    </lightning-input>
+                                                                                </div>
+
+                                                                                <div class="slds-col slds-size_1-of-1">
+                                                                                    <lightning-textarea
+                                                                                        label="Other Restrictions"
+                                                                                        name="otherRestrictions"
+                                                                                        value={recordData.Other_Restrictions__c}
+                                                                                        onchange={onChangeRTWDetails}>
+                                                                                    </lightning-textarea>
+                                                                                </div>
+                                                                            </template>   
+                                                                        </template>
+                                                                    </template>
+
+                                                                    <template if:true={showRTWFileUploadButton}>
+                                                                        <div class="frontBackFileUpload" style="padding-top: 15px;">
+                                                                                <lightning-button icon-name="utility:upload" variant="brand" class="fileBtn"
+                                                                                    name="uploadType" label="File Upload" onclick={clickRTWUpload}>
+                                                                                </lightning-button>
+                                                                                <div style="color: red;" if:true={fileErrorMessage}>Please upload Front and
+                                                                                    Back Documents
+                                                                                </div>
+                                                                        </div>
+                                                                    </template>
+                                                                    <label class="confirm-row" style="width:200%; margin-top:10px;">
+                                                                        <input type="checkbox"
+                                                                            checked={isRTWVerfiedCheck}
+                                                                            onchange={handleRTWVerifiedCheck}>
+
+                                                                        <div class="confirm-text">
+                                                                            I confirm that I have verified this individual's right to work via the Home Office online service, uploaded the resulting PDF, and accurately recorded the outcome above.
+                                                                        </div>
+                                                                    </label>
+                                                                    
+                                                                    <div class="slds-col slds-size_12-of-12 slds-var-p-top_small" style="display:flex; gap:10px;">                                                                       
+                                                                        <button class="slds-button reject-button"
+                                                                            onclick={handleRTWCancel}>
+                                                                            Cancel
+                                                                        </button>
+                                                                        <button class="slds-button btnSave"
+                                                                            onclick={handleSaveRTW}>
+                                                                            Verify & Save
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <template if:true={isRTWFileUploadOpen}>
+                                                                        <section
+                                                                            role="dialog"
+                                                                            class="fileUploadModal slds-modal slds-fade-in-open"
+                                                                            onclick={stopModalClick}>
+
+                                                                            <div class="slds-modal__container file-upload-modal"
+                                                                                onclick={stopModalClick}>
+
+                                                                                <header class="slds-modal__header">
+                                                                                    <button
+                                                                                        class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                                                                        onclick={handleFileCancel}>
+                                                                                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                                                                                    </button>
+                                                                                    <h2 class="slds-text-heading_medium">Upload Documents</h2>
+                                                                                </header>
+
+                                                                                <div class="slds-modal__content slds-p-around_medium">
+                                                                                    <c-image-capture
+                                                                                        record-id={selectedContractorId}
+                                                                                        show-file-upload={showFileUploadModal}
+                                                                                        show-profile={showProfileUploadModal}
+                                                                                        show-capture-file={showImageCaptureModal}
+                                                                                        show-doc-error={isFileModuleError}
+                                                                                        show-error-message={fileModuleError}
+                                                                                        show-front-back-radio-btn={showFrontBackRadioBtn}
+                                                                                        allowed-extension = {allowedExtension}
+                                                                                        document-names={documentNames}>
+                                                                                    </c-image-capture>
+                                                                                </div>
+
+                                                                                <footer class="slds-modal__footer">
+                                                                                    <button class="slds-button slds-button_neutral" onclick={handleFileCancel}>Cancel</button>
+                                                                                    <button class="slds-button slds-button_brand" onclick={handleSaveFiles}>Save</button>
+                                                                                </footer>
+
+                                                                            </div>
+                                                                        </section>
+
+                                                                        <div class="slds-backdrop slds-backdrop_open"></div>
+                                                                    </template>
+
+                                                                </template>                                                                                                                
+                                                        </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            <!-- </template>  -->
+                                       </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template if:true={isContractSelect}>
+                            <div class="contract-section">
+                                <c-file-zip-download-button record-id={recordId}></c-file-zip-download-button>
+                            </div>
+                        </template>
+                    </template>
+                    <!-- <template if:true={isFinacialSelect}>
+                        <c-g-connect-driver-perfomance></c-g-connect-driver-perfomance>
+                    </template> -->
+                    <template if:true={isIncidentsSelect}>
+                        <template if:false={isDeductionDisabled}>
+                            <c-g-connect-deduction-logs record-id={recordId} contact-id={contactId}
+                                lwc:ref="deductionLog" ontriggerparentclose={closehandleNewIncident}
+                                driver-details={recordData}>
+                            </c-g-connect-deduction-logs>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </template>
+        <template if:false={recordData}>
+            <div class="content-container">
+                <template if:true={isSpinner}>
+                    <div class="overlay">
+                        <lightning-spinner alternative-text="Uploading" size="small"></lightning-spinner>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+
+    <template if:true={openNewDepotModal}>
+        <template if:true={isSpinner}>
+            <div class="overlay">
+                <lightning-spinner alternative-text="Uploading" size="small"></lightning-spinner>
+            </div>
+        </template>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="max-width:100%">
+
+                <header class="slds-modal__header" style="padding: 0;">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeDepotModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" 
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </header>
+                <div class="slds-modal__content">
+                    <template if:true={showDepotData}>
+                        <div class="new_depot_modal">
+                            <div class="depot_modal_title">Assign New Depot </div>
+                            <div class="depot_modal_data">
+                                <div class="slds-grid slds-wrap" style="font-family: var(--color-font-secondary);">
+                                    <div
+                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
+                                        <lightning-combobox label="Select End User" name="SelectedEndUser"
+                                            value={SelectedEndUser} options={depotOptions} class="SelectEndUserValid"
+                                            message-when-value-missing="Please Select End User" required="true"
+                                            onchange={onchangeDepotDetails}> </lightning-combobox>
+                                    </div>
+                                    <div
+                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
+                                        <lightning-combobox label="Select Depot" name="selectedDepot"
+                                            value={selectedDepot} options={relatedDepotOptions} required="true"
+                                            class="depotValid" message-when-value-missing="Please Select Depot"
+                                            onchange={onchangeDepotDetails}>
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+
+                                <div class="new_depot_save">
+                                    <button onclick={submitAssignedDepot}>Assign Depot</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={showSuccessMessage}>
+                        <div style="text-align: center;padding: 40px 0px;">
+                            <div
+                                style="font-weight: bold;font-size: 20px;text-align: center;margin-bottom: 10px;color: green;">
+                                {depotMessage}</div>
+                        </div>
+                    </template>
+
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+    <template if:true={openNewIncident}>
+        <c-g-connect-incident-modal record-id={recordId} contact-id={contactId}
+            is-deduction-disabled={isDeductionDisabled} oncallclosemethod={closehandleNewIncident}
+            onnewincidentrecord={handleNewIncidentRecord} onclosesuccess={handleCloseSuccessModal}
+            oncalldeductionlog={handleCallDeductionLog}>> </c-g-connect-incident-modal>
+    </template>
+
+</template>

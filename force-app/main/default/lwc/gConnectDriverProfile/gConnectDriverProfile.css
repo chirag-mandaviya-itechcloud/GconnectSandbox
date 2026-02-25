@@ -1,0 +1,1140 @@
+.left-right-section {
+	display: flex;
+}
+
+.pageContainer {
+	background-color: #F8F8F8;
+	min-height: calc(100vh - 70px);
+}
+
+
+/* LEFT PANEL -----------------------------------------------------------------------------*/
+
+.left-panel {
+	width: 30%;
+}
+
+.left-panel-inside {
+	padding: 20px 0px;
+	background-color: #FFFFFF;
+	border-radius: 20px;
+}
+
+.profilePic {
+	border-radius: 50px;
+	height: 70px;
+	width: 70px;
+}
+
+.depotIcon {
+	border-radius: 50px;
+	height: 25px;
+	width: 25px;
+}
+
+.profile-details {
+	text-align: center;
+	margin-bottom: 8px;
+}
+
+.profile-name {
+	padding-top: 5px;
+	font-weight: bolder;
+	font-size: large;
+	font-family: var(--color-font-secondary);
+	color: var(--color-Active-button-bg);
+}
+
+.depot-info {
+	display: flex;
+	width: 100%;
+	padding: 0px 10px;
+	justify-content: space-between;
+	margin-top: 5px;
+	color: #9C9EAD;
+}
+
+.contractor-number {
+	display: flex;
+	background-color: var(--color-Active-button-bg);
+	/* color: #fff; */
+	color: var(--color-nevbar-bg);
+	padding: 10px;
+	/* text-align: center; */
+	/* margin: 10px 0; */
+	/* font-weight: bold; */
+	justify-content: space-between;
+}
+
+.contractor-info,
+.compliance-info,
+.contact-info,
+.engagement-info {
+	margin-bottom: 20px;
+	background-color: #f6f6f6;
+	border-radius: 10px;
+	margin: 15px;
+}
+
+.section-title {
+	padding: 12px;
+	font-weight: bolder;
+	font-size: 17px;
+	border-bottom: 1px solid #DCDFE3;
+	font-family: var(--color-font-primary);
+	color: var(--color-primary);
+}
+
+.section-data {
+	padding: 12px;
+	color: #9C9EAD;
+}
+
+.data {
+	display: flex;
+	justify-content: space-between;
+	padding: 5px 0px;
+}
+
+.field-name {
+	/* color: #9C9EAD; */
+	color: var(--color-body-font);
+}
+
+.field-value {
+	color: var(--color-body-font);
+}
+
+.status.passed {
+	color: green;
+	font-weight: bold;
+}
+
+.Passed-Download {
+	display: flex;
+	justify-content: space-between;
+}
+
+.fileDownload-btn {
+	height: 15px;
+	margin-left: 5px;
+	cursor: pointer;
+}
+
+
+/* RIGHT PANEL ------------------------------------------------------*/
+
+
+.right-panel {
+	width: 70%;
+	padding: 0px 20px;
+	background-color: #f8f8f8;
+}
+
+
+/* Menu ---------------------------------- */
+
+.tab-section {
+	width: 100%;
+	background-color: #FFFFFF;
+	border-radius: 10px;
+	margin-bottom: 15px;
+
+}
+
+.tab-section li {
+	width: 25%;
+	text-align: center;
+}
+
+.tabMenu-list li {
+	width: 33.33%;
+}
+
+.tabMenu-list li:hover {
+	background-color: var(--color-Active-button-bg);
+}
+
+.tabMenu-list li:hover .tab {
+	color: var(--color-nevbar-bg);
+}
+
+.tabMenu-list li:first-child:hover {
+	background-color: var(--color-Active-button-bg);
+	/* color: #fff; */
+	color: var(--color-body-font);
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+
+.tabMenu-list li:last-child:hover {
+	background-color: var(--color-Active-button-bg);
+	color: var(--color-body-font);
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.tabMenu-list li.activeMenuTab {
+	background-color: var(--color-Active-button-bg);
+
+}
+
+.tabMenu-list li.activeMenuTab .tab {
+	color: var(--color-nevbar-bg);
+}
+
+.tabMenu-list li.activeMenuTab:first-child {
+	background-color: var(--color-Active-button-bg);
+	color: var(--color-body-font);
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+
+.tabMenu-list li.activeMenuTab:last-child {
+	background-color: var(--color-Active-button-bg);
+	color: var(--color-body-font);
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+
+.tab {
+	padding: 15px 20px;
+	cursor: pointer;
+	/* color: #9C9EAD; */
+	color: var(--color-body-font);
+	border: none;
+}
+
+.tab.active {
+	background-color: var(--color-Active-button-bg);
+	color: var(--color-nevbar-bg);
+}
+
+/* second Menu------------------------- */
+
+
+.doctab-menu {
+	width: 30%;
+	background-color: #FFFFFF;
+	border-radius: 10px;
+	margin-bottom: 15px;
+	margin-top: 35px;
+}
+
+.doctab-menu li {
+	width: 50%;
+	text-align: center;
+}
+
+.docMenu-list li:hover {
+	background-color: var(--color-Active-button-bg);
+}
+
+.docMenu-list li:hover .tab {
+	color: var(--color-nevbar-bg);
+}
+
+.docMenu-list li:first-child:hover {
+	background-color: var(--color-Active-button-bg);
+	color: #fff;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+
+.docMenu-list li:last-child:hover {
+	background-color: var(--color-Active-button-bg);
+	color: #fff;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.docMenu-list li.activeDocMenu {
+	background-color: var(--color-Active-button-bg);
+}
+
+.docMenu-list li.activeDocMenu .tab {
+	color: var(--color-nevbar-bg);
+}
+
+.docMenu-list li.activeDocMenu:first-child {
+	background-color: var(--color-Active-button-bg);
+	color: #fff;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+
+.docMenu-list li.activeDocMenu:last-child {
+	background-color: var(--color-Active-button-bg);
+	color: #fff;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+/* Contractor section----------------------------------------- */
+
+.menu-section-title {
+	font-weight: bolder;
+	font-size: 18px;
+	padding-bottom: 5px;
+	font-family: var(--color-font-primary);
+	color: var(--color-primary);
+}
+
+.tabMenu-section {
+	color: var(--color-primary) !important;
+}
+
+.Personal-section {
+	margin: 10px 0px;
+	background-color: #FFFFFF;
+	border-radius: 10px;
+
+}
+
+.Address-section {
+	margin: 20px 0px;
+	background-color: #FFFFFF;
+	border-radius: 10px;
+}
+
+.current-address {
+	width: 50%;
+}
+
+.previous-address {
+	width: 50%;
+	border-left: 1px solid #9C9EAD;
+	padding-left: 20px;
+}
+
+.field-title {
+	font-weight: bold;
+	color: var(--color-primary);
+}
+
+
+.contractor-field {
+	padding: 10px;
+}
+
+.save-button {
+	text-align: end;
+	padding: 0px 10px;
+}
+
+.btnSave {
+	background-color: var(--color-Active-button-bg);
+	color: #fff;
+	padding: 0px 25px;
+}
+
+/* Finacial section----------------------------------------- */
+
+.comingsoon-section {
+	margin: 10px 0px;
+	background-color: #FAFAFA;
+	border-radius: 10px;
+	width: 100%;
+}
+
+/* Vehicle section----------------------------------------- */
+
+
+/* Incident section----------------------------------------- */
+
+.section-button {
+	display: flex;
+	justify-content: end;
+	/* padding: 20px 10px; */
+	align-items: center;
+	margin-bottom: 1rem;
+	background-color: #fafafa;
+}
+
+.profile_btn {
+	margin-left: 10px;
+}
+
+.incident-title {
+	font-size: large;
+	color: #0C101F;
+}
+
+.incident-subtitle {
+	color: #9C9EAD;
+}
+
+.profile_btn button {
+	width: 100%;
+	padding: 12px 45px;
+	background-color: var(--color-page-next-button-bg);
+	color: #fff;
+	border-radius: 10px;
+	border: none;
+	font-family: var(--color-font-primary);
+}
+
+.depot_modal_title {
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 30px;
+	font-weight: bold;
+	font-family: var(--color-font-primary);
+	color: var(--color-secondary);
+}
+
+.new_depot_modal {
+	padding: 30px 15px;
+	background-color: #FAF7F5;
+}
+
+.depot_modal_data {
+	background-color: #FFFFFF;
+	border-radius: 25px;
+}
+
+.new_depot_save {
+	text-align: center;
+}
+
+.new_depot_save button {
+	border-radius: 8px;
+	background-color: var(--color-secondary);
+	padding: 10px 0px;
+	width: 100%;
+	border: 0px;
+	color: white;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	max-width: 200px;
+	cursor: pointer;
+}
+
+.incident-log-data {
+	margin: 10px 0px;
+	background-color: #FFFFFF;
+	border-radius: 10px;
+}
+
+.incident-log-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.incident-log-table th {
+	padding: 1rem 10px;
+	border-bottom: 2px solid var(--color-secondary);
+	text-align: left;
+	color: var(--color-primary) !important;
+}
+
+.incident-log-table td {
+	padding: 1rem 10px;
+}
+
+.incident-log-table tr {
+	border-bottom: 1px solid #DCDFE3;
+}
+
+.incident-record-data tr:last-child {
+	border-bottom: unset !important;
+	color: var(--color-primary) !important;
+}
+
+.table-col {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+}
+
+.record-menu {
+	max-width: 100%;
+	height: 15px;
+	cursor: pointer;
+	padding: 0px 10px;
+}
+
+.record-menu-div {
+	cursor: pointer;
+	min-width: 30px;
+}
+
+/* .custom-table .record-menu-div{
+    /* width: 30px; 
+    text-align: center;
+} */
+
+.dropdownMenuIncident {
+	position: absolute;
+	right: 70px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	z-index: 1000;
+	width: 150px;
+}
+
+.dropdownMenuIncident ul li {
+	padding: 10px;
+	color: var(--color-primary);
+	cursor: pointer;
+}
+
+.dropdownMenuIncident ul li:not(:last-child) {
+	border-bottom: 1px solid rgb(201, 197, 197);
+}
+
+.dropdownMenuIncident ul li:hover {
+	background-color: var(--color-secondary);
+	color: #fff;
+}
+
+.dropdownMenuIncident ul li:hover .menu-icon {
+	filter: brightness(0) invert(1) !important;
+	/* black → white */
+}
+
+/* Documents section------------------------------- */
+
+.image-section-title {
+	padding-left: 10px;
+	font-weight: bolder;
+	font-size: 20px;
+	font-family: var(--color-font-primary);
+	color: var(--color-body-font);
+}
+
+.doc-menu-title {
+	padding: 10px 0px;
+	border-bottom: 1px solid #e0e0e0;
+	font-weight: bolder;
+	font-size: 17px;
+	font-family: var(--color-font-primary);
+	color: var(--color-primary);
+}
+
+.image-section-data {
+	padding: 10px;
+	background-color: #FFFFFF;
+	border-radius: 15px;
+}
+
+.dl-section {
+	width: 50%;
+}
+
+.rtw-section {
+	width: 50%;
+	margin-left: 15px;
+}
+
+.image-section {
+	margin-top: 20px;
+}
+
+/* .imageDiv{
+    width: 50%;
+    
+} */
+
+.imageDiv img {
+	/* height: 200px; */
+	width: 100%;
+	border-radius: 25px;
+	padding: 10px;
+	object-fit: cover;
+}
+
+.imageNotAvaContainer {
+	width: 100%;
+	border-radius: 25px;
+	height: 200px;
+	padding: 10px;
+	background: #fafafa;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	color: #9C9EAD;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+
+/* @media (max-width: 1491px) {
+    .imageDiv img{
+        height: 170px;
+    }
+} */
+
+.driving-licence-details {
+	display: flex;
+	width: 100%;
+	padding-top: 10px;
+	font-family: var(--color-font-secondary);
+}
+
+.driving-licence-images {
+	width: 50%;
+}
+
+.driving-licence-data {
+	width: 50%;
+
+}
+
+.rtw-details {
+	display: flex;
+	width: 100%;
+	font-family: var(--color-font-secondary);
+}
+
+.rtw-images {
+	width: 50%;
+}
+
+.rtw-data {
+	width: 50%;
+}
+
+/* Contract section------------------------------- */
+.contract-section {
+	background-color: #FAFAFA;
+	border-radius: 10px;
+	margin-bottom: 10px;
+}
+
+
+/* ------------------------------------------- */
+
+.incident-form {
+	padding: 20px;
+	/* border: 1px solid #e0e0e0; */
+	margin-bottom: 20px;
+	background-color: #FAFAFA;
+	margin-top: 25px;
+	border-radius: 10px;
+}
+
+.incident-details {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.field-group {
+	width: 50%;
+	padding: 10px;
+}
+
+.field-group label {
+	font-weight: bold;
+	display: block;
+}
+
+.incident-buttons {
+	display: flex;
+	gap: 10px;
+}
+
+.license-info {
+	margin-top: 20px;
+}
+
+.license-info img {
+	width: 100%;
+	max-width: 200px;
+	margin: 10px 0;
+}
+
+.search-section {
+	/* display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem; */
+	/* background-color: #fff; */
+	padding: 10px;
+	/* border-radius: 10px;
+    width: 100%; */
+}
+
+/* .search_btn{
+    padding: 10px 60px;
+    color: #fff;
+    border-radius: 10px;
+    border: none;
+} */
+
+/* .slds-modal__container {
+    width: 50%;
+} */
+
+.custom-modal .slds-modal__container {
+	max-width: 40rem;
+}
+
+.slds-backdrop {
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.slds-modal__header {
+	display: flex;
+	justify-content: flex-start;
+	/* Align the header text to the left */
+	padding: 0.75rem 1.5rem;
+	border-bottom: none;
+	position: relative;
+	/* Ensure the close button can be positioned inside the header */
+}
+
+.dialogueHeader {
+	border-bottom-style: none !important;
+	border-top-left-radius: 15px !important;
+	border-top-right-radius: 15px !important;
+}
+
+.dialogueFooter {
+	border-top-style: none !important;
+	border-bottom-left-radius: 15px !important;
+	border-bottom-right-radius: 15px !important;
+}
+
+.custom-header {
+	color: #D5493E;
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin: 0;
+}
+
+
+
+.close-button {
+	/* background-color: black; */
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	position: absolute;
+	/* Position the button relative to the modal container */
+	right: 1rem;
+	/* Keep the button inside the modal box */
+	top: 1rem;
+	/* Vertically align the button with the header */
+}
+
+.centered-footer {
+	text-align: center;
+	/* Center the continue button */
+}
+
+.closeFooter-button {
+	background-color: #d5493d;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 1rem;
+	border-radius: 0.25rem;
+	line-height: 20px;
+}
+
+.continue-button {
+	background-color: #80E9BF;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 1rem;
+	border-radius: 0.25rem;
+	line-height: 20px;
+}
+
+/* search input */
+
+.custom-input::part(input) {
+	height: 45px !important;
+	width: 230px !important;
+	border-radius: 10px !important;
+}
+
+.menu-item {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.menu-icon {
+	height: 16px;
+	width: 16px;
+	margin-right: 8px;
+}
+
+.delete {
+	color: red;
+}
+
+.dropdownMenuItem {
+	cursor: pointer;
+	padding: 8px 12px;
+	display: flex;
+	align-items: center;
+	transition: background-color 0.3s ease;
+}
+
+.dropdownMenuItem:first-child:hover {
+	border-radius: 10px;
+	border-bottom-left-radius: 0px !important;
+	border-bottom-right-radius: 0px !important;
+}
+
+.dropdownMenuItem:last-child:hover {
+	border-radius: 10px;
+	border-top-left-radius: 0px !important;
+	border-top-right-radius: 0px !important;
+}
+
+.dropdownMenuItem:hover {
+	background-color: #f4f6f9;
+}
+
+.view-incident-modal .slds-modal__container {
+	max-width: 28rem !important;
+}
+
+.incidentViewSpace {
+	margin-bottom: 10px;
+}
+
+.content-container {
+	position: relative;
+}
+
+.overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: calc(100vh - 100px);
+	background-color: rgba(255, 255, 255, 0.6);
+	/* Dull white overlay */
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.btnDwl {
+	background-color: var(--color-secondary);
+	color: #fff;
+	padding: 0px 25px;
+	margin: 2px;
+	font-family: var(--color-font-primary);
+}
+.btnEdit {
+	background-color: var(--color-secondary);
+	color: #fff;
+	padding: 0px 25px;
+	margin: 2px;
+	font-family: var(--color-font-primary);
+	padding-left: 10px;
+}
+
+.customHeaderFlex {
+	display: flex;
+	justify-content: space-between;
+}
+
+
+/* Accept / Decline Button ------------------------------------------- */
+
+.pass_fail_btn {
+	width: 115px;
+	max-width: 115px;
+	border: 1px solid black;
+	border-radius: 5px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.status-button {
+	width: 50%;
+	background-color: unset;
+	border: unset !important;
+	border-radius: 0;
+	padding: 4px 6px;
+}
+
+.status-button:not(:last-child) {
+	border-right: 1px solid black !important;
+}
+
+/* Pass button styling (Green) */
+.pass-button {
+	background-color: '';
+	color: #439b52;
+	margin: 1px Black;
+}
+
+/* Fail button styling (Red) */
+
+.fail-button {
+	color: #d44949;
+}
+
+.accDecBtn {
+	height: 20px;
+	width: 20px;
+}
+
+/* Pagination CSS ---- */
+
+
+
+.Pagination_Contents {
+	padding: 10px 18px;
+	display: flex;
+	justify-content: end;
+}
+
+.previousButton {
+	background-color: var(--color-page-previous-button-bg);
+	color: var(--color-nevbar-bg);
+	font-family: var(--color-font-primary);
+	border: none !important;
+	border-radius: 5px;
+	padding: 4px 0px;
+	width: 80px;
+}
+
+.previousButton:disabled {
+	background-color: var(--color-page-previous-button-bg);
+	color: var(--color-nevbar-bg);
+	font-family: var(--color-font-primary);
+	border: none !important;
+	border-radius: 5px;
+	padding: 4px 0px;
+	width: 80px;
+}
+
+.nextButton {
+	background-color: var(--color-page-next-button-bg);
+	color: var(--color-nevbar-bg);
+	font-family: var(--color-font-primary);
+	border: none !important;
+	border-radius: 5px;
+	padding: 4px 0px;
+	width: 70px;
+}
+
+
+.nextButton:disabled {
+	background-color: var(--color-page-next-button-bg);
+	color: var(--color-nevbar-bg);
+	font-family: var(--color-font-primary);
+	border: none !important;
+	border-radius: 5px;
+	padding: 4px 0px;
+	width: 70px;
+}
+
+.currentPage {
+	padding: 0px 10px;
+	font-weight: bold;
+	color: var(--color-primary);
+	align-content: center;
+	font-family: var(--color-font-secondary);
+}
+
+.confirmModal .close-button {
+    background: none;
+    border: none;
+    font-size:21px;
+    cursor: pointer;
+    color: #333;
+    position: absolute;
+    top: 10px;
+    right: 1rem;
+}
+
+.confirmModal .custom-header {
+    color: var( --color-secondary); 
+    font-family: var(--color-font-primary);
+    font-weight: bold;
+}
+
+.confirmModal .file-upload-footer{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.confirmModal .custom-modal {
+    max-width: 25rem; /* Adjust the width of the modal */
+    width: 100%;
+    margin: 0 auto;
+}
+
+.confirmModal .custom-modal-body {
+    padding: 1.5rem; /* Adjust padding inside the modal body */
+    text-align: center; /* Center align the text */
+}
+
+.custom-button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.custom-button {
+    padding: 5px 17px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.cancel-button {
+    background-color: transparent;
+    color: #2C3F50;
+    border: 2px solid #2C3F50;
+}
+
+.validate-button {
+    background-color:  var(--color-secondary); /* Red color for 'Yes' button */
+    color: white;
+}
+
+.rate-info {
+	margin: 10px 20px;
+}
+
+.linkView{
+	cursor: pointer;
+	/* color: var(--color-page-next-button-bg); */
+	text-decoration:underline;
+	font-family: var(--color-font-primary);
+	color: var(--color-primary);
+	font-weight: bolder;
+	font-size: 15px;
+}
+
+.custom-modal .rateModal .slds-modal__container {
+	max-width: 25rem;
+}
+.centered-img {
+    max-width: 40%;
+    height: 12px;
+    max-height: 100%;
+    padding-left: 5px;
+}
+.reject-button{
+	padding: 0px 7px;
+    border: 1px solid var(--color-primary);
+    background-color: #ffffff;
+    color: var(--color-primary);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.edit-button{
+	background: none;
+    border: none;
+    font-size: 21px;
+    cursor: pointer;
+    color: #333;
+    position: absolute;
+    top: 10px;
+    right: 2rem;
+    height: 14px;
+}
+.file-upload-modal{
+    width: 50%;
+    max-width: 50%;
+}
+.driver-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 28px;
+    margin-bottom: 16px;
+}
+
+/* Each field block */
+.info-field {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label styling (same as old .label) */
+.info-label,
+.label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+/* Value styling */
+.info-value,
+.value {
+    font-size: 15px;
+    color: #0f172a;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+/* Badge base */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    width: fit-content;
+}
+
+/* Blue badge (RTW Category) */
+.badge-blue {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #dbeafe;
+}
+
+/* Gray badge */
+.badge-gray {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+.confirm-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--bg-page, #f8f9fa);
+    border: 1px solid var(--border, #d8dde6);
+    border-radius: var(--radius-sm, 6px);
+    cursor: pointer;
+}
+
+.confirm-row input[type="checkbox"] {
+    margin-top: 3px;
+    accent-color: var(--connect-green, #00703c);
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.confirm-text {
+    font-size: 14px;
+    color: #0b0c0c;
+    line-height: 1.4;
+}
