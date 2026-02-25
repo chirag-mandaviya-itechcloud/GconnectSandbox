@@ -3,7 +3,8 @@
     <div class="contractor-overview">
         <div class="header-section">
             <div class="title-section">
-                <span class="title">Contractor Overview </span><span class="title">&nbsp;/</span><span class="sub-title"> Engaged Contractors</span>
+                <span class="title">Contractor Overview </span><span class="title">&nbsp;/</span><span
+                    class="sub-title"> Engaged Contractors</span>
             </div>
             <button class="new-contractor-button" onclick={handleAddContractor}>+ New Contractor</button>
         </div>
@@ -31,7 +32,7 @@
                     </ul>
                 </div>
                 <div class="tab-indicator">
-                    
+
                     <template if:true={isGeneralActive}>
                         <div class="generalTable">
 
@@ -63,8 +64,9 @@
                                             </div>
                                         </th>
                                         <th scope="col">
-                                            <div class="col" title="Site">Site  <img src={ascDscIcon}
-                                                    class="centered-img" data-field="Depot_Name__c" onclick={handleAscDscClick}>
+                                            <div class="col" title="Site">Site <img src={ascDscIcon}
+                                                    class="centered-img" data-field="Depot_Name__c"
+                                                    onclick={handleAscDscClick}>
                                             </div>
                                         </th>
                                         <th scope="col">
@@ -80,13 +82,17 @@
                                             <div class="col" title="Contractor ID">Contractor ID</div>
                                         </th>
                                         <th scope="col" style="width: 3%;">
-                                            <div class="col" ></div>
+                                            <div class="col"></div>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template if:true={noRecordFound}>
-                                        <tr><td colspan="9" style="text-align: center;border-bottom: 1px solid #DCDFE3;">No Record Found</td></tr>
+                                        <tr>
+                                            <td colspan="9"
+                                                style="text-align: center;border-bottom: 1px solid #DCDFE3;">No Record
+                                                Found</td>
+                                        </tr>
                                     </template>
                                     <template for:each={paginatedDataGeneral} for:item="contractor">
                                         <tr key={contractor.id}>
@@ -122,7 +128,8 @@
 
                                                         <!-- Tooltip -->
                                                         <div class="scoreTooltipBox">
-                                                            <pre class="scoreTooltipText">{contractor.scoreTooltip}</pre>
+                                                            <pre
+                                                                class="scoreTooltipText">{contractor.scoreTooltip}</pre>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -154,7 +161,8 @@
                                                                 <li class="dropdownMenuItem" onclick={handleDisengaged}>
                                                                     <div
                                                                         style="display: flex; align-items: center; justify-content: space-around;">
-                                                                        <div class="slds-m-around_xxx-small" data-driver-name={contractor.Driver_Name__c}
+                                                                        <div class="slds-m-around_xxx-small"
+                                                                            data-driver-name={contractor.Driver_Name__c}
                                                                             onclick={openDisengageConfirmClick}
                                                                             data-selected-id={contractor.Id}>Disengage
                                                                         </div>
@@ -189,17 +197,23 @@
                         </div>
                         <div class="Pagination_Contents">
                             <template if:true={disablePreviousGeneralButton}>
-                                <button class="previousButton" onclick={handlePreviousGeneralPage} disabled>Previous</button>
+                                <button class="previousButton" onclick={handlePreviousGeneralPage}
+                                    disabled>Previous</button>
                             </template>
                             <template if:false={disablePreviousGeneralButton}>
                                 <button class="previousButton" onclick={handlePreviousGeneralPage}>Previous</button>
                             </template>
-                            
+
                             <!-- <span class="currentPage"> Page {currentPageGeneral} of {totalPagesGeneral} </span> -->
                             <div style="display: flex;">
-                                <span class="currentPage"> Page </span><lightning-input type="number" variant="label-hidden" style="width: 45px; " onchange={handleOnchangeInputGeneralPage} value={currentPageGeneral} min="1" max={totalPagesGeneral} onkeydown={handleOnchangeInputGeneralPage}></lightning-input><span class="currentPage">of {totalPagesGeneral}</span>
+                                <span class="currentPage"> Page </span><lightning-input type="number"
+                                    variant="label-hidden" style="width: 45px; "
+                                    onchange={handleOnchangeInputGeneralPage} value={currentPageGeneral} min="1"
+                                    max={totalPagesGeneral}
+                                    onkeydown={handleOnchangeInputGeneralPage}></lightning-input><span
+                                    class="currentPage">of {totalPagesGeneral}</span>
                             </div>
-        
+
                             <template if:true={disableNextGeneralButton}>
                                 <button class="nextButton" onclick={handleNextGeneralPage} disabled>Next</button>
                             </template>
@@ -216,11 +230,13 @@
                                     <tr>
                                         <th scope="col">
                                             <div class="col" title="Driver Profile">Driver Profile <img src={ascDscIcon}
-                                                    class="centered-img" data-field="Client_Name__c" onclick={handleAscDscClick}></div>
+                                                    class="centered-img" data-field="Client_Name__c"
+                                                    onclick={handleAscDscClick}></div>
                                         </th>
                                         <th scope="col" style="text-align: center;">
                                             <div class="col" title="Contractor Score">Contractor Score <img
-                                                    src={ascDscIcon}  data-field="totalscore" class="centered-img" onclick={handleAscDscClick}>
+                                                    src={ascDscIcon} data-field="totalscore" class="centered-img"
+                                                    onclick={handleAscDscClick}>
                                             </div>
                                         </th>
                                         <th scope="col">
@@ -254,15 +270,20 @@
                                             <div class="col" title="Contractor ID">Contractor ID</div>
                                         </th>
                                         <th scope="col" style="width: 3%;">
-                                            <div class="col" ></div>
+                                            <div class="col"></div>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template if:true={noRecordFound}>
-                                        <tr><td colspan="9" style="text-align: center;border-bottom: 1px solid #DCDFE3;">No Record Found</td></tr>
+                                        <tr>
+                                            <td colspan="9"
+                                                style="text-align: center;border-bottom: 1px solid #DCDFE3;">No Record
+                                                Found</td>
+                                        </tr>
                                     </template>
-                                    <template for:each={paginatedDataCompliance} for:item="contractor" for:index="index">
+                                    <template for:each={paginatedDataCompliance} for:item="contractor"
+                                        for:index="index">
                                         <tr key={contractor.id}>
                                             <td class="profile-cell">
                                                 <template if:true={contractor.hasProfilePic}>
@@ -292,7 +313,8 @@
 
                                                         <!-- Tooltip -->
                                                         <div class="scoreTooltipBox">
-                                                            <pre class="scoreTooltipText">{contractor.scoreTooltip}</pre>
+                                                            <pre
+                                                                class="scoreTooltipText">{contractor.scoreTooltip}</pre>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -303,20 +325,23 @@
                                             <td if:true={contractor.rtwLicenseNotVerify}><button name="RTW"
                                                     class="rtwButton" data-index={index}
                                                     onclick={verifyClickHandle}>Verify</button></td>
-                                            <td if:true={contractor.rtwLicenseVerify}><button
-                                                    class="rtwVerifiedButton" data-index={index}
-                                                    onclick={verifyClickHandle} name="RTW">&#x2713; Verified</button></td>
+                                            <td if:true={contractor.rtwLicenseVerify}><button class="rtwVerifiedButton"
+                                                    data-index={index} onclick={verifyClickHandle} name="RTW">&#x2713;
+                                                    Verified</button></td>
                                             <td if:true={contractor.isRTWExpiring}><button name="RTW" class="rtwButton"
-                                                    style="background-color: #ff474c;" data-index={index} data-selected-id={contractor.Id}
+                                                    style="background-color: #ff474c;" data-index={index}
+                                                    data-selected-id={contractor.Id}
                                                     onclick={verifyClickHandle}>Expiring</button></td>
                                             <td if:true={contractor.isRTWExpired}><button name="RTW" class="rtwButton"
-                                                    style="background-color: #c00c0c;" data-index={index} data-selected-id={contractor.Id}
+                                                    style="background-color: #c00c0c;" data-index={index}
+                                                    data-selected-id={contractor.Id}
                                                     onclick={verifyClickHandle}>Expired</button></td>
 
 
-                                            <td if:true={contractor.licenseDataNotAvaliable}><button name="DrivingNoData"
-                                                    class="rtwButton" style="background-color: #adacac;"
-                                                    data-index={index} onclick={verifyClickHandle}>No Data</button></td>
+                                            <td if:true={contractor.licenseDataNotAvaliable}><button
+                                                    name="DrivingNoData" class="rtwButton"
+                                                    style="background-color: #adacac;" data-index={index}
+                                                    onclick={verifyClickHandle}>No Data</button></td>
                                             <td if:true={contractor.drivingLicenseNotVerify}><button name="Driving"
                                                     class="rtwButton" data-index={index}
                                                     onclick={verifyClickHandle}>Verify</button></td>
@@ -324,11 +349,13 @@
                                                     class="rtwVerifiedButton" name="Driving" data-index={index}
                                                     onclick={verifyClickHandle}>&#x2713; Verified</button></td>
                                             <td if:true={contractor.isDLExpiring}><button name="Driving"
-                                                    class="rtwButton" style="background-color: #ff474c;" data-selected-id={contractor.Id}
-                                                    data-index={index} onclick={verifyClickHandle}>Expiring</button></td>
+                                                    class="rtwButton" style="background-color: #ff474c;"
+                                                    data-selected-id={contractor.Id} data-index={index}
+                                                    onclick={verifyClickHandle}>Expiring</button></td>
                                             <td if:true={contractor.isDLExpired}><button name="Driving"
-                                                    class="rtwButton" style="background-color: #c00c0c;" data-selected-id={contractor.Id}
-                                                    data-index={index} onclick={verifyClickHandle}>Expired</button></td>
+                                                    class="rtwButton" style="background-color: #c00c0c;"
+                                                    data-selected-id={contractor.Id} data-index={index}
+                                                    onclick={verifyClickHandle}>Expired</button></td>
 
                                             <td if:true={contractor.isBackground_Check__c}>
                                                 <template if:false={contractor.BackCheckStatus}>
@@ -390,8 +417,8 @@
 
                                             <td>
                                                 <!-- <button class={contractor.contractClass}> -->
-                                                    <template if:true={contractor.displaysign}>&#x2713;</template>
-                                                    {contractor.contractLabel}
+                                                <template if:true={contractor.displaysign}>&#x2713;</template>
+                                                {contractor.contractLabel}
                                                 <!-- </button> -->
                                             </td>
                                             <td if:false={contractor.isEvidence_Checked__c}>
@@ -444,17 +471,23 @@
                         </div>
                         <div class="Pagination_Contents">
                             <template if:true={disablePreviousComplianceButton}>
-                                <button class="previousButton" onclick={handlePreviousCompliancePage} disabled>Previous</button>
+                                <button class="previousButton" onclick={handlePreviousCompliancePage}
+                                    disabled>Previous</button>
                             </template>
                             <template if:false={disablePreviousComplianceButton}>
                                 <button class="previousButton" onclick={handlePreviousCompliancePage}>Previous</button>
                             </template>
-                            
+
                             <!-- <span class="currentPage"> Page {currentPageCompliance} of {totalPagesCompliance} </span> -->
                             <div style="display: flex;">
-                                <span class="currentPage"> Page </span><lightning-input type="number" variant="label-hidden" style="width: 45px; " onchange={handleOnchangeInputCompliancePage} value={currentPageCompliance} min="1" max={totalPagesCompliance} onkeydown={handleOnchangeInputCompliancePage}></lightning-input><span class="currentPage">of {totalPagesCompliance}</span>
+                                <span class="currentPage"> Page </span><lightning-input type="number"
+                                    variant="label-hidden" style="width: 45px; "
+                                    onchange={handleOnchangeInputCompliancePage} value={currentPageCompliance} min="1"
+                                    max={totalPagesCompliance}
+                                    onkeydown={handleOnchangeInputCompliancePage}></lightning-input><span
+                                    class="currentPage">of {totalPagesCompliance}</span>
                             </div>
-        
+
                             <template if:true={disableNextComplianceButton}>
                                 <button class="nextButton" onclick={handleNextCompliancePage} disabled>Next</button>
                             </template>
@@ -484,13 +517,16 @@
                                     <th scope="col">Total Deductions</th>
                                     <th scope="col">Total Payments</th>
                                     <th scope="col" style="width: 3%;">
-                                        <div class="col" ></div>
+                                        <div class="col"></div>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <template if:true={noRecordFound}>
-                                    <tr><td colspan="9" style="text-align: center;border-bottom: 1px solid #DCDFE3;">No Record Found</td></tr>
+                                    <tr>
+                                        <td colspan="9" style="text-align: center;border-bottom: 1px solid #DCDFE3;">No
+                                            Record Found</td>
+                                    </tr>
                                 </template>
                                 <template for:each={paginatedDataFinance} for:item="contractor">
                                     <tr key={contractor.id}>
@@ -552,17 +588,23 @@
                         </table>
                         <div class="Pagination_Contents">
                             <template if:true={disablePreviousFinanceButton}>
-                                <button class="previousButton" onclick={handlePreviousFinancePage} disabled>Previous</button>
+                                <button class="previousButton" onclick={handlePreviousFinancePage}
+                                    disabled>Previous</button>
                             </template>
                             <template if:false={disablePreviousFinanceButton}>
                                 <button class="previousButton" onclick={handlePreviousFinancePage}>Previous</button>
                             </template>
-                            
+
                             <!-- <span class="currentPage"> Page {currentPageFinance} of {totalPagesFinance} </span> -->
                             <div style="display: flex;">
-                                <span class="currentPage"> Page </span><lightning-input type="number" variant="label-hidden" style="width: 45px; " onchange={handleOnchangeInputFinancePage} value={currentPageFinance} min="1" max={totalPagesFinance} onkeydown={handleOnchangeInputFinancePage}></lightning-input><span class="currentPage">of {totalPagesFinance}</span>
+                                <span class="currentPage"> Page </span><lightning-input type="number"
+                                    variant="label-hidden" style="width: 45px; "
+                                    onchange={handleOnchangeInputFinancePage} value={currentPageFinance} min="1"
+                                    max={totalPagesFinance}
+                                    onkeydown={handleOnchangeInputFinancePage}></lightning-input><span
+                                    class="currentPage">of {totalPagesFinance}</span>
                             </div>
-        
+
                             <template if:true={disableNextFinanceButton}>
                                 <button class="nextButton" onclick={handleNextFinancePage} disabled>Next</button>
                             </template>
@@ -610,7 +652,8 @@
                         </div>
                         <hr class="slds-m-vertical_small" />
                     </header>
-                    <div class="slds-modal__content slds-p-around_medium" style="font-family: var(--color-font-secondary);" >
+                    <div class="slds-modal__content slds-p-around_medium"
+                        style="font-family: var(--color-font-secondary);">
                         <template if:true={showNameNi}>
                             <div class="slds-m-bottom_small">
 
@@ -653,12 +696,12 @@
                             <div class="slds-col slds-size_1-of-2">
 
                                 <!-- <template if:false={selectedContractor.hasAccessCode}> -->
-                                    <!--add removed access code previous file upload -->
-                                    <!-- <template if:true={selectedContractor.hasAccessCode}>
+                                <!--add removed access code previous file upload -->
+                                <!-- <template if:true={selectedContractor.hasAccessCode}>
                                         <template if:true={rightToWorkEditOpen}>
-                                            <lightning-file-upload class="fileupload" 
-                                                                    name="fileUploader" 
-                                                                    record-id={selectedContractorId} 
+                                            <lightning-file-upload class="fileupload"
+                                                                    name="fileUploader"
+                                                                    record-id={selectedContractorId}
                                                                     onuploadfinished={handleUploadFinished}>
                                             </lightning-file-upload>
                                             <template if:true={isPreviewEnabled}>
@@ -668,7 +711,7 @@
                                                     <template if:false={imageLoading}>
                                                         <template if:true={isImage}>
                                                             <img src={filePreviewUrl} alt="Uploaded File Preview" class="file-preview-image" />
-                                                        </template>                       
+                                                        </template>
                                                         <template if:false={isImage}>
                                                             <img src={pdfIcon} alt="Uploaded File Preview" class="file-preview-image" />
                                                         </template>
@@ -685,14 +728,16 @@
                                         <lightning-spinner if:true={imageLoading} alternative-text="Uploading"
                                             size="small" class="spinner-overlay"></lightning-spinner>
                                         <div if:true={imagesNotAvailable} class="imageNotAvail imageNotAvaContainer">
-                                            <span>No Image Uploaded.</span></div>
+                                            <span>No Image Uploaded.</span>
+                                        </div>
                                         <template if:true={imagesAvailable}>
                                             <div class="frontDoc">
                                                 <p class="slds-p-bottom_small"><strong>Document:</strong></p>
                                                 <div style="width: 100%;">
                                                     <template if:true={selectedContractor.CheckDoc}>
-                                                        <img src={selectedContractor.CheckDoc} alt={selectedContractor.CheckDocName}
-                                                            class="docView" onerror={handleRTWImageError}/>
+                                                        <img src={selectedContractor.CheckDoc}
+                                                            alt={selectedContractor.CheckDocName} class="docView"
+                                                            onerror={handleRTWImageError} />
                                                     </template>
                                                     <template if:false={selectedContractor.CheckDoc}>
                                                         <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">
@@ -700,9 +745,9 @@
                                                                 {selectedContractor.CheckDocName}
                                                             </template>
                                                             <template if:false={selectedContractor.CheckDocName}>
-                                                                Image Not Uploaded 
+                                                                Image Not Uploaded
                                                             </template>
-                                                            </div>
+                                                        </div>
                                                     </template>
                                                 </div>
                                             </div>
@@ -713,16 +758,20 @@
                                     <div class="spinner-container" style="height: 100%;">
                                         <lightning-spinner if:true={imageLoading} alternative-text="Uploading"
                                             size="small" class="spinner-overlay"></lightning-spinner>
-                                        <div if:true={imagesNotAvailable} class="imageNotAvail imageNotAvaContainer"><span>No Image Uploaded.</span></div>
+                                        <div if:true={imagesNotAvailable} class="imageNotAvail imageNotAvaContainer">
+                                            <span>No Image Uploaded.</span>
+                                        </div>
                                         <template if:true={imagesAvailable}>
                                             <div class="frontDoc">
                                                 <p class="slds-p-bottom_small"><strong>Document:</strong></p>
                                                 <div style="width: 100%; height: 100%;">
                                                     <template if:true={selectedContractor.FrontDoc}>
-                                                        <img src={selectedContractor.FrontDoc} alt="Front of RTW" class="docView" />
+                                                        <img src={selectedContractor.FrontDoc} alt="Front of RTW"
+                                                            class="docView" />
                                                     </template>
                                                     <template if:false={selectedContractor.FrontDoc}>
-                                                        <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image not Uploaded</div>
+                                                        <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image not
+                                                            Uploaded</div>
                                                     </template>
                                                 </div>
                                             </div>
@@ -782,12 +831,12 @@
                                             <p>{selectedContractor.Share_Code__c}</p>
                                         </div> -->
                                     </template>
-                                    <template if:true={selectedContractor.hasShareCode}>
+                                    <!-- <template if:true={selectedContractor.hasShareCode}>
                                         <div class="slds-col slds-size_1-of-2 slds-p-top_small">
                                             <p><strong>Date of Birth:</strong></p>
                                             <p>{selectedContractor.Date_of_Birth__c}</p>
                                         </div>
-                                    </template>
+                                    </template> -->
                                     <template if:true={selectedContractor.hasSettledStatus}>
                                         <div class="slds-col slds-size_1-of-2 slds-p-top_small">
                                             <p><strong>Settled Status:</strong></p>
@@ -830,7 +879,7 @@
                                         </div>
                                     </template>
                                 </div>
-                                <template if:true={showGovLink}>
+                                <!-- <template if:true={showGovLink}>
                                     <div class="slds-col slds-large-size_12-of-12  slds-p-top_x-small">
                                         <a href="https://www.gov.uk/view-right-to-work"
                                         target="_blank"
@@ -839,6 +888,116 @@
                                             View Right to Work Details (Gov.uk)
                                         </a>
                                     </div>
+                                </template> -->
+
+                                <template if:true={selectedContractor.hasShareCode}>
+                                    <!-- <template if:true={selectedContractor.hasEVisa}> -->
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <p><strong>Type of eVisa:</strong></p>
+                                        <template if:false={rightToWorkEditOpen}>
+                                            <p>{selectedContractor.Type_of_e_visa__c}</p>
+                                        </template>
+                                        <template if:true={rightToWorkEditOpen}>
+                                            <lightning-combobox name="typeOfEVisa"
+                                                value={selectedContractor.Type_of_e_visa__c} options={typeOfVisa_option}
+                                                onchange={onChangeRTWDetails}>
+                                            </lightning-combobox>
+                                        </template>
+                                    </div>
+                                    <!-- </template> -->
+                                    <template if:true={selectedContractor.Type_of_e_visa__c}>
+                                        <template if:true={selectedContractor.showTimeLimitedSection}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p><strong>Permission Expiry Date:</strong></p>
+                                                <template if:false={rightToWorkEditOpen}>
+                                                    <p>{selectedContractor.Permission_Expiry_Date__c}</p>
+                                                </template>
+                                                <template if:true={rightToWorkEditOpen}>
+                                                    <lightning-input type="date" name="PermissionexpiryDate"
+                                                        value={selectedContractor.Permission_Expiry_Date__c}
+                                                        onchange={onChangeRTWDetails}>
+                                                    </lightning-input>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    <template if:true={selectedContractor.Type_of_e_visa__c}>
+                                        <template if:true={selectedContractor.showTimeLimitedSection}>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p><strong>Any Work Restrictions:</strong></p>
+                                                <template if:false={rightToWorkEditOpen}>
+                                                    <p>{selectedContractor.Any_work_restrictions__c}</p>
+                                                </template>
+                                                <template if:true={rightToWorkEditOpen}>
+                                                    <!-- <lightning-input type="date" name="PermissionexpiryDate" label="Permission Expiry Date"
+                                                                                                value={selectedContractor.Permission_Expiry_Date__c} onchange={onChangeRTWDetails}>
+                                                                                            </lightning-input> -->
+                                                    <lightning-combobox name="anyWorkRestrictions"
+                                                        value={selectedContractor.Any_work_restrictions__c}
+                                                        options={anyWorkRestrictions_option}
+                                                        onchange={onChangeRTWDetails}>
+                                                    </lightning-combobox>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </template>
+
+                                    <template if:true={selectedContractor.Type_of_e_visa__c}>
+                                        <template if:true={selectedContractor.showTimeLimitedSection}>
+                                            <template if:true={selectedContractor.showRestrictionsSection}>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <p><strong>Limited To X Hours Per Week:</strong></p>
+                                                    <template if:false={rightToWorkEditOpen}>
+                                                        <p>{selectedContractor.Limited_To_X_Hours_Per_Week__c}</p>
+                                                    </template>
+                                                    <template if:true={rightToWorkEditOpen}>
+                                                        <lightning-input name="limitedHours"
+                                                            value={selectedContractor.Limited_To_X_Hours_Per_Week__c}
+                                                            onchange={onChangeRTWDetails}>
+                                                        </lightning-input>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </template>
+
+                                    <template if:true={selectedContractor.Type_of_e_visa__c}>
+                                        <template if:true={selectedContractor.showTimeLimitedSection}>
+                                            <template if:true={selectedContractor.showRestrictionsSection}>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <p><strong>Limited To Specific Job Types:</strong></p>
+                                                    <template if:false={rightToWorkEditOpen}>
+                                                        <p>{selectedContractor.Limited_To_Specific_Job_Types__c}</p>
+                                                    </template>
+                                                    <template if:true={rightToWorkEditOpen}>
+                                                        <lightning-input name="limitedJobTypes"
+                                                            value={selectedContractor.Limited_To_Specific_Job_Types__c}
+                                                            onchange={onChangeRTWDetails}>
+                                                        </lightning-input>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </template>
+
+                                    <template if:true={selectedContractor.Type_of_e_visa__c}>
+                                        <template if:true={selectedContractor.showTimeLimitedSection}>
+                                            <template if:true={selectedContractor.showRestrictionsSection}>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <p><strong>Other Restrictions:</strong></p>
+                                                    <template if:false={rightToWorkEditOpen}>
+                                                        <p>{selectedContractor.Other_Restrictions__c}</p>
+                                                    </template>
+                                                    <template if:true={rightToWorkEditOpen}>
+                                                        <lightning-textarea name="otherRestrictions"
+                                                            value={selectedContractor.Other_Restrictions__c}
+                                                            onchange={onChangeRTWDetails}>
+                                                        </lightning-textarea>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </template>
+                                    </template>
                                 </template>
 
                                 <template if:true={showFileUploadButton}>
@@ -866,19 +1025,16 @@
                                 </lightning-input> -->
                                 <div class="validation-box">
                                     <div class="validation-title">
-                                        <input 
-                                            type="checkbox"
-                                            checked={isRTWVerfiedCheck}
-                                            onchange={handleRTWVerifiedCheck}
-                                        />
+                                        <input type="checkbox" checked={isRTWVerfiedCheck}
+                                            onchange={handleRTWVerifiedCheck} />
                                         <label>I confirm that:</label>
                                     </div>
 
                                     <div class="validation-items">
 
                                         <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2.5" stroke-linecap="round">
+                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                                                 <polyline points="20 6 9 17 4 12"></polyline>
                                             </svg>
                                             <span>
@@ -887,8 +1043,8 @@
                                         </div>
 
                                         <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2.5" stroke-linecap="round">
+                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                                                 <polyline points="20 6 9 17 4 12"></polyline>
                                             </svg>
                                             <span>
@@ -897,8 +1053,8 @@
                                         </div>
 
                                         <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2.5" stroke-linecap="round">
+                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                                                 <polyline points="20 6 9 17 4 12"></polyline>
                                             </svg>
                                             <span>
@@ -918,12 +1074,14 @@
                         </template>
                         <template if:true={showExpiredError}>
                             <div class="slds-p-top_medium">
-                                <p style="color: red;">NOTE : RTW Document are Expired. Please update the documents with date of expiry.</p>
+                                <p style="color: red;">NOTE : RTW Document are Expired. Please update the documents with
+                                    date of expiry.</p>
                             </div>
                         </template>
                         <template if:true={showValidateError}>
                             <div class="slds-p-top_medium">
-                                <p style="color: red;">NOTE : Please confirm that you have verified the document by checking the box and enter your initials before proceeding.</p>
+                                <p style="color: red;">NOTE : Please confirm that you have verified the document by
+                                    checking the box and enter your initials before proceeding.</p>
                             </div>
                         </template>
                         <template if:true={showRTWCheckError}>
@@ -938,7 +1096,7 @@
                             <template if:false={hideValidateContent}>
                                 <template if:false={hideValidateButton}>
                                     <button name="RTWValidate" class="custom-button validate-button"
-                                    data-update-type='validate' onclick={validateHandler}>Validate</button>
+                                        data-update-type='validate' onclick={validateHandler}>Validate</button>
                                 </template>
                             </template>
                             <template if:true={rightToWorkEditOpen}>
@@ -996,30 +1154,36 @@
                                 <div class="spinner-container">
                                     <lightning-spinner if:true={imageLoading} alternative-text="Uploading" size="small"
                                         class="spinner-overlay"></lightning-spinner>
-                                    <div if:true={imagesNotAvailable} class="imageNotAvail imageNotAvaContainer"><span>Attachments are not
-                                            Available.</span></div>
+                                    <div if:true={imagesNotAvailable} class="imageNotAvail imageNotAvaContainer">
+                                        <span>Attachments are not
+                                            Available.</span>
+                                    </div>
                                     <template if:true={imagesAvailable}>
                                         <div class="frontDoc">
                                             <p class="slds-p-bottom_small"><strong>Front of Licence:</strong></p>
                                             <div style="width: 100%;">
                                                 <template if:true={selectedContractor.FrontDoc}>
-                                                    <img src={selectedContractor.FrontDoc} alt="Front of Driving Licence" class="docView" />
+                                                    <img src={selectedContractor.FrontDoc}
+                                                        alt="Front of Driving Licence" class="docView" />
                                                 </template>
                                                 <template if:false={selectedContractor.FrontDoc}>
-                                                    <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image not Uploaded</div>
+                                                    <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image not
+                                                        Uploaded</div>
                                                 </template>
                                             </div>
                                         </div>
                                         <div class="backDoc slds-p-top_small">
                                             <p class="slds-p-bottom_small"><strong>Back of Licence:</strong></p>
                                             <div style="width: 100%;">
-                                                
-                                                    <template if:true={selectedContractor.BackDoc}>
-                                                        <img src={selectedContractor.BackDoc} alt="Back of Driving Licence" class="docView" />
-                                                    </template>
-                                                    <template if:false={selectedContractor.BackDoc}>
-                                                        <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image not Uploaded</div>
-                                                    </template>
+
+                                                <template if:true={selectedContractor.BackDoc}>
+                                                    <img src={selectedContractor.BackDoc} alt="Back of Driving Licence"
+                                                        class="docView" />
+                                                </template>
+                                                <template if:false={selectedContractor.BackDoc}>
+                                                    <div class="imageNotAvaContainer" lwc-2o3e9begcc2="">Image not
+                                                        Uploaded</div>
+                                                </template>
                                             </div>
                                         </div>
                                     </template>
@@ -1031,10 +1195,11 @@
 
                             <div class="slds-col slds-size_1-of-2">
                                 <div class="slds-grid slds-wrap subModalHeader">
-                                    
+
                                     <div class="slds-col slds-size_3-of-6">
                                         <p class="key"><strong>Licence Expires In:</strong></P>
-                                        <p class="value" style="margin-bottom: 2px;">{selectedContractor.licenseExpiredIn}</P>
+                                        <p class="value" style="margin-bottom: 2px;">
+                                            {selectedContractor.licenseExpiredIn}</P>
                                     </div>
                                 </div>
                                 <template if:false={drivingLicenseEditOpen}>
@@ -1065,12 +1230,12 @@
                                             <div>
                                                 <p><strong>Issue Date:</strong></p>
                                                 <p>{selectedContractor.Driving_Licence_Issue_Date__c}</p>
-                                                
+
                                             </div>
                                             <div class="slds-var-p-top_small">
                                                 <p><strong>Expiry Date:</strong></p>
                                                 <p>{selectedContractor.Driving_Licence_Expiry_Date__c}</p>
-                                                
+
                                             </div>
                                             <div class="slds-var-p-top_small">
                                                 <p><strong>Driving Licence Type:</strong></p>
@@ -1087,28 +1252,36 @@
                                 </template>
                                 <template if:true={drivingLicenseEditOpen}>
                                     <div class="slds-var-p-top_small">
-                                        <lightning-combobox label="Type of licence:" name="typeOfLicense" class="typeOfLicense"
-                                            value={selectedContractor.Type_of_licence__c} onchange={onChangeLicenseDetails} options={licenseTypes_option}
+                                        <lightning-combobox label="Type of licence:" name="typeOfLicense"
+                                            class="typeOfLicense" value={selectedContractor.Type_of_licence__c}
+                                            onchange={onChangeLicenseDetails} options={licenseTypes_option}
                                             placeholder="Select Type" required="true"
                                             message-when-value-missing="Please select">
                                         </lightning-combobox>
                                     </div>
                                     <div class="drivingDetails">
                                         <div class="slds-grid slds-wrap slds-var-p-top_small">
-                                            <div class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-small-size_12-of-12 slds-var-m-bottom_small">
-                                                <lightning-input label="Driving Licence Number:" max-length="18" type="text" name="licenseNumber"
-                                                    onchange={onChangeLicenseDetails} value={selectedContractor.Driving_Licence_Number__c} class=licenseNumber required="true"
+                                            <div
+                                                class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-small-size_12-of-12 slds-var-m-bottom_small">
+                                                <lightning-input label="Driving Licence Number:" max-length="18"
+                                                    type="text" name="licenseNumber" onchange={onChangeLicenseDetails}
+                                                    value={selectedContractor.Driving_Licence_Number__c}
+                                                    class=licenseNumber required="true"
                                                     message-when-value-missing="Please add Licence number"
                                                     placeholder="Licence Number"></lightning-input>
                                             </div>
                                             <div class="slds-col slds-size_3-of-6" style="padding-left: 16px;">
-                                                <p class="key" style="font-size: 14px;color: #696969;padding: 4px 8px 0px 0px;">Vehicle Can Drive:</P>
+                                                <p class="key"
+                                                    style="font-size: 14px;color: #696969;padding: 4px 8px 0px 0px;">
+                                                    Vehicle Can Drive:</P>
                                                 <div class="slds-grid slds-wrap slds-var-p-top_small">
                                                     <template for:each={recordBasedLicenseCategory} for:item="cbOption">
-                                                        <div key={cbOption.value} class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-small-size_12-of-12 slds-var-m-bottom_small">
-                                                            <lightning-input type="checkbox" label={cbOption.value} value={cbOption.value}
-                                                                onchange={onChangeLicenseDetails} checked={cbOption.checked}
-                                                                class="cBox licenseCategory" name="licenseCategory">
+                                                        <div key={cbOption.value}
+                                                            class="slds-col slds-size_12-of-12 slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-small-size_12-of-12 slds-var-m-bottom_small">
+                                                            <lightning-input type="checkbox" label={cbOption.value}
+                                                                value={cbOption.value} onchange={onChangeLicenseDetails}
+                                                                checked={cbOption.checked} class="cBox licenseCategory"
+                                                                name="licenseCategory">
                                                             </lightning-input>
                                                         </div>
                                                     </template>
@@ -1120,11 +1293,12 @@
                                         <div class="slds-col slds-size_1-of-2 ">
                                             <div>
                                                 <lightning-input label="Licence Issue Date"
-                                                    message-when-value-missing="Please add Licence Issue Date" required="true"
-                                                    placeholder="DD/MM/YYYY" date-style="short" type="date" name="licenseIssueDate"
-                                                    class="licenseIssueDate" onchange={onChangeLicenseDetails}
+                                                    message-when-value-missing="Please add Licence Issue Date"
+                                                    required="true" placeholder="DD/MM/YYYY" date-style="short"
+                                                    type="date" name="licenseIssueDate" class="licenseIssueDate"
+                                                    onchange={onChangeLicenseDetails}
                                                     value={selectedContractor.Driving_Licence_Issue_Date__c}></lightning-input>
-                                                
+
                                             </div>
                                             <div class="slds-var-p-top_small">
                                                 <!-- <p><strong>Expiry Date:</strong></p> -->
@@ -1135,22 +1309,25 @@
                                                     value={licenseExpiryDate}></lightning-input> -->
 
                                                 <lightning-input label="Licence Expiry Date"
-                                                    message-when-value-missing="Please add Licence Expiry Date" required="true"
-                                                    placeholder="DD/MM/YYYY" date-style="short" type="date" name="licenseExpiryDate"
-                                                    class="licenseExpiryDate" onchange={onChangeLicenseDetails}
+                                                    message-when-value-missing="Please add Licence Expiry Date"
+                                                    required="true" placeholder="DD/MM/YYYY" date-style="short"
+                                                    type="date" name="licenseExpiryDate" class="licenseExpiryDate"
+                                                    onchange={onChangeLicenseDetails}
                                                     value={selectedContractor.Driving_Licence_Expiry_Date__c}></lightning-input>
-                                                
+
                                             </div>
                                             <div class="slds-var-p-top_small">
-                                                <lightning-input label="Points on Licence:" type="text" name="pointOfLicense" required="true"
-                                                    message-when-value-missing="Please add Points on Licence" 
-                                                    onchange={onChangeLicenseDetails} value={selectedContractor.Points_on_Licence__c} class=pointOfLicense
+                                                <lightning-input label="Points on Licence:" type="text"
+                                                    name="pointOfLicense" required="true"
+                                                    message-when-value-missing="Please add Points on Licence"
+                                                    onchange={onChangeLicenseDetails}
+                                                    value={selectedContractor.Points_on_Licence__c} class=pointOfLicense
                                                     placeholder="Add points here"></lightning-input>
                                             </div>
                                         </div>
                                     </div>
                                 </template>
-                               
+
                                 <template if:true={showFileUploadButton}>
                                     <div class="frontBackFileUpload">
                                         <div class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-top_x-small"
@@ -1174,18 +1351,21 @@
                                     <template if:true={isDLVerfiedCheck}>
                                         <div class="slds-var-p-top_small">
                                             <lightning-input label="Verified By" placeholder="Enter Your Initials"
-                                                value={verifiedDLName} onchange={handleDLVerifiedName}></lightning-input>
+                                                value={verifiedDLName}
+                                                onchange={handleDLVerifiedName}></lightning-input>
                                         </div>
                                     </template>
                                 </template>
                                 <template if:true={showDLExpiredError}>
                                     <div class="slds-p-top_medium">
-                                        <p style="color: red;">NOTE : Licence Document are Expired. Please update the documents with date of expiry.</p>
+                                        <p style="color: red;">NOTE : Licence Document are Expired. Please update the
+                                            documents with date of expiry.</p>
                                     </div>
                                 </template>
                                 <template if:true={showDLValidateError}>
                                     <div class="slds-p-top_medium">
-                                        <p style="color: red;">NOTE : Please confirm that you have verified the document by checking the box and enter your initials before proceeding.</p>
+                                        <p style="color: red;">NOTE : Please confirm that you have verified the document
+                                            by checking the box and enter your initials before proceeding.</p>
                                     </div>
                                 </template>
                                 <template if:true={showRTWCheckError}>
@@ -1198,11 +1378,11 @@
                         <div class="custom-button-group">
                             <button name="drivingReject" class="custom-button reject-button"
                                 onclick={rejectHandler}>Cancel</button>
-                            
+
                             <template if:false={hideDLValidateContent}>
                                 <template if:false={hideDLValidateButton}>
                                     <button name="drivingValidate" class="custom-button validate-button"
-                                    data-update-type='validate' onclick={validateHandler}>Validate</button>
+                                        data-update-type='validate' onclick={validateHandler}>Validate</button>
                                 </template>
                             </template>
                             <template if:true={drivingLicenseEditOpen}>
@@ -1222,19 +1402,20 @@
 
             <c-gconnect-file-upload record-id={selectedContractorId} show-preview="true"
                 upload-section-name={uploadSectionName} section-title={sectionTitle}
-                oncallcontractorupdate={uploadHandler} oncallclosemethod={closeModal} driver-name={selectedContractor.clientName}>
+                oncallcontractorupdate={uploadHandler} oncallclosemethod={closeModal}
+                driver-name={selectedContractor.clientName}>
             </c-gconnect-file-upload>
 
         </template>
 
         <template if:true={rtwNoDataSectionModal}>
-            <c-g-connect-add-right-to-work record-id={selectedContractorId} account-name={selectedContractorName} 
-            oncallrtwdatasavemethod={rtwDataAdded} oncallclosemethod={closeModal}></c-g-connect-add-right-to-work>
+            <c-g-connect-add-right-to-work record-id={selectedContractorId} account-name={selectedContractorName}
+                oncallrtwdatasavemethod={rtwDataAdded} oncallclosemethod={closeModal}></c-g-connect-add-right-to-work>
         </template>
 
         <template if:true={dlNoDataSectionModal}>
-            <c-g-connect-add-driving-license record-id={selectedContractorId} account-name={selectedContractorName} 
-            oncalldldatasavemethod={dlDataAdded} oncallclosemethod={closeModal}></c-g-connect-add-driving-license>
+            <c-g-connect-add-driving-license record-id={selectedContractorId} account-name={selectedContractorName}
+                oncalldldatasavemethod={dlDataAdded} oncallclosemethod={closeModal}></c-g-connect-add-driving-license>
         </template>
 
         <template if:true={visibleNewContractorModal}>
@@ -1245,7 +1426,7 @@
                     <header class="slds-modal__header">
                         <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
                             title="Close" onclick={closeModal}>
-                            <lightning-icon icon-name="utility:close" alternative-text="close" 
+                            <lightning-icon icon-name="utility:close" alternative-text="close"
                                 size="small"></lightning-icon>
                             <span class="slds-assistive-text">Close</span>
                         </button>
@@ -1273,7 +1454,7 @@
                     <div class="slds-modal__content slds-p-around_medium">
                         <div class="slds-col slds-align_absolute-center">
                             <p style="font-family: var(--font-secondary);">
-                                Are you sure you want to fail the {sectionTitle} check for 
+                                Are you sure you want to fail the {sectionTitle} check for
                                 <span class="client-name"> {selectedContractor.clientName}</span>?
                             </p>
                         </div>
@@ -1291,12 +1472,11 @@
             <div class="slds-backdrop slds-backdrop_open"></div>
         </template>
 
-        <template if:true={openDisengageConfirm}>                        
-            <section role="dialog" tabindex="-1"
-                class="slds-modal slds-fade-in-open custom-modal confirmModal">
-                
+        <template if:true={openDisengageConfirm}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open custom-modal confirmModal">
+
                 <div class="slds-modal__container" style="width:40rem">
-                    <header class="slds-modal__header dialogueHeader" >
+                    <header class="slds-modal__header dialogueHeader">
                         <button class="close-button" onclick={closeConfirmModal}>×</button>
                         <h2 class="slds-text-heading_medium custom-header">Disengaged Confirm</h2>
                     </header>
@@ -1307,7 +1487,8 @@
                         </div> -->
                         <template if:true={isDisenegaeLoader}>
                             <div class="overlay">
-                                <lightning-spinner alternative-text="Uploading" size="small" style="background: transparent;"></lightning-spinner>
+                                <lightning-spinner alternative-text="Uploading" size="small"
+                                    style="background: transparent;"></lightning-spinner>
                             </div>
                         </template>
                         <template if:false={hasActiveDeduction}>
@@ -1327,24 +1508,41 @@
                                     </div>
                                 </template> -->
                             <div class="slds-col slds-align_absolute-center" style="color:red;">
-                                <p>There is an Active/Paused deduction for <strong> {selectedDriverName}</strong> : £ {totalRemainDeductionBalance} </p>
+                                <p>There is an Active/Paused deduction for <strong> {selectedDriverName}</strong> : £
+                                    {totalRemainDeductionBalance} </p>
                             </div>
                             <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-m-top_small">
                                 <thead>
                                     <tr>
-                                        <th scope="col"><div class="slds-truncate">Name</div></th>
-                                        <th scope="col"><div class="slds-truncate">Deduction Type</div></th>
-                                        <th scope="col"><div class="slds-truncate">Balance Amount (£)</div></th>
-                                        <th scope="col"><div class="slds-truncate">Status</div></th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Name</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Deduction Type</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Balance Amount (£)</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Status</div>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template for:each={deductionList} for:item="ded">
                                         <tr key={ded.deductionType}>
-                                            <td><div class="slds-truncate">{ded.name}</div></td>
-                                            <td><div class="slds-truncate">{ded.deductionType}</div></td>
-                                            <td><div class="slds-truncate">{ded.balanceAmount}</div></td>
-                                            <td><div class="slds-truncate">{ded.status}</div></td>
+                                            <td>
+                                                <div class="slds-truncate">{ded.name}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">{ded.deductionType}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">{ded.balanceAmount}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">{ded.status}</div>
+                                            </td>
                                         </tr>
                                     </template>
                                 </tbody>
@@ -1386,12 +1584,13 @@
                             <div class="slds-col slds-size_6-of-6">
                                 <c-image-capture record-id={selectedContractorId} show-file-upload={showFileUploadModal}
                                     show-profile={showProfileUploadModal} show-capture-file={showImageCaptureModal}
-                                    show-doc-error={isFileModuleError} show-error-message={fileModuleError} allowed-extension = {allowedExtension}
+                                    show-doc-error={isFileModuleError} show-error-message={fileModuleError}
+                                    allowed-extension={allowedExtension}
                                     show-front-back-radio-btn={showFrontBackRadioBtn}>
                                 </c-image-capture>
 
-                            
-                            
+
+
                             </div>
                         </div>
 

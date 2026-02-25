@@ -1303,7 +1303,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         this.fileErrorMessage = false;
         this.rightToWorkNotShowVerified = true;
         this.drivingLicenseNotShowVerified = true;
-
+        this.FetchMCandSCDetails();
     }
 
     handleRecordMenuClick(event) {

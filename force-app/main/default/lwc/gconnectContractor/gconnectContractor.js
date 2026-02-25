@@ -114,7 +114,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     @track selectedValueDepot;
     @track selectedValueRole;
 
-   
+
     @track rightToWorkEditOpen = false;
     @track rightToWorkNotShowVerified = true;
     @track drivingLicenseEditOpen = false;
@@ -126,7 +126,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     @track showExpiredError = false
 
     @track hideDLValidateContent = false;
-    @track showDLExpiredError = false; 
+    @track showDLExpiredError = false;
 
     @track showFileUploadButton = false;
 
@@ -170,6 +170,74 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     @track noRecordFound = false;
     @track allowedExtension;
 
+    @wire(CurrentPageReference)
+    getPageParameters(currentPageReference) {
+        if (currentPageReference) {
+
+            this.globalSearchValue = currentPageReference.state.name;
+            if (this.globalSearchValue != null && this.data != null) {
+                if (this.originalData != null) {
+                    this.data = [...this.originalData];
+                }
+
+                this.data = this.data.filter(contractor => {
+                    const nameMatch = !this.globalSearchValue.toLowerCase() || contractor.Client_Name__c.toLowerCase().includes(this.globalSearchValue.toLowerCase());
+                    return nameMatch;
+                });
+                this.currentPageGeneral = 1;
+            }
+            console.log('currentPageReference.state.complianceFilter : ', currentPageReference.state.complianceFilter);
+            if (currentPageReference.state.complianceFilter != null) {
+                this.complianceFilter = currentPageReference.state.complianceFilter;
+                this.complianceFilterSearch();
+            }
+        }
+    }
+
+    // new options
+    @track rtwDocument_option;
+    @track citizenStatus_option;
+    @track typeOfVisa_option;
+    @track anyWorkRestrictions_option;
+
+    @wire(getMultiplePicklistValues, { objectName: 'Account', fieldNames: ['Type_of_licence__c', 'Additional_licence_categories__c', 'Right_to_work_document__c', 'Citizenship_Immigration_status__c', 'Type_of_e_visa__c', 'Any_work_restrictions__c'] })
+    wiredPicklistOptions({ error, data }) {
+        if (data) {
+            if (data.Type_of_licence__c) {
+                this.licenseTypes_option = data.Type_of_licence__c.map(value => {
+                    return { label: value, value: value };
+                });
+            }
+            if (data.Additional_licence_categories__c) {
+                this.licenseCategory_option = data.Additional_licence_categories__c.map(value => {
+                    return { label: value, value: value };
+                });
+            }
+            if (data.Right_to_work_document__c) {
+                this.rtwDocument_option = data.Right_to_work_document__c.map(value => {
+                    return { label: value, value: value };
+                });
+            }
+            if (data.Citizenship_Immigration_status__c) {
+                this.citizenStatus_option = data.Citizenship_Immigration_status__c.map(value => {
+                    return { label: value, value: value };
+                });
+            }
+            if (data.Type_of_e_visa__c) {
+                this.typeOfVisa_option = data.Type_of_e_visa__c.map(value => {
+                    return { label: value, value: value };
+                });
+            }
+            if (data.Any_work_restrictions__c) {
+                this.anyWorkRestrictions_option = data.Any_work_restrictions__c.map(value => {
+                    return { label: value, value: value };
+                });
+            }
+        } else if (error) {
+            console.error('Error in getting Picklist Values:', error);
+        }
+    }
+
     tabs = [
         { id: 1, label: "General Details", isActive: true },
         { id: 2, label: "Compliance", isActive: false },
@@ -183,7 +251,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     get paginatedDataGeneral() {
         const startIndex = (this.currentPageGeneral - 1) * this.recordsPerPage;
         const endIndex = startIndex + this.recordsPerPage;
-        return this.data.slice(startIndex, endIndex); 
+        return this.data.slice(startIndex, endIndex);
     }
 
     get disableNextGeneralButton() {
@@ -201,7 +269,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
         const style = document.createElement('style');
         style.innerText = `
-                
+
                 .dialogueHeader {
                     border-bottom-style: none !important;
                     border-top-left-radius: 15px !important;
@@ -219,13 +287,13 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 }
 
                 .right-to-work-modal .slds-modal__container{
-                    max-width: 45rem !important; 
+                    max-width: 45rem !important;
                     box-shadow: unset !important;
-                } 
+                }
                 .file-upload-modal .slds-modal__container{
-                    max-width: 28rem !important; 
+                    max-width: 28rem !important;
                     box-shadow: unset !important;
-                }     
+                }
                 .confirmModal .slds-modal__container{
                     box-shadow: unset !important;
                 }
@@ -239,15 +307,15 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                     background-color: var(--color-secondary) !important;
                     border:none;
                 }
-               
-				
+
+
         `;
         setTimeout(() => {
             this.template.querySelector('.overrideStyle').appendChild(style);
         }, 10);
 
 
-        
+
         getUserContact({ userId: USER_ID })
             .then(result => {
 
@@ -292,7 +360,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                         })
                         .catch((error) => {
                             console.log('Error:', error);
-                            
+
                         });
 
                     getMCDepotDetails({ contactId: this.contactId })
@@ -305,7 +373,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                                         'value': depotResult[i].value
                                     };
                                     this.depotList = [...this.depotList, this.collectdepots];
-                                    
+
                                 }
                             }
 
@@ -317,16 +385,16 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 }, 3000);
 
                 getRolePicklistValues({ contactId: this.contactId })
-                .then(data => {
-    
-                    this.roleOptions = [{ label: 'None', value: '' }];
-                    this.roleOptions = this.roleOptions.concat(data.map(role => {
-                        return { label: role, value: role };
-                    }));
-                })
-                .catch(error => {
-                    console.error('Error fetching role picklist values:', error);
-                });
+                    .then(data => {
+
+                        this.roleOptions = [{ label: 'None', value: '' }];
+                        this.roleOptions = this.roleOptions.concat(data.map(role => {
+                            return { label: role, value: role };
+                        }));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching role picklist values:', error);
+                    });
 
             });
         document.addEventListener('click', this.handleOutsideClick.bind(this));
@@ -343,7 +411,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
     handleNextGeneralPage() {
         if (this.currentPageGeneral < this.totalPagesGeneral) {
-            this.currentPageGeneral = this.currentPageGeneral + 1 ;
+            this.currentPageGeneral = this.currentPageGeneral + 1;
         }
     }
 
@@ -353,9 +421,9 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         }
     }
 
-    handleOnchangeInputGeneralPage(event){
+    handleOnchangeInputGeneralPage(event) {
         const inputPage = Number(event.target.value);
-        
+
 
         // Check if the "Enter" key was pressed
         if (event.key === 'Enter') {
@@ -377,7 +445,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     get paginatedDataCompliance() {
         const startIndex = (this.currentPageCompliance - 1) * this.recordsPerPage;
         const endIndex = startIndex + this.recordsPerPage;
-        return this.data.slice(startIndex, endIndex); 
+        return this.data.slice(startIndex, endIndex);
     }
 
     get disableNextComplianceButton() {
@@ -390,7 +458,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
     handleNextCompliancePage() {
         if (this.currentPageCompliance < this.totalPagesCompliance) {
-            this.currentPageCompliance = this.currentPageCompliance + 1 ;
+            this.currentPageCompliance = this.currentPageCompliance + 1;
         }
     }
 
@@ -400,9 +468,9 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         }
     }
 
-    handleOnchangeInputCompliancePage(event){
+    handleOnchangeInputCompliancePage(event) {
         const inputPage = Number(event.target.value);
-        
+
 
         // Check if the "Enter" key was pressed
         if (event.key === 'Enter') {
@@ -424,7 +492,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     get paginatedDataFinance() {
         const startIndex = (this.currentPageFinance - 1) * this.recordsPerPage;
         const endIndex = startIndex + this.recordsPerPage;
-        return this.data.slice(startIndex, endIndex); 
+        return this.data.slice(startIndex, endIndex);
     }
 
     get disableNextFinanceButton() {
@@ -437,7 +505,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
     handleNextFinancePage() {
         if (this.currentPageFinance < this.totalPagesFinance) {
-            this.currentPageFinance = this.currentPageFinance + 1 ;
+            this.currentPageFinance = this.currentPageFinance + 1;
         }
     }
 
@@ -447,9 +515,9 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         }
     }
 
-    handleOnchangeInputFinancePage(event){
+    handleOnchangeInputFinancePage(event) {
         const inputPage = Number(event.target.value);
-        
+
 
         // Check if the "Enter" key was pressed
         if (event.key === 'Enter') {
@@ -464,47 +532,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
     //-------------------------------------------------------------------------------
 
-    @wire(CurrentPageReference)
-    getPageParameters(currentPageReference) {
-        if (currentPageReference) {
-            
-            this.globalSearchValue = currentPageReference.state.name;
-            if(this.globalSearchValue != null && this.data != null){
-                if(this.originalData != null){
-                    this.data = [...this.originalData];
-                }
-                
-                this.data = this.data.filter(contractor => {
-                    const nameMatch = !this.globalSearchValue.toLowerCase() || contractor.Client_Name__c.toLowerCase().includes(this.globalSearchValue.toLowerCase());
-                    return nameMatch;
-                });
-                this.currentPageGeneral = 1;
-            }
-            console.log('currentPageReference.state.complianceFilter : ',currentPageReference.state.complianceFilter);
-            if(currentPageReference.state.complianceFilter != null){
-                this.complianceFilter = currentPageReference.state.complianceFilter;
-                this.complianceFilterSearch();
-            }
-        }
-    }
 
-    @wire(getMultiplePicklistValues, { objectName: 'Account', fieldNames: ['Type_of_licence__c', 'Additional_licence_categories__c'] })
-     wiredPicklistOptions({ error, data }) {
-         if (data) {
-             if (data.Type_of_licence__c) {
-                 this.licenseTypes_option = data.Type_of_licence__c.map(value => {
-                     return { label: value, value: value };
-                 });
-             }
-             if (data.Additional_licence_categories__c) {
-                 this.licenseCategory_option = data.Additional_licence_categories__c.map(value => {
-                     return { label: value, value: value };
-                 });
-             }
-         } else if (error) {
-             console.error('Error in getting Picklist Values:', error);
-         }
-     }
 
     get showNameNi() {
         return (
@@ -513,288 +541,300 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         );
     }
     get showSection() {
-        return !this.selectedContractor?.hasAccessCode 
+        return !this.selectedContractor?.hasAccessCode
             && this.selectedContractor?.hasShareCode;
     }
 
 
-     FetchMCandSCDetails(){
+    FetchMCandSCDetails() {
         let accountIdList = [];
         this.isLoading = true;
         getMCandSCDetails({ contactId: this.contactId, scStatusList: this.filteredStatusList })
-        .then(result => {
+            .then(result => {
 
-            if (result == null) {
-                this.noRecordFound = true;
-                this.isLoading = false;
-                return;
-            }
-            
-            this.originalData = JSON.parse(JSON.stringify(result));
-            this.data = [...this.originalData];
-            
-            
-            
-            this.data.forEach((item) => {
-
-                accountIdList.push(item.id);
-                item.visibleRecordMenu = false;
-                item.hasAccessCode = item.hasOwnProperty('Access_Code__c') && item.Access_Code__c !== null ? true : false;
-                item.hasShareCode = item.hasOwnProperty('Share_Code__c') && item.Share_Code__c !== null ? true : false;
-                item.hasSettledStatus = item.hasOwnProperty('Settled_Status__c') && item.Settled_Status__c !== null ? true : false;
-                item.hasBiometric = item.hasOwnProperty('Biometric_Evidence__c') && item.Biometric_Evidence__c !== null ? true : false;
-                item.hasEntryDate = item.hasOwnProperty('Date_of_Entry__c') && item.Date_of_Entry__c !== null ? true : false;
-                item.hasRTWDoc = item.hasOwnProperty('Right_to_work_document__c') && item.Right_to_work_document__c !== null ? true : false;
-                item.hasExpiryDate = item.hasOwnProperty('RTW_Expiry_Date__c') && item.RTW_Expiry_Date__c !== null ? true : false;
-                item.hasProfilePic = item.hasOwnProperty('ProfilePic_Base64') && item.ProfilePic_Base64 !== null ? true : false;
-                item.VAT_Number_Entry__c = item.hasOwnProperty('VAT_Number_Entry__c') && item.VAT_Number_Entry__c !== null ? item.VAT_Number_Entry__c : '-';
-                item.URT_Number_Entry__c = item.hasOwnProperty('URT_Number_Entry__c') && item.URT_Number_Entry__c !== null ? item.URT_Number_Entry__c : '-';
-                
-                item.nationalInsurance = item.hasOwnProperty('National_Insurance_Number__c') && item.National_Insurance_Number__c !== null ? item.National_Insurance_Number__c : '';
-                item.clientName = item.hasOwnProperty('Client_Name__c') && item.Client_Name__c !== null ? item.Client_Name__c : '';
-                
-                item.bypassValidation = item.hasOwnProperty('Citizenship_Immigration_status__c') && item.Citizenship_Immigration_status__c === 'British passport/UK National';
-
-                item.totalscore  = Math.ceil(item.Score__c);
-                item.scoreStyle = this.getProgressStyle(Math.ceil(item.Score__c));
-
-                item.isDLExpiring = false;
-                item.isDLExpired = false;
-                item.drivingLicenseVerify = false;
-                item.drivingLicenseNotVerify = false;
-                item.licenseDataNotAvaliable = false;
-                item.allowDLEdit = false;
-                item.requiredDLEdit = true;
-                if(item.hasOwnProperty('Driving_Licence_Number__c') && item.Driving_Licence_Number__c !== null)
-                {
-                    if (item.Driving_Licence_Expiry_Date__c) {
-                        let licenseExpiryStatus = this.checkDLandRTWExpiry(item.Driving_Licence_Expiry_Date__c);
-                        item.licenseExpiredIn = this.calculateLicenseExpiry(item.Driving_Licence_Expiry_Date__c);
-                        if(licenseExpiryStatus == 'expiring'){
-                            item.isDLExpiring = true;
-                            item.allowDLEdit = true;
-                        }
-                        if(licenseExpiryStatus == 'expired'){
-                            item.isDLExpired = true;
-                            item.allowDLEdit = true;
-                            item.requiredDLEdit = true;
-                        }
-                    }
-                    if(item.isDLExpiring == false && item.isDLExpired == false){
-                        if(item.isDriving_License_Verify__c){
-                            item.drivingLicenseVerify = true;
-                            // ADD ON EDIT FOR VERIFIED DRIVER SECTION
-                            item.allowDLEdit = true;
-                        }
-                        else{
-                            item.drivingLicenseNotVerify = true;
-                            item.allowDLEdit = true;
-                        }
-                    }
-                }else{
-                    item.licenseDataNotAvaliable = true;
+                if (result == null) {
+                    this.noRecordFound = true;
+                    this.isLoading = false;
+                    return;
                 }
 
-
-                item.isRTWExpiring = false;
-                item.isRTWExpired = false;
-                item.rtwLicenseVerify = false;
-                item.rtwLicenseNotVerify = false;
-                item.rtwDataNotAvaliable = false;
-                item.allowRTWEdit = false;
-                item.requiredRTWEdit = true;
-                if(item.hasOwnProperty('Citizenship_Immigration_status__c') && item.Citizenship_Immigration_status__c !== null)
-                {
-                    // if (item.RTW_Expiry_Date__c) {
-
-                    // adding the RTW british passport validation
-                    if (!item.bypassValidation && item.RTW_Expiry_Date__c) {
-                        let rtwExpiryStatus = this.checkDLandRTWExpiry(item.RTW_Expiry_Date__c);
-                        if(rtwExpiryStatus == 'expiring'){
-                            item.isRTWExpiring = true;
-                            item.allowRTWEdit = true;
-                        }
-                        if(rtwExpiryStatus == 'expired'){
-                            item.isRTWExpired = true;
-                            item.allowRTWEdit = true;
-                            item.requiredRTWEdit = true;
-                        }
-                    }
-                    if(item.isRTWExpiring == false && item.isRTWExpired == false){
-                        if(item.is_Right_to_Work_Verify__c){
-                            item.rtwLicenseVerify = true;
-                            // ADD FOR ALLOW RTW EDIT
-                            item.allowRTWEdit = true;
-                        }
-                        else{
-                            item.rtwLicenseNotVerify = true;
-                            item.allowRTWEdit = true;
-                        }
-                    }
-                }else{
-                    item.rtwDataNotAvaliable = true;
-                }
-
-                item.remainingScore = 100 - item.totalscore;
-                item.scoreTooltip = this.buildScoreTooltip(item);
-                
-                switch (item.SC_Status__c) {
-                    case 'Engaged':
-                        item.statusClass = 'status-green';
-                        item.contractClass = 'rtwVerifiedButton';
-                        item.contractLabel = 'Signed';
-                        item.displaysign = true;
-                        item.isEngagedDormant = true;
-                        break;
-                    case 'Dormant':
-                        item.statusClass = 'status-yellow';
-                        item.contractClass = 'rtwVerifiedButton';
-                        item.contractLabel = 'Signed';
-                        item.displaysign = true;
-                        item.isEngagedDormant = true;
-                        break;
-                    case 'Documents Completed':
-                        item.statusClass = 'labelTypeButton';
-                        item.contractClass = 'rtwVerifiedButton';
-                        item.contractLabel = 'Signed';
-                        item.displaysign = true;
-                        item.isEngagedDormant = false;
-                        break;
-                    case 'Disengaged':
-                        item.statusClass = 'labelTypeButton';
-                        item.contractClass = 'rtwVerifiedButton';
-                        item.contractLabel = 'Signed';
-                        item.displaysign = true;
-                        item.isEngagedDormant = false;
-                        break;
-                    case 'Contracts Sent':
-                        item.statusClass = 'labelTypeButton';
-                        item.contractClass = 'rtwButton';
-                        item.contractLabel = 'Pending'
-                        item.displaysign = false;
-                        item.isEngagedDormant = false;
-                        break;
-                    case 'Contracts Pending':
-                        item.statusClass = 'labelTypeButton';
-                        item.contractClass = 'rtwButton';
-                        item.contractLabel = 'Pending'
-                        item.displaysign = false;
-                        item.isEngagedDormant = false;
-                        break;
-                    case 'Onboarding Initiated':
-                        item.statusClass = 'labelTypeButton';
-                        item.contractClass = 'rtwButton';
-                        item.contractLabel = 'Pending'
-                        item.displaysign = false;
-                        item.isEngagedDormant = false;
-                        break;
-                    case 'Onboarding':
-                        item.statusClass = 'labelTypeButton';
-                        item.contractClass = 'rtwButton';
-                        item.contractLabel = 'Pending'
-                        item.displaysign = false;
-                        item.isEngagedDormant = false;
-                        break;
-                    default:
-                        item.statusClass = 'labelTypeButton';
-                        item.contractClass = 'labelTypeButton';
-                        item.contractLabel = item.SC_Status__c;
-                        item.displaysign = false;
-                        item.isEngagedDormant = false;
-                        break;
-                }
-                if (item.isBackground_Check__c == true) {
-                    this.isBackgroundCheckColumn = true
-                }
-                if (item.isToxicology_Validate__c == true) {
-                    this.isToxicologyColumn = true
-                }
-
-                if (item.Background_Check_Status__c == 'Passed') {
-                    item.BackCheckStatus = true;
-                    item.expressionBackPass = true;
-                } else if (item.Background_Check_Status__c == 'Fail') {
-                    item.BackCheckStatus = true;
-                    item.expressionBackPass = false;
-                } else {
-                    item.BackCheckStatus = false;
-                    item.expressionBackPass = false;
-                }
-                if (item.Toxicology_Status__c == 'Passed') {
-                    item.ToxicologyCheckStatus = true;
-                    item.expressionPassTox = true;
-                } else if (item.Toxicology_Status__c == 'Fail') {
-                    item.ToxicologyCheckStatus = true;
-                    item.expressionPassTox = false;
-                }
-                else {
-                    item.ToxicologyCheckStatus = false;
-                    item.expressionPassTox = false;
-                }
+                this.originalData = JSON.parse(JSON.stringify(result));
+                this.data = [...this.originalData];
 
 
-                if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
-                    && this.isBackgroundCheckColumn && (item.Background_Check_Status__c == 'Passed' || item.backGroundCheckVar == 'Passed')
-                    && this.isToxicologyColumn && (item.Toxicology_Status__c == 'Passed' || item.toxicologyCheckVar == 'Passed')) {
-                    item.isEvidence_Checked__c = true;
-                }
-                else if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
-                    && this.isBackgroundCheckColumn == false
-                    && this.isToxicologyColumn && (item.Toxicology_Status__c == 'Passed' || item.toxicologyCheckVar == 'Passed')) {
-                    item.isEvidence_Checked__c = true;
-                }
-                else if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
-                    && this.isBackgroundCheckColumn && (item.Background_Check_Status__c == 'Passed' || item.backGroundCheckVar == 'Passed')
-                    && this.isToxicologyColumn == false) {
-                    item.isEvidence_Checked__c = true;
-                }
-                else if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
-                    && this.isBackgroundCheckColumn == false && this.isToxicologyColumn == false) {
-                    item.isEvidence_Checked__c = true;
-                }
-                else {
-                    item.isEvidence_Checked__c = false;
-                }
 
-                if (item) {
-                
-                    if (!item.hasOwnProperty('Role__c')) {
-                        item.Role__c = '';
+                this.data.forEach((item) => {
+
+                    accountIdList.push(item.id);
+                    item.visibleRecordMenu = false;
+                    item.hasAccessCode = item.hasOwnProperty('Access_Code__c') && item.Access_Code__c !== null ? true : false;
+                    item.hasShareCode = item.hasOwnProperty('Share_Code__c') && item.Share_Code__c !== null ? true : false;
+                    item.hasSettledStatus = item.hasOwnProperty('Settled_Status__c') && item.Settled_Status__c !== null ? true : false;
+                    item.hasBiometric = item.hasOwnProperty('Biometric_Evidence__c') && item.Biometric_Evidence__c !== null ? true : false;
+                    item.hasEntryDate = item.hasOwnProperty('Date_of_Entry__c') && item.Date_of_Entry__c !== null ? true : false;
+                    item.hasRTWDoc = item.hasOwnProperty('Right_to_work_document__c') && item.Right_to_work_document__c !== null ? true : false;
+                    item.hasExpiryDate = item.hasOwnProperty('RTW_Expiry_Date__c') && item.RTW_Expiry_Date__c !== null ? true : false;
+                    item.hasProfilePic = item.hasOwnProperty('ProfilePic_Base64') && item.ProfilePic_Base64 !== null ? true : false;
+                    item.VAT_Number_Entry__c = item.hasOwnProperty('VAT_Number_Entry__c') && item.VAT_Number_Entry__c !== null ? item.VAT_Number_Entry__c : '-';
+                    item.URT_Number_Entry__c = item.hasOwnProperty('URT_Number_Entry__c') && item.URT_Number_Entry__c !== null ? item.URT_Number_Entry__c : '-';
+                    item.hasEVisa = item.hasOwnProperty('Type_of_e_visa__c') && item.Type_of_e_visa__c !== null ? true : false;
+
+                    if (item.hasOwnProperty('Type_of_e_visa__c') && item.Type_of_e_visa__c == 'Time-limited right to work') {
+                        item.showTimeLimitedSection = true;
+                    } else {
+                        item.showTimeLimitedSection = false;
                     }
 
-                    if (!item.hasOwnProperty('End_User_Name__c')) {
-                        item.End_User_Name__c = '';
+                    if (item.hasOwnProperty('Any_work_restrictions__c') && item.Any_work_restrictions__c == 'Yes') {
+                        item.showRestrictionsSection = true;
+                    } else {
+                        item.showRestrictionsSection = false;
                     }
 
-                    if (!item.hasOwnProperty('Depot_Name__c')) {
-                        item.Depot_Name__c = '';
+
+                    item.nationalInsurance = item.hasOwnProperty('National_Insurance_Number__c') && item.National_Insurance_Number__c !== null ? item.National_Insurance_Number__c : '';
+                    item.clientName = item.hasOwnProperty('Client_Name__c') && item.Client_Name__c !== null ? item.Client_Name__c : '';
+
+                    item.bypassValidation = item.hasOwnProperty('Citizenship_Immigration_status__c') && item.Citizenship_Immigration_status__c === 'British passport/UK National';
+
+                    item.totalscore = Math.ceil(item.Score__c);
+                    item.scoreStyle = this.getProgressStyle(Math.ceil(item.Score__c));
+
+                    item.isDLExpiring = false;
+                    item.isDLExpired = false;
+                    item.drivingLicenseVerify = false;
+                    item.drivingLicenseNotVerify = false;
+                    item.licenseDataNotAvaliable = false;
+                    item.allowDLEdit = false;
+                    item.requiredDLEdit = true;
+                    if (item.hasOwnProperty('Driving_Licence_Number__c') && item.Driving_Licence_Number__c !== null) {
+                        if (item.Driving_Licence_Expiry_Date__c) {
+                            let licenseExpiryStatus = this.checkDLandRTWExpiry(item.Driving_Licence_Expiry_Date__c);
+                            item.licenseExpiredIn = this.calculateLicenseExpiry(item.Driving_Licence_Expiry_Date__c);
+                            if (licenseExpiryStatus == 'expiring') {
+                                item.isDLExpiring = true;
+                                item.allowDLEdit = true;
+                            }
+                            if (licenseExpiryStatus == 'expired') {
+                                item.isDLExpired = true;
+                                item.allowDLEdit = true;
+                                item.requiredDLEdit = true;
+                            }
+                        }
+                        if (item.isDLExpiring == false && item.isDLExpired == false) {
+                            if (item.isDriving_License_Verify__c) {
+                                item.drivingLicenseVerify = true;
+                                // ADD ON EDIT FOR VERIFIED DRIVER SECTION
+                                item.allowDLEdit = true;
+                            }
+                            else {
+                                item.drivingLicenseNotVerify = true;
+                                item.allowDLEdit = true;
+                            }
+                        }
+                    } else {
+                        item.licenseDataNotAvaliable = true;
                     }
+
+
+                    item.isRTWExpiring = false;
+                    item.isRTWExpired = false;
+                    item.rtwLicenseVerify = false;
+                    item.rtwLicenseNotVerify = false;
+                    item.rtwDataNotAvaliable = false;
+                    item.allowRTWEdit = false;
+                    item.requiredRTWEdit = true;
+                    if (item.hasOwnProperty('Citizenship_Immigration_status__c') && item.Citizenship_Immigration_status__c !== null) {
+                        // if (item.RTW_Expiry_Date__c) {
+
+                        // adding the RTW british passport validation
+                        if (!item.bypassValidation && item.RTW_Expiry_Date__c) {
+                            let rtwExpiryStatus = this.checkDLandRTWExpiry(item.RTW_Expiry_Date__c);
+                            if (rtwExpiryStatus == 'expiring') {
+                                item.isRTWExpiring = true;
+                                item.allowRTWEdit = true;
+                            }
+                            if (rtwExpiryStatus == 'expired') {
+                                item.isRTWExpired = true;
+                                item.allowRTWEdit = true;
+                                item.requiredRTWEdit = true;
+                            }
+                        }
+                        if (item.isRTWExpiring == false && item.isRTWExpired == false) {
+                            if (item.is_Right_to_Work_Verify__c) {
+                                item.rtwLicenseVerify = true;
+                                // ADD FOR ALLOW RTW EDIT
+                                item.allowRTWEdit = true;
+                            }
+                            else {
+                                item.rtwLicenseNotVerify = true;
+                                item.allowRTWEdit = true;
+                            }
+                        }
+                    } else {
+                        item.rtwDataNotAvaliable = true;
+                    }
+
+                    item.remainingScore = 100 - item.totalscore;
+                    item.scoreTooltip = this.buildScoreTooltip(item);
+
+                    switch (item.SC_Status__c) {
+                        case 'Engaged':
+                            item.statusClass = 'status-green';
+                            item.contractClass = 'rtwVerifiedButton';
+                            item.contractLabel = 'Signed';
+                            item.displaysign = true;
+                            item.isEngagedDormant = true;
+                            break;
+                        case 'Dormant':
+                            item.statusClass = 'status-yellow';
+                            item.contractClass = 'rtwVerifiedButton';
+                            item.contractLabel = 'Signed';
+                            item.displaysign = true;
+                            item.isEngagedDormant = true;
+                            break;
+                        case 'Documents Completed':
+                            item.statusClass = 'labelTypeButton';
+                            item.contractClass = 'rtwVerifiedButton';
+                            item.contractLabel = 'Signed';
+                            item.displaysign = true;
+                            item.isEngagedDormant = false;
+                            break;
+                        case 'Disengaged':
+                            item.statusClass = 'labelTypeButton';
+                            item.contractClass = 'rtwVerifiedButton';
+                            item.contractLabel = 'Signed';
+                            item.displaysign = true;
+                            item.isEngagedDormant = false;
+                            break;
+                        case 'Contracts Sent':
+                            item.statusClass = 'labelTypeButton';
+                            item.contractClass = 'rtwButton';
+                            item.contractLabel = 'Pending'
+                            item.displaysign = false;
+                            item.isEngagedDormant = false;
+                            break;
+                        case 'Contracts Pending':
+                            item.statusClass = 'labelTypeButton';
+                            item.contractClass = 'rtwButton';
+                            item.contractLabel = 'Pending'
+                            item.displaysign = false;
+                            item.isEngagedDormant = false;
+                            break;
+                        case 'Onboarding Initiated':
+                            item.statusClass = 'labelTypeButton';
+                            item.contractClass = 'rtwButton';
+                            item.contractLabel = 'Pending'
+                            item.displaysign = false;
+                            item.isEngagedDormant = false;
+                            break;
+                        case 'Onboarding':
+                            item.statusClass = 'labelTypeButton';
+                            item.contractClass = 'rtwButton';
+                            item.contractLabel = 'Pending'
+                            item.displaysign = false;
+                            item.isEngagedDormant = false;
+                            break;
+                        default:
+                            item.statusClass = 'labelTypeButton';
+                            item.contractClass = 'labelTypeButton';
+                            item.contractLabel = item.SC_Status__c;
+                            item.displaysign = false;
+                            item.isEngagedDormant = false;
+                            break;
+                    }
+                    if (item.isBackground_Check__c == true) {
+                        this.isBackgroundCheckColumn = true
+                    }
+                    if (item.isToxicology_Validate__c == true) {
+                        this.isToxicologyColumn = true
+                    }
+
+                    if (item.Background_Check_Status__c == 'Passed') {
+                        item.BackCheckStatus = true;
+                        item.expressionBackPass = true;
+                    } else if (item.Background_Check_Status__c == 'Fail') {
+                        item.BackCheckStatus = true;
+                        item.expressionBackPass = false;
+                    } else {
+                        item.BackCheckStatus = false;
+                        item.expressionBackPass = false;
+                    }
+                    if (item.Toxicology_Status__c == 'Passed') {
+                        item.ToxicologyCheckStatus = true;
+                        item.expressionPassTox = true;
+                    } else if (item.Toxicology_Status__c == 'Fail') {
+                        item.ToxicologyCheckStatus = true;
+                        item.expressionPassTox = false;
+                    }
+                    else {
+                        item.ToxicologyCheckStatus = false;
+                        item.expressionPassTox = false;
+                    }
+
+
+                    if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
+                        && this.isBackgroundCheckColumn && (item.Background_Check_Status__c == 'Passed' || item.backGroundCheckVar == 'Passed')
+                        && this.isToxicologyColumn && (item.Toxicology_Status__c == 'Passed' || item.toxicologyCheckVar == 'Passed')) {
+                        item.isEvidence_Checked__c = true;
+                    }
+                    else if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
+                        && this.isBackgroundCheckColumn == false
+                        && this.isToxicologyColumn && (item.Toxicology_Status__c == 'Passed' || item.toxicologyCheckVar == 'Passed')) {
+                        item.isEvidence_Checked__c = true;
+                    }
+                    else if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
+                        && this.isBackgroundCheckColumn && (item.Background_Check_Status__c == 'Passed' || item.backGroundCheckVar == 'Passed')
+                        && this.isToxicologyColumn == false) {
+                        item.isEvidence_Checked__c = true;
+                    }
+                    else if (item.isDriving_License_Verify__c && item.is_Right_to_Work_Verify__c && item.SC_Status__c == 'Engaged'
+                        && this.isBackgroundCheckColumn == false && this.isToxicologyColumn == false) {
+                        item.isEvidence_Checked__c = true;
+                    }
+                    else {
+                        item.isEvidence_Checked__c = false;
+                    }
+
+                    if (item) {
+
+                        if (!item.hasOwnProperty('Role__c')) {
+                            item.Role__c = '';
+                        }
+
+                        if (!item.hasOwnProperty('End_User_Name__c')) {
+                            item.End_User_Name__c = '';
+                        }
+
+                        if (!item.hasOwnProperty('Depot_Name__c')) {
+                            item.Depot_Name__c = '';
+                        }
+                    }
+
+
+                })
+                console.log('this.data--> Engaged', JSON.parse(JSON.stringify(this.data)));
+                if (this.globalSearchValue != null) {
+                    this.data = this.data.filter(contractor => {
+                        const nameMatch = !this.globalSearchValue.toLowerCase() || contractor.Client_Name__c.toLowerCase().includes(this.globalSearchValue.toLowerCase());
+                        return nameMatch;
+                    });
                 }
-
-
-            })
-            console.log('this.data--> Engaged',  JSON.parse(JSON.stringify(this.data)));
-            if(this.globalSearchValue != null){
-                this.data = this.data.filter(contractor => {
-                    const nameMatch = !this.globalSearchValue.toLowerCase() || contractor.Client_Name__c.toLowerCase().includes(this.globalSearchValue.toLowerCase());
-                    return nameMatch;
+                this.data = this.originalData.filter(contractor => {
+                    const nameMatch = !this.searchName || contractor.Client_Name__c.toLowerCase().includes(this.searchName);
+                    const endUserMatch = !this.selectEndUser || contractor.End_User_Name__c.toLowerCase().includes(this.selectEndUser);
+                    const depotMatch = !this.selectDepot || contractor.Depot_Name__c.toLowerCase().includes(this.selectDepot);
+                    const roleMatch = !this.selectedRole || contractor.Role__c.toLowerCase().includes(this.selectedRole);
+                    return nameMatch && endUserMatch && depotMatch && roleMatch;
                 });
-            }
-            this.data = this.originalData.filter(contractor => {
-                const nameMatch = !this.searchName || contractor.Client_Name__c.toLowerCase().includes(this.searchName);
-                const endUserMatch = !this.selectEndUser || contractor.End_User_Name__c.toLowerCase().includes(this.selectEndUser);
-                const depotMatch = !this.selectDepot || contractor.Depot_Name__c.toLowerCase().includes(this.selectDepot);
-                const roleMatch = !this.selectedRole || contractor.Role__c.toLowerCase().includes(this.selectedRole);
-                return nameMatch && endUserMatch && depotMatch && roleMatch;
-            });
-            if(this.complianceFilter != null){
-                this.complianceFilterSearch();
-            }
-            this.isLoading = false;
+                if (this.complianceFilter != null) {
+                    this.complianceFilterSearch();
+                }
+                this.isLoading = false;
 
-        }).catch(error => {
-            console.log('Error while Fetching the records', error);
-        });
+            }).catch(error => {
+                console.log('Error while Fetching the records', error);
+            });
     }
 
     buildScoreTooltip(item) {
@@ -877,40 +917,40 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
 
 
-    complianceFilterSearch(){
-        if(this.data ==null || this.data.length == 0) return;
+    complianceFilterSearch() {
+        if (this.data == null || this.data.length == 0) return;
 
         this.data = this.data.filter(contractor => {
             let isMatch = true;
-            if(this.complianceFilter == 'validDL' ){
-                isMatch = !contractor.isDriving_License_Verify__c && contractor.SC_Status__c== 'Engaged';
+            if (this.complianceFilter == 'validDL') {
+                isMatch = !contractor.isDriving_License_Verify__c && contractor.SC_Status__c == 'Engaged';
             }
-            else if(this.complianceFilter == 'validRTW' ){
-                isMatch = !contractor.is_Right_to_Work_Verify__c && contractor.SC_Status__c== 'Engaged';
+            else if (this.complianceFilter == 'validRTW') {
+                isMatch = !contractor.is_Right_to_Work_Verify__c && contractor.SC_Status__c == 'Engaged';
             }
-            else if(this.complianceFilter == 'validBGC' ){
-                isMatch = (!contractor.isBackground_Check__c || contractor.Background_Check_Status__c != 'Passed') && contractor.SC_Status__c== 'Engaged';
+            else if (this.complianceFilter == 'validBGC') {
+                isMatch = (!contractor.isBackground_Check__c || contractor.Background_Check_Status__c != 'Passed') && contractor.SC_Status__c == 'Engaged';
             }
-            else if(this.complianceFilter == 'validToxicology' ){
-                isMatch = (!contractor.isToxicology_Validate__c || contractor.Toxicology_Status__c != 'Passed') && contractor.SC_Status__c== 'Engaged';
+            else if (this.complianceFilter == 'validToxicology') {
+                isMatch = (!contractor.isToxicology_Validate__c || contractor.Toxicology_Status__c != 'Passed') && contractor.SC_Status__c == 'Engaged';
             }
-            else if(this.complianceFilter == 'expiredDL' ){
-                isMatch =  contractor.DL_Expiration__c == 'Expired' && contractor.SC_Status__c== 'Engaged';
+            else if (this.complianceFilter == 'expiredDL') {
+                isMatch = contractor.DL_Expiration__c == 'Expired' && contractor.SC_Status__c == 'Engaged';
             }
-            else if(this.complianceFilter == 'expiredRTW' ){
-                isMatch = contractor.RTW_Expiration__c == 'Expired' && contractor.SC_Status__c== 'Engaged';
+            else if (this.complianceFilter == 'expiredRTW') {
+                isMatch = contractor.RTW_Expiration__c == 'Expired' && contractor.SC_Status__c == 'Engaged';
             }
-            else if(this.complianceFilter == 'scoreEngaged' ){
-                isMatch = contractor.SC_Status__c== 'Engaged';
+            else if (this.complianceFilter == 'scoreEngaged') {
+                isMatch = contractor.SC_Status__c == 'Engaged';
             }
-            else if(this.complianceFilter == 'scoreDormant' ){
+            else if (this.complianceFilter == 'scoreDormant') {
                 isMatch = contractor.SC_Status__c == 'Dormant';
             }
-            console.log('isMatch : ',isMatch);
+            console.log('isMatch : ', isMatch);
             return isMatch;
         });
-        console.log('this.data : ',this.data);
-        if(this.complianceFilter != 'scoreEngaged' && this.complianceFilter != 'scoreDormant'){
+        console.log('this.data : ', this.data);
+        if (this.complianceFilter != 'scoreEngaged' && this.complianceFilter != 'scoreDormant') {
             const tabItems = this.template.querySelectorAll('.tab');
             tabItems.forEach(item => item.classList.remove('selectedTab'));
             tabItems.forEach(item => {
@@ -924,8 +964,8 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
             this.isComplianceActive = true;
             this.isFinanceActive = false;
         }
-        
-        
+
+
     }
 
     handleTabClick(event) {
@@ -953,7 +993,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
             this.isComplianceActive = false;
             this.isFinanceActive = true;
         }
-        //this.adjustIndicator(event.currentTarget);   
+        //this.adjustIndicator(event.currentTarget);
 
     }
 
@@ -971,7 +1011,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     //     this.verifiedDLName = event.target.value;
     // }
 
-    
+
     handleDLVerifiedName(event) {
         const value = event.target.value;
         this.verifiedDLName = value && value.trim() !== '' ? value : null;
@@ -993,10 +1033,10 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     verifyClickHandle(event) {
 
         this.deactivateFlag();
-		const startIndex = (this.currentPageCompliance - 1) * this.recordsPerPage;
-        this.currentIndex = parseInt(startIndex) + parseInt(event.target.dataset.index );
-				
-		let fileTypeName = null;
+        const startIndex = (this.currentPageCompliance - 1) * this.recordsPerPage;
+        this.currentIndex = parseInt(startIndex) + parseInt(event.target.dataset.index);
+
+        let fileTypeName = null;
         this.backGroundCheckVar = null;
         this.toxicologyCheckVar = null;
 
@@ -1068,50 +1108,50 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.selectedContractorId = this.data[this.currentIndex].Id;
         this.selectedContractorName = this.selectedContractor.Client_Name__c;
         console.log('SelectedContractor: ', this.selectedContractor);
-        if(this.selectedContractor['isRTWExpired'] == true){
+        if (this.selectedContractor['isRTWExpired'] == true) {
             this.hideValidateContent = true;
-            if(this.selectedContractor['bypassValidation']!=true){
+            if (this.selectedContractor['bypassValidation'] != true) {
                 this.showExpiredError = true;
             }
-            
-        }else{
+
+        } else {
             this.hideValidateContent = false;
             this.showExpiredError = false;
         }
 
-        if(this.selectedContractor['isDLExpired'] == true){
+        if (this.selectedContractor['isDLExpired'] == true) {
             this.hideDLValidateContent = true;
             this.showDLExpiredError = true;
-        }else{
+        } else {
             this.hideDLValidateContent = false;
             this.showDLExpiredError = false;
         }
 
-         // added new for not showing initial verifiction for verified
-        if(this.selectedContractor['rtwLicenseVerify'] == true || this.selectedContractor['isRTWExpiring'] == true){
+        // added new for not showing initial verifiction for verified
+        if (this.selectedContractor['rtwLicenseVerify'] == true || this.selectedContractor['isRTWExpiring'] == true) {
             this.hideValidateContent = true;
         }
 
-        if(this.selectedContractor['drivingLicenseVerify'] == true || this.selectedContractor['isDLExpiring'] == true){
+        if (this.selectedContractor['drivingLicenseVerify'] == true || this.selectedContractor['isDLExpiring'] == true) {
             this.hideDLValidateContent = true;
         }
 
-        if(this.selectedContractor.hasOwnProperty('Additional_licence_categories__c')){
+        if (this.selectedContractor.hasOwnProperty('Additional_licence_categories__c')) {
             this.selectedContractor['Additional_licence_categories__c'] = this.selectedContractor['Additional_licence_categories__c'].split(';');
         }
-        
+
         this.imageLoading = true;
-        
+
         if (fileTypeName != null && this.selectedContractorId != null) {
             getRTWandDLfiles({ accountId: this.selectedContractorId, fileType: fileTypeName })
                 .then(result => {
-                    
+
                     if (result != null) {
                         this.imageLoading = false;
                         this.imagesAvailable = true;
                         this.imagesNotAvailable = false;
-                        
-                        
+
+
                         this.selectedContractor['FrontDoc'] = result.Front;
                         this.selectedContractor['BackDoc'] = result.Back;
                         // ADD for rtw check
@@ -1119,19 +1159,19 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                         this.selectedContractor['CheckDocName'] = result.CheckFileName;
 
                     }
-                    else{
+                    else {
                         this.imageLoading = false;
                         this.imagesAvailable = false;
                         this.imagesNotAvailable = true;
                     }
-                    
+
                 })
                 .catch(error => {
                     console.error('Error calling Apex method', error);
                     this.resultMessage = 'Error occurred: ' + error.body.message;
                 });
-                
-        }else {
+
+        } else {
             this.imageLoading = false;
             this.imagesAvailable = false;
             this.imagesNotAvailable = true;
@@ -1142,8 +1182,8 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     openFileDialog() {
         this.template.querySelector('.hidden-file').click();
     }
-    
-    cancelModule(){
+
+    cancelModule() {
         this.closeModal();
         this.deleteRTWCheckFile();
     }
@@ -1169,29 +1209,29 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.hideValidateButton = false;
         this.hideDLValidateContent = false;
         this.showExpiredError = false;
-        this.showDLExpiredError =false;
+        this.showDLExpiredError = false;
         this.isFileModuleError = false;
         this.fileModuleError = '';
         this.showFileUploadButton = false;
         this.rtwNoDataSectionModal = false;
         this.dlNoDataSectionModal = false;
         this.showDLValidateError = false;
-         
+
         this.verifiedDLName = null;
         this.isDLVerfiedCheck = false;
         this.showRTWCheckError = false;
 
-        this.isPreviewEnabled= false;
-        this.filePreviewUrl= null;
+        this.isPreviewEnabled = false;
+        this.filePreviewUrl = null;
         this.uplodedRTWCVId = null;
         this.uploadedRTWCheckFiles = null;
         this.isRTWCheckFileUploded = false;
 
         this.showValidateError = false;
-        
+
         this.rightToWorkNotShowVerified = true;
         this.drivingLicenseNotShowVerified = true;
-
+        this.FetchMCandSCDetails();
     }
 
     deactivateFlag() {
@@ -1203,7 +1243,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.hideDLValidateContent = false;
         this.hideDLValidateButton = false;
         this.showExpiredError = false;
-        this.showDLExpiredError =false;
+        this.showDLExpiredError = false;
         this.showFileUploadButton = false;
     }
 
@@ -1229,16 +1269,16 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         let changedFields = {};
         const bypassValidation = this.selectedContractor?.Citizenship_Immigration_status__c === 'British passport/UK National';
 
-        if (targetName === 'RTWValidate' && (this.isRTWVerfiedCheck == false || this.verifiedRTWName == null)){
+        if (targetName === 'RTWValidate' && (this.isRTWVerfiedCheck == false || this.verifiedRTWName == null)) {
             this.showValidateError = true;
             return;
-        }else{
+        } else {
             this.showValidateError = false;
-            if (targetName === 'RTWValidate'  && this.isRTWVerfiedCheck == false && this.selectedContractor.hasAccessCode == true && updateType == 'validate') {
+            if (targetName === 'RTWValidate' && this.isRTWVerfiedCheck == false && this.selectedContractor.hasAccessCode == true && updateType == 'validate') {
                 this.visibleUploadSection = false;
                 return;
             }
-            if (targetName === 'RTWValidate'  && this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && updateType == 'validate') {
+            if (targetName === 'RTWValidate' && this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && updateType == 'validate') {
                 // this.visibleUploadSection = true;
                 //  if(this.uploadedRTWCheckFiles == null && this.isRTWCheckFileUploded == false){
                 //     this.showRTWCheckError = true;
@@ -1289,7 +1329,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                     };
 
                 }
-                
+
             }
             if (targetName === 'RTWValidate' && this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == false && updateType == 'validate' && this.verifiedRTWName != null) {
                 this.selectedContractor['is_Right_to_Work_Verify__c'] = true;
@@ -1301,17 +1341,17 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 this.data[this.selectedContractor.currentClickIndex].isRTWExpiring = false;
                 this.data[this.selectedContractor.currentClickIndex].isRTWExpired = false;
                 updateProceed = true;
-                
+
                 changedFields = {
-                        Id: this.data[this.selectedContractor.currentClickIndex].Id,
-                        is_Right_to_Work_Verify__c: true,
-                        RTW_Verified_by__c: this.verifiedRTWName,
-                        rtwLicenseVerify: true,
-                        rtwLicenseNotVerify: false,
-                        RtwProgressIcon: this.rtwGreen,
-                        isRTWExpiring: false,
-                        isRTWExpired: false
-                    };
+                    Id: this.data[this.selectedContractor.currentClickIndex].Id,
+                    is_Right_to_Work_Verify__c: true,
+                    RTW_Verified_by__c: this.verifiedRTWName,
+                    rtwLicenseVerify: true,
+                    rtwLicenseNotVerify: false,
+                    RtwProgressIcon: this.rtwGreen,
+                    isRTWExpiring: false,
+                    isRTWExpired: false
+                };
                 // if (this.checkDLandRTWExpiry(this.data[this.selectedContractor.currentClickIndex].RTW_Expiry_Date__c) == 'expiring') {
                 //     this.data[this.selectedContractor.currentClickIndex].isRTWExpired = false;
                 //     this.data[this.selectedContractor.currentClickIndex].rtwLicenseNotVerify = false;
@@ -1342,49 +1382,49 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
             }
 
-            }
-            if (targetName === 'RTWValidate' && this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && updateType == 'upload' && this.verifiedRTWName != null) {
-                this.selectedContractor['is_Right_to_Work_Verify__c'] = true;
-                this.data[this.selectedContractor.currentClickIndex].is_Right_to_Work_Verify__c = true;
-                this.data[this.selectedContractor.currentClickIndex].RTW_Verified_by__c = this.verifiedRTWName;
-                this.data[this.selectedContractor.currentClickIndex].rtwLicenseVerify = true;
-                this.data[this.selectedContractor.currentClickIndex].rtwLicenseNotVerify = false;
-                this.data[this.selectedContractor.currentClickIndex].RtwProgressIcon = this.rtwGreen;
-                this.data[this.selectedContractor.currentClickIndex].isRTWExpiring = false;
-                updateProceed = true;
-
-                changedFields = {
-                    Id: this.data[this.selectedContractor.currentClickIndex].Id,
-                    is_Right_to_Work_Verify__c: true,
-                    RTW_Verified_by__c: this.verifiedRTWName,
-                    rtwLicenseVerify: true,
-                    rtwLicenseNotVerify: false,
-                    RtwProgressIcon: this.rtwGreen,
-                    isRTWExpiring: false
-                };
-                 
         }
-        if (targetName === 'drivingValidate' && (this.isDLVerfiedCheck == false || this.verifiedDLName == null)){
+        if (targetName === 'RTWValidate' && this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && updateType == 'upload' && this.verifiedRTWName != null) {
+            this.selectedContractor['is_Right_to_Work_Verify__c'] = true;
+            this.data[this.selectedContractor.currentClickIndex].is_Right_to_Work_Verify__c = true;
+            this.data[this.selectedContractor.currentClickIndex].RTW_Verified_by__c = this.verifiedRTWName;
+            this.data[this.selectedContractor.currentClickIndex].rtwLicenseVerify = true;
+            this.data[this.selectedContractor.currentClickIndex].rtwLicenseNotVerify = false;
+            this.data[this.selectedContractor.currentClickIndex].RtwProgressIcon = this.rtwGreen;
+            this.data[this.selectedContractor.currentClickIndex].isRTWExpiring = false;
+            updateProceed = true;
+
+            changedFields = {
+                Id: this.data[this.selectedContractor.currentClickIndex].Id,
+                is_Right_to_Work_Verify__c: true,
+                RTW_Verified_by__c: this.verifiedRTWName,
+                rtwLicenseVerify: true,
+                rtwLicenseNotVerify: false,
+                RtwProgressIcon: this.rtwGreen,
+                isRTWExpiring: false
+            };
+
+        }
+        if (targetName === 'drivingValidate' && (this.isDLVerfiedCheck == false || this.verifiedDLName == null)) {
             this.showDLValidateError = true;
             return;
-        }else{
+        } else {
             this.showDLValidateError = false;
             if (this.imagesAvailable) {
-                        this.showRTWCheckError = false;
-                    } else {
-                        if (this.frontDocFiles.length == 0 || (this.showFrontBackRadioBtn && this.backDocFiles.length == 0)) {
-                            this.showRTWCheckError = true;
-                            return;
-                        } else {
-                            this.showRTWCheckError = false;
-                        }
-                    }
+                this.showRTWCheckError = false;
+            } else {
+                if (this.frontDocFiles.length == 0 || (this.showFrontBackRadioBtn && this.backDocFiles.length == 0)) {
+                    this.showRTWCheckError = true;
+                    return;
+                } else {
+                    this.showRTWCheckError = false;
+                }
+            }
             if (targetName === 'drivingValidate' && this.verifiedDLName != null && this.isDLVerfiedCheck == true) {
 
                 const today = new Date();
                 const nextValidationDueDate = new Date();
                 nextValidationDueDate.setDate(today.getDate() + 90);
-                const nextDueFormatted  = nextValidationDueDate.toISOString().split('T')[0];
+                const nextDueFormatted = nextValidationDueDate.toISOString().split('T')[0];
                 const todayFormatted = today.toISOString().split('T')[0];
 
                 this.selectedContractor['isDriving_License_Verify__c'] = true;
@@ -1403,7 +1443,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                     Id: this.data[this.selectedContractor.currentClickIndex].Id,
                     isDriving_License_Verify__c: true,
                     Driving_License_Verified_by__c: this.verifiedDLName,
-                    Driving_License_Validated_Date__c:todayFormatted,
+                    Driving_License_Validated_Date__c: todayFormatted,
                     Driving_License_Validation_Due_Date__c: nextDueFormatted,
                     drivingLicenseVerify: true,
                     drivingLicenseNotVerify: false,
@@ -1411,20 +1451,20 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                     isDLExpiring: false
                 };
                 if (this.checkDLandRTWExpiry(this.data[this.selectedContractor.currentClickIndex].Driving_Licence_Expiry_Date__c) == 'expiring') {
-                        this.data[this.selectedContractor.currentClickIndex].drivingLicenseVerify = false;
-                        this.data[this.selectedContractor.currentClickIndex].drivingLicenseNotVerify = false;
-                        this.data[this.selectedContractor.currentClickIndex].LiceceProgressIcon = this.licenceLightRed;
-                        this.data[this.selectedContractor.currentClickIndex].isDLExpiring = true;
-                        this.data[this.selectedContractor.currentClickIndex].isDLExpired = false;
+                    this.data[this.selectedContractor.currentClickIndex].drivingLicenseVerify = false;
+                    this.data[this.selectedContractor.currentClickIndex].drivingLicenseNotVerify = false;
+                    this.data[this.selectedContractor.currentClickIndex].LiceceProgressIcon = this.licenceLightRed;
+                    this.data[this.selectedContractor.currentClickIndex].isDLExpiring = true;
+                    this.data[this.selectedContractor.currentClickIndex].isDLExpired = false;
 
-                        changedFields.drivingLicenseVerify = false;
-                        changedFields.drivingLicenseNotVerify = false;
-                        changedFields.LiceceProgressIcon = this.licenceLightRed;
-                        changedFields.isDLExpiring = true;
-                        changedFields.isDLExpired = false;
-                    }
+                    changedFields.drivingLicenseVerify = false;
+                    changedFields.drivingLicenseNotVerify = false;
+                    changedFields.LiceceProgressIcon = this.licenceLightRed;
+                    changedFields.isDLExpiring = true;
+                    changedFields.isDLExpired = false;
+                }
             }
-            
+
 
         }
 
@@ -1443,67 +1483,67 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
             this.data[this.selectedContractor.currentClickIndex].toxicologyCheckVar = 'Passed';
             updateProceed = true;
         }
-        if(updateProceed == true){
+        if (updateProceed == true) {
             this.callUpdateAccountClient(this.data[this.selectedContractor.currentClickIndex]);
         }
 
     }
 
     uploadHandler(event) {
- 
+
         let changedFields = {
             Id: this.data[this.currentIndex].Id
         };
- 
+
         if (this.uploadSectionName == 'Right To Work Check' && this.isRTWVerfiedCheck == true &&
             this.data[this.currentIndex].hasAccessCode == true && this.verifiedRTWName != null) {
             this.data[this.currentIndex].is_Right_to_Work_Verify__c = true;
             this.data[this.currentIndex].RTW_Verified_by__c = this.verifiedRTWName;
             this.data[this.currentIndex].rtwLicenseVerify = true;
             this.data[this.currentIndex].rtwLicenseNotVerify = false;
- 
+
             changedFields.is_Right_to_Work_Verify__c = true;
             changedFields.RTW_Verified_by__c = this.verifiedRTWName;
             changedFields.rtwLicenseVerify = true;
             changedFields.rtwLicenseNotVerify = false;
         }
- 
+
         if (this.uploadSectionName == 'Background Check' && this.backGroundCheckVar == 'Passed') {
             this.data[this.currentIndex].BackCheckStatus = true;
             this.data[this.currentIndex].expressionPass = true;
             this.data[this.currentIndex].expressionFail = false;
             this.data[this.currentIndex].backGroundCheckVar = this.backGroundCheckVar;
             this.data[this.currentIndex].BackCheckProgressIcon = this.backCheckGreen;
- 
+
             changedFields.BackCheckStatus = true;
             changedFields.expressionPass = true;
             changedFields.expressionFail = false;
             changedFields.backGroundCheckVar = this.backGroundCheckVar;
             changedFields.BackCheckProgressIcon = this.backCheckGreen;
- 
+
         }
- 
+
         if (this.uploadSectionName == 'Toxicology Check' && this.toxicologyCheckVar == 'Passed') {
             this.data[this.currentIndex].ToxicologyCheckStatus = true;
             this.data[this.currentIndex].expressionPassTox = true;
             this.data[this.currentIndex].expressionFailTox = false;
             this.data[this.currentIndex].toxicologyCheckVar = this.toxicologyCheckVar;
             this.data[this.currentIndex].ToxicologyProgressIcon = this.toxicGreen;
- 
+
             changedFields.ToxicologyCheckStatus = true;
             changedFields.expressionPassTox = true;
             changedFields.expressionFailTox = false;
             changedFields.toxicologyCheckVar = this.toxicologyCheckVar;
             changedFields.ToxicologyProgressIcon = this.toxicGreen;
         }
- 
- 
- 
+
+
+
         this.callUpdateAccountClient(changedFields);
         this.backGroundCheckVar = null;
         this.toxicologyCheckVar = null;
- 
- 
+
+
     }
 
 
@@ -1556,14 +1596,14 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         else {
             updatedJsonData.isEvidence_Checked__c = false;
         }
-        
+
         console.log('updatedJsonData-->', updatedJsonData);
         //console.log('this.FetchMCandSCDetails()-->', this.FetchMCandSCDetails());
-        
+
         updateAccountClient({ selectedContractorToUpdate: updatedJsonData })
-             .then(() => {
-            //  refresh before reopening
-              this.FetchMCandSCDetails();
+            .then(() => {
+                //  refresh before reopening
+                this.FetchMCandSCDetails();
                 this.closeModal();
                 this.dispatchEvent(
                     new ShowToastEvent({
@@ -1572,7 +1612,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                         variant: 'success'
                     })
                 );
-                
+
             })
             .catch(error => {
                 console.error('Error updating contractor details: ', error);
@@ -1759,7 +1799,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.data = sortedData;
     }
 
-    
+
 
     checkDLandRTWExpiry(dlandRTWExpiryDate) {
         let expiryDate = new Date(dlandRTWExpiryDate);
@@ -1776,7 +1816,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         }
     }
 
-    
+
 
     handleAddContractor(event) {
         this.visibleNewContractorModal = true;
@@ -1811,7 +1851,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         // Open in a new browser tab
         window.open(targetUrl, '_blank');
     }
-    
+
 
 
     handleRecordMenuClick(event) {
@@ -1845,7 +1885,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.selectedDriverId = event.target.dataset.selectedId;
         this.selectedDriverName = event.target.dataset.driverName;
 
-         const rec = this.data.find(r => r.Id === selectedId);
+        const rec = this.data.find(r => r.Id === selectedId);
         this.selectedContractor = rec ? { ...rec } : {};
         if (!this.selectedContractor.clientName) {
             this.selectedContractor.clientName =
@@ -1854,27 +1894,27 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 '';
         }
         this.openDisengageConfirm = true;
-        fetchDeductionRemainAmt({ 
-            applicationId: this.selectedDriverId, 
-            mainContractorId: this.data[0].Main_Contractor__c 
+        fetchDeductionRemainAmt({
+            applicationId: this.selectedDriverId,
+            mainContractorId: this.data[0].Main_Contractor__c
         })
-        .then(result => {
-            this.hasActiveDeduction = result.hasActiveDeduction;
-            this.deductionList = (result.deductions || []).map(d => ({
-                ...d,
-                balanceAmount: parseFloat(d.balanceAmount).toFixed(2)
-            }));
-            const total = this.deductionList.reduce((sum, d) => sum + parseFloat(d.balanceAmount), 0);
-            this.totalRemainDeductionBalance = total.toFixed(2);
-            this.isDisenegaeLoader = false;
-        })
-        .catch(error => {
-            console.error('Error fetching deductions:', error);
-            this.hasActiveDeduction = false;
-            this.deductionList = [];
-            this.totalRemainDeductionBalance = 0;
-            this.isDisenegaeLoader = false;
-        });
+            .then(result => {
+                this.hasActiveDeduction = result.hasActiveDeduction;
+                this.deductionList = (result.deductions || []).map(d => ({
+                    ...d,
+                    balanceAmount: parseFloat(d.balanceAmount).toFixed(2)
+                }));
+                const total = this.deductionList.reduce((sum, d) => sum + parseFloat(d.balanceAmount), 0);
+                this.totalRemainDeductionBalance = total.toFixed(2);
+                this.isDisenegaeLoader = false;
+            })
+            .catch(error => {
+                console.error('Error fetching deductions:', error);
+                this.hasActiveDeduction = false;
+                this.deductionList = [];
+                this.totalRemainDeductionBalance = 0;
+                this.isDisenegaeLoader = false;
+            });
     }
 
     handleDisengageClick(event) {
@@ -1887,12 +1927,12 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.openDisengageConfirm = false;
     }
     get showGovLink() {
-        return this.rightToWorkEditOpen 
+        return this.rightToWorkEditOpen
             && this.selectedContractor?.hasShareCode;
     }
 
-    handleRTWEditClick(event){
-        
+    handleRTWEditClick(event) {
+
         // this.rightToWorkEditOpen = !this.rightToWorkEditOpen;
         // this.selectedContractorId = event.currentTarget.dataset.selectedId;
         // this.selectedOption = 'RTW';
@@ -1914,7 +1954,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         //         }
         //     }
         // }
-        
+
         // this.fileErrorMessage = '';
         // this.showFrontBackRadioBtn = false;
         let previousHideValidateContent = this.hideValidateContent;
@@ -1924,10 +1964,10 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.showRTWCheckError = false;
         this.selectedContractorId = event.currentTarget.dataset.selectedId;
         this.selectedOption = 'RTW';
-        
+
         if (this.selectedContractor.isRTWExpired == false) {
             this.hideValidateContent = false;//!this.hideValidateContent;
-            
+
             // if (this.selectedContractor.hasAccessCode == false) {
             //     this.showFileUploadButton = !this.showFileUploadButton;;
             // } else {
@@ -1940,39 +1980,39 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
         if (this.selectedContractor.isRTWExpired == true) {
             this.hideValidateContent = !this.hideValidateContent;
-            console.log('this.hideValidateContent : ',this.hideValidateContent);
+            console.log('this.hideValidateContent : ', this.hideValidateContent);
             if (this.hideValidateContent == false) {
-                console.log('this.selectedContractor.hasAccessCode : ',this.selectedContractor.hasAccessCode);
+                console.log('this.selectedContractor.hasAccessCode : ', this.selectedContractor.hasAccessCode);
                 if (this.selectedContractor.hasAccessCode == false) {
                     this.showFileUploadButton = true;
                 } else {
                     this.showFileUploadButton = false;
                 }
-            }else{
+            } else {
                 this.showFileUploadButton = false;
             }
-            console.log('this.showFileUploadButton : ',this.showFileUploadButton);
+            console.log('this.showFileUploadButton : ', this.showFileUploadButton);
         }
-      
+
         // added new for not showing initial verifiction for verified
-        if(this.selectedContractor['rtwLicenseVerify'] == true || this.selectedContractor['isRTWExpiring'] == true){
+        if (this.selectedContractor['rtwLicenseVerify'] == true || this.selectedContractor['isRTWExpiring'] == true) {
             this.hideValidateContent = !previousHideValidateContent;
-            if(this.hideValidateContent == true){
+            if (this.hideValidateContent == true) {
                 this.showValidateError = false;
             }
         }
-         // added new for not showing initial verifiction for verified
-        if(this.selectedContractor['rtwLicenseVerify'] == true ){
+        // added new for not showing initial verifiction for verified
+        if (this.selectedContractor['rtwLicenseVerify'] == true) {
             this.hideValidateContent = true;
             this.rightToWorkNotShowVerified = false;
-            console.log('rightToWorkEditOpen',this.rightToWorkEditOpen);
-            console.log('rightToWorkNotShowVerified',this.rightToWorkNotShowVerified);
+            console.log('rightToWorkEditOpen', this.rightToWorkEditOpen);
+            console.log('rightToWorkNotShowVerified', this.rightToWorkNotShowVerified);
         }
         this.showFrontBackRadioBtn = false;
         this.fileErrorMessage = '';
     }
 
-    // handleDLEditClick(event){  
+    // handleDLEditClick(event){
     //     this.hideDLValidateButton = !this.hideDLValidateButton;
     //     this.drivingLicenseEditOpen = !this.drivingLicenseEditOpen;
     //     this.selectedContractorId = event.currentTarget.dataset.selectedId;
@@ -2012,12 +2052,12 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.selectedContractorId = event.currentTarget.dataset.selectedId;
         this.selectedOption = 'DL';
 
-        console.log('this.showFileUploadButton : ',this.showFileUploadButton);
-        console.log('this.hideDLValidateContent : ',this.hideDLValidateContent);
+        console.log('this.showFileUploadButton : ', this.showFileUploadButton);
+        console.log('this.hideDLValidateContent : ', this.hideDLValidateContent);
         if (this.selectedContractor.isDLExpiring == true) {
             this.hideDLValidateContent = false;//!this.hideDLValidateContent;
             this.showFileUploadButton = !this.showFileUploadButton;
-            
+
         }
         if (this.selectedContractor.isDLExpired == true) {
             this.hideDLValidateContent = !this.hideDLValidateContent;
@@ -2040,13 +2080,13 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         // });
 
         // added new for not showing initial verifiction for verified
-         if(this.selectedContractor['drivingLicenseVerify'] == true || this.selectedContractor['isDLExpiring'] == true){
+        if (this.selectedContractor['drivingLicenseVerify'] == true || this.selectedContractor['isDLExpiring'] == true) {
             this.hideDLValidateContent = !previousHideDLValidateContent;
-            if(this.hideDLValidateContent == true){
+            if (this.hideDLValidateContent == true) {
                 this.showDLValidateError = false;
             }
         }
-        if(this.selectedContractor['drivingLicenseVerify'] == true){
+        if (this.selectedContractor['drivingLicenseVerify'] == true) {
             this.hideDLValidateContent = true;
             this.drivingLicenseNotShowVerified = false;
         }
@@ -2059,18 +2099,60 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.fileErrorMessage = '';
         this.showFrontBackRadioBtn = true;
 
-        console.log('AFTER :: this.showFileUploadButton : ',this.showFileUploadButton);
-        console.log('AFTER :; this.hideDLValidateContent : ',this.hideDLValidateContent);
+        console.log('AFTER :: this.showFileUploadButton : ', this.showFileUploadButton);
+        console.log('AFTER :; this.hideDLValidateContent : ', this.hideDLValidateContent);
     }
-    
 
-    onChangeRTWDetails(event){
+
+    onChangeRTWDetails(event) {
         const fieldName = event.target.name;
         const fieldValue = event.target.value.trim();
         const contractorIndex = this.selectedContractor.currentClickIndex;
         this.hideValidateContent = false;
         this.rightToWorkNotShowVerified = true;
-        console.log('validation: ',   event.target.dataset.passvalidation);
+        console.log('validation: ', event.target.dataset.passvalidation);
+        if (fieldName === 'typeOfEVisa') {
+            this.data[contractorIndex].Type_of_e_visa__c = fieldValue;
+            this.selectedContractor.Type_of_e_visa__c = fieldValue;
+            if (fieldValue === 'Continuous right to work') {
+                this.selectedContractor.showTimeLimitedSection = false;
+                this.selectedContractor.showRestrictionsSection = false;
+                // Clear time-limited fields
+                this.data[contractorIndex].Permission_Expiry_Date__c = null;
+                this.selectedContractor.Permission_Expiry_Date__c = null;
+                this.data[contractorIndex].Any_work_restrictions__c = null;
+                this.selectedContractor.Any_work_restrictions__c = null;
+                this.data[contractorIndex].Limited_To_X_Hours_Per_Week__c = null;
+                this.selectedContractor.Limited_To_X_Hours_Per_Week__c = null;
+                this.data[contractorIndex].Limited_To_Specific_Job_Types__c = null;
+                this.selectedContractor.Limited_To_Specific_Job_Types__c = null;
+                this.data[contractorIndex].Other_Restrictions__c = null;
+                this.selectedContractor.Other_Restrictions__c = null;
+            }
+            if (fieldValue === 'Time-limited right to work') {
+                this.selectedContractor.showTimeLimitedSection = true;
+            }
+        }
+
+        /* -------- ANY WORK RESTRICTIONS -------- */
+
+        if (fieldName === 'anyWorkRestrictions') {
+            this.data[contractorIndex].Any_work_restrictions__c = fieldValue;
+            this.selectedContractor.Any_work_restrictions__c = fieldValue;
+            if (fieldValue === 'Yes') {
+                this.selectedContractor.showRestrictionsSection = true;
+            } else {
+                this.selectedContractor.showRestrictionsSection = false;
+                this.selectedContractor.Limited_To_X_Hours_Per_Week__c = null;
+                this.selectedContractor.Limited_To_Specific_Job_Types__c = null;
+                this.selectedContractor.Other_Restrictions__c = null;
+
+                this.data[contractorIndex].Limited_To_X_Hours_Per_Week__c = null;
+                this.data[contractorIndex].Limited_To_Specific_Job_Types__c = null;
+                this.data[contractorIndex].Other_Restrictions__c = null;
+            }
+        }
+
         if (fieldName == 'expiryDate') {
 
             if (event.target.dataset.passvalidation === 'true') {
@@ -2090,7 +2172,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
             }
             event.target.reportValidity();
         }
-        
+
     }
 
     onChangeLicenseDetails(event) {
@@ -2103,7 +2185,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
             const selectedDate = new Date(fieldValue);
             const minDate = new Date();
             minDate.setHours(0, 0, 0, 0);
-    
+
             if (selectedDate < minDate) {
                 event.target.setCustomValidity("Past date is not allowed.");
             } else {
@@ -2125,7 +2207,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         } else if (fieldName === 'licenseNumber') {
             const licenseNumberPattern = /^[A-Z0-9]*$/;
             let errorMessage = '';
-    
+
             if (!licenseNumberPattern.test(fieldValue) && this.applyLicenseNumberValidation) {
                 errorMessage = 'Licence number must be alphanumeric.';
             } else if ((fieldValue.length < 16 || fieldValue.length > 18) && this.applyLicenseNumberValidation) {
@@ -2138,7 +2220,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
             event.target.reportValidity();
         } else if (fieldName === 'pointOfLicense') {
             this.data[contractorIndex].pointOfLicense = fieldValue;
-        } else if(fieldName === 'licenseIssueDate'){
+        } else if (fieldName === 'licenseIssueDate') {
             //this.data[contractorIndex].licenseIssueDate = fieldValue;
             const selectedDate = new Date(fieldValue);
             const minDate = new Date();
@@ -2150,23 +2232,23 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 this.data[contractorIndex].licenseIssueDate = fieldValue;
             }
         }
-    
-    }
-    
 
-    async saveRTWandDLdata(){
+    }
+
+
+    async saveRTWandDLdata() {
         let updateProceed = false;
         let allFieldsValid = true;
         const childComp = this.template.querySelector('c-image-capture');
         let inputFields;
-        
-        if(this.selectedOption == 'RTW'){
+
+        if (this.selectedOption == 'RTW') {
             inputFields = this.template.querySelectorAll('.expiryDate-edit');
-        }else{
+        } else {
             inputFields = this.template.querySelectorAll('.licenseNumber,.licenseExpiryDate,.typeOfLicense, .licenseIssueDate ,.pointOfLicense');
         }
-        
-        
+
+
         inputFields.forEach(inputField => {
             inputField.reportValidity();
             if (!inputField.checkValidity()) {
@@ -2174,7 +2256,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 inputField.focus();
             }
         });
-       
+
         // if(this.imagesAvailable){
         //     this.fileErrorMessage = false;
         // }
@@ -2207,14 +2289,14 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 this.fileErrorMessage = false;
             }
         }
-        
-        
+
+
         if (allFieldsValid) {
-            
+
             let changedFields = { Id: this.data[this.selectedContractor.currentClickIndex].Id };
             const bypassValidation = this.selectedContractor?.Citizenship_Immigration_status__c === 'British passport/UK National';
-            
-            if(this.selectedOption == 'RTW'){
+
+            if (this.selectedOption == 'RTW') {
                 if ((this.isRTWVerfiedCheck == false || this.verifiedRTWName == null)) {
                     this.showValidateError = true;
                     return;
@@ -2233,7 +2315,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                         //     }
                         //this.visibleUploadSection = true;
                         this.isRightToWorkModalOpen = false;
-                       // return;
+                        // return;
                     }
                     //  if (this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && this.verifiedRTWName != null) {
                     //     console.log('CLOSE : ','Close');
@@ -2300,7 +2382,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                             RtwProgressIcon: this.rtwGreen
                         };
                     }
-                     if (this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == false && this.verifiedRTWName != null) {
+                    if (this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == false && this.verifiedRTWName != null) {
 
                         if (this.data[this.selectedContractor.currentClickIndex].hasAccessCode == false && this.fileErrorMessage == false) {
                             await this.uploadAllFiles();
@@ -2318,8 +2400,8 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                         this.data[this.selectedContractor.currentClickIndex].rtwLicenseNotVerify = false;
                         this.data[this.selectedContractor.currentClickIndex].RtwProgressIcon = this.rtwGreen;
                         this.data[this.selectedContractor.currentClickIndex].isRTWExpiring = false;
-                        console.log('this.data[this.selectedContractor.currentClickIndex].expiryDate : ',this.data[this.selectedContractor.currentClickIndex].expiryDate);
-                        
+                        console.log('this.data[this.selectedContractor.currentClickIndex].expiryDate : ', this.data[this.selectedContractor.currentClickIndex].expiryDate);
+
                         updateProceed = true;
 
                         changedFields = {
@@ -2333,9 +2415,9 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                             RtwProgressIcon: this.rtwGreen,
                             expiryDate: this.data[this.selectedContractor.currentClickIndex].expiryDate
                         };
-                        
+
                         // if (this.checkDLandRTWExpiry(this.data[this.selectedContractor.currentClickIndex].RTW_Expiry_Date__c) == 'expiring') {
-                        
+
                         // adding the RTW british passport validation
                         if (!bypassValidation && this.checkDLandRTWExpiry(this.data[this.selectedContractor.currentClickIndex].RTW_Expiry_Date__c) == 'expiring') {
                             this.data[this.selectedContractor.currentClickIndex].isRTWExpired = false;
@@ -2368,11 +2450,11 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                             changedFields.rtwLicenseVerify = false;
                             changedFields.RtwProgressIcon = this.rtwRed;
                         }
-                        console.log('changedFields : ',changedFields);
+                        console.log('changedFields : ', changedFields);
                     }
                 }
                 // if (this.data[this.selectedContractor.currentClickIndex].hasAccessCode == false && this.fileErrorMessage == false) {
-                
+
                 //     await this.uploadAllFiles();
                 //     if (childComp) {
                 //         childComp.resetFiles();
@@ -2391,8 +2473,8 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 //     this.data[this.selectedContractor.currentClickIndex].rtwLicenseNotVerify = true;
                 // }
             }
-            if(this.selectedOption == 'DL'){
-                if ( (this.isDLVerfiedCheck == false || this.verifiedDLName == null)) {
+            if (this.selectedOption == 'DL') {
+                if ((this.isDLVerfiedCheck == false || this.verifiedDLName == null)) {
                     this.showDLValidateError = true;
                     return;
                 } else {
@@ -2405,11 +2487,11 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                         }
                     }
 
-                    if ( this.verifiedDLName != null && this.isDLVerfiedCheck == true) {
+                    if (this.verifiedDLName != null && this.isDLVerfiedCheck == true) {
                         const today = new Date();
                         const nextValidationDueDate = new Date();
                         nextValidationDueDate.setDate(today.getDate() + 90);
-                        const nextDueFormatted  = nextValidationDueDate.toISOString().split('T')[0];
+                        const nextDueFormatted = nextValidationDueDate.toISOString().split('T')[0];
                         const todayFormatted = today.toISOString().split('T')[0];
 
                         this.selectedContractor['isDriving_License_Verify__c'] = true;
@@ -2430,19 +2512,19 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                             Id: this.data[this.selectedContractor.currentClickIndex].Id,
                             isDriving_License_Verify__c: true,
                             Driving_License_Verified_by__c: this.verifiedDLName,
-                            Driving_License_Validated_Date__c:todayFormatted,
+                            Driving_License_Validated_Date__c: todayFormatted,
                             Driving_License_Validation_Due_Date__c: nextDueFormatted,
                             drivingLicenseVerify: true,
                             drivingLicenseNotVerify: false,
                             LiceceProgressIcon: this.licenceGreen,
                             isDLExpiring: false,
                             isDLExpired: false,
-                            licenseExpiryDate : this.data[this.selectedContractor.currentClickIndex].licenseExpiryDate,
-                            typeOfLicense : this.data[this.selectedContractor.currentClickIndex].typeOfLicense,
-                            licenseCategory : this.data[this.selectedContractor.currentClickIndex].licenseCategory,
-                            licenseNumber : this.data[this.selectedContractor.currentClickIndex].licenseNumber,
-                            pointOfLicense : this.data[this.selectedContractor.currentClickIndex].pointOfLicense,
-                            licenseIssueDate : this.data[this.selectedContractor.currentClickIndex].licenseIssueDate,
+                            licenseExpiryDate: this.data[this.selectedContractor.currentClickIndex].licenseExpiryDate,
+                            typeOfLicense: this.data[this.selectedContractor.currentClickIndex].typeOfLicense,
+                            licenseCategory: this.data[this.selectedContractor.currentClickIndex].licenseCategory,
+                            licenseNumber: this.data[this.selectedContractor.currentClickIndex].licenseNumber,
+                            pointOfLicense: this.data[this.selectedContractor.currentClickIndex].pointOfLicense,
+                            licenseIssueDate: this.data[this.selectedContractor.currentClickIndex].licenseIssueDate,
                         };
                     }
                     if (this.checkDLandRTWExpiry(this.data[this.selectedContractor.currentClickIndex].Driving_Licence_Expiry_Date__c) == 'expiring') {
@@ -2471,7 +2553,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                         changedFields.isDLExpiring = false;
                         changedFields.isDLExpired = true;
                     }
-                    
+
                 }
                 // if (this.fileErrorMessage == false) {
                 //     await this.uploadAllFiles();
@@ -2493,20 +2575,20 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                 // }
             }
 
-           // await this.callUpdateAccountClient(this.data[this.selectedContractor.currentClickIndex]);
-           if (updateProceed) {
+            // await this.callUpdateAccountClient(this.data[this.selectedContractor.currentClickIndex]);
+            if (updateProceed) {
                 await this.callUpdateAccountClient(changedFields);
             }
-            
 
-            
+
+
         }
     }
 
     clickFrontBackUpload(event) {
-        if(this.selectedOption == 'DL'){
+        if (this.selectedOption == 'DL') {
             this.showFrontBackRadioBtn = true;
-        }else{
+        } else {
             this.showFrontBackRadioBtn = false;
         }
         this.isFileUploadOpned = true;
@@ -2516,7 +2598,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.isFileModuleError = false;
         this.fileModuleError = '';
         this.allowedExtension = undefined;
-        if(this.selectedOption == 'RTW' && this.selectedContractor.hasAccessCode){
+        if (this.selectedOption == 'RTW' && this.selectedContractor.hasAccessCode) {
             this.allowedExtension = '.png, .jpg, .jpeg, .pdf'
         }
     }
@@ -2534,8 +2616,8 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     //     if (childComp) {
     //         const data = childComp.getUploadDocs();
     //         if (data) {
-                
-                
+
+
     //             if (data.uploadFrontFiles.length > 0 || data.capturedFrontFiles.length > 0) {
     //                 this.frontDocFiles = data.uploadFrontFiles.length > 0 ? data.uploadFrontFiles : data.capturedFrontFiles;
     //                 this.selectedContractor.FrontDoc = this.frontDocFiles[0].preview;
@@ -2556,7 +2638,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     //                     return;
     //                 }
     //             }
-                
+
     //         } else {
     //             console.log('No data returned from child component');
     //         }
@@ -2581,7 +2663,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
 
                         if (this.selectedOption == 'RTW' && this.selectedContractor.hasAccessCode) {
                             this.selectedContractor.CheckDoc = this.frontDocFiles[0].preview;
-                            this.selectedContractor.CheckDocName =  this.frontDocFiles[0].name;
+                            this.selectedContractor.CheckDocName = this.frontDocFiles[0].name;
                         } else {
                             this.selectedContractor.FrontDoc = this.frontDocFiles[0].preview;
                         }
@@ -2624,12 +2706,12 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.uploadFiles = [...this.frontDocFiles, ...this.backDocFiles];
         this.backDocFiles = [];
         this.frontDocFiles = [];
-        
+
         this.handleUpload();
     }
 
     handleUpload() {
-        
+
         try {
             for (const file of this.uploadFiles) {
 
@@ -2650,21 +2732,21 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
                     }
                 }
                 else {
-                if (this.selectedContractor.hasAccessCode || file.docType === 'Check') {
-                    docType = 'Right To Work Check';
-                } else if (file.docType == 'Front') {
-                    docType = 'Right To Work Front';
-                } else {
-                    docType = 'Right To Work Back';
-                }
+                    if (this.selectedContractor.hasAccessCode || file.docType === 'Check') {
+                        docType = 'Right To Work Check';
+                    } else if (file.docType == 'Front') {
+                        docType = 'Right To Work Front';
+                    } else {
+                        docType = 'Right To Work Back';
+                    }
                 }
                 saveUplodededFiles({ parentId: this.selectedContractorId, fileName: fileDocName, base64Data: file.base64Data, contentType: file.fileType, docType: docType });
-                
+
                 this.dispatchEvent(new ShowToastEvent({ title: 'Success', message: 'Files Uploaded Successfully', variant: 'success' }));
 
             }
-        }catch (error) {
-            console.error('Error in handleUpload:',error);
+        } catch (error) {
+            console.error('Error in handleUpload:', error);
         }
     }
 
@@ -2707,19 +2789,19 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         }
     }
 
-    rtwDataAdded(event){
+    rtwDataAdded(event) {
         const addRTWExpiryDate = event.detail.rtwExpiryDate;
-         if( addRTWExpiryDate != null){
-            if (this.checkDLandRTWExpiry(addRTWExpiryDate) == 'expiring' || addRTWExpiryDate != undefined  || addRTWExpiryDate != '') {
+        if (addRTWExpiryDate != null) {
+            if (this.checkDLandRTWExpiry(addRTWExpiryDate) == 'expiring' || addRTWExpiryDate != undefined || addRTWExpiryDate != '') {
                 this.data[this.currentIndex].rtwDataNotAvaliable = false;
                 this.data[this.currentIndex].isRTWExpiring = true;
                 this.data[this.currentIndex].rtwLicenseNotVerify = false;
-            }else{
+            } else {
                 this.data[this.currentIndex].rtwDataNotAvaliable = false;
                 this.data[this.currentIndex].isRTWExpiring = false;
                 this.data[this.currentIndex].rtwLicenseNotVerify = true;
             }
-        }else{
+        } else {
             this.data[this.currentIndex].rtwDataNotAvaliable = false;
             this.data[this.currentIndex].isRTWExpiring = false;
             this.data[this.currentIndex].rtwLicenseNotVerify = true;
@@ -2729,19 +2811,19 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.dispatchEvent(new ShowToastEvent({ title: 'Success', message: 'Data Added Successfully', variant: 'success' }));
     }
 
-    dlDataAdded(event){
+    dlDataAdded(event) {
         const addDLExpiryDate = event.detail.dlExpiryDate;
-         if( addDLExpiryDate != null || addDLExpiryDate != undefined  || addDLExpiryDate != '') {
+        if (addDLExpiryDate != null || addDLExpiryDate != undefined || addDLExpiryDate != '') {
             if (this.checkDLandRTWExpiry(addDLExpiryDate) == 'expiring') {
                 this.data[this.currentIndex].licenseDataNotAvaliable = false;
                 this.data[this.currentIndex].isDLExpiring = true;
                 this.data[this.currentIndex].drivingLicenseNotVerify = false;
-            }else{
+            } else {
                 this.data[this.currentIndex].licenseDataNotAvaliable = false;
                 this.data[this.currentIndex].isDLExpiring = false;
                 this.data[this.currentIndex].drivingLicenseNotVerify = true;
             }
-        }else{
+        } else {
             this.data[this.currentIndex].licenseDataNotAvaliable = false;
             this.data[this.currentIndex].isDLExpiring = false;
             this.data[this.currentIndex].drivingLicenseNotVerify = true;
@@ -2761,7 +2843,7 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     //             console.log('this.uplodedRTWCVId : ',this.uplodedRTWCVId);
     //                 this.filePreviewUrl = this.MC_Site_URL + 'sfc/servlet.shepherd/version/download/' +this.uplodedRTWCVId;
     //                 this.isPreviewEnabled = true;
-                    
+
     //             updateDocumentType({ contentVersionId: this.uplodedRTWCVId, docType: 'Right To Work Check' })
     //             .then((result) => {
     //                 this.isRTWCheckFileUploded = true;
@@ -2783,12 +2865,12 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
     //             });
     //         }
     //     }
-    
-    
+
+
     // deleteRTWCheckFile() {
     //     if (this.uplodedRTWCVId) {
-    //         deleteByContentVersionId({ 
-    //             contentVersionId: this.uplodedRTWCVId 
+    //         deleteByContentVersionId({
+    //             contentVersionId: this.uplodedRTWCVId
     //         })
     //         .then(result => {
     //             if (result === true) {
