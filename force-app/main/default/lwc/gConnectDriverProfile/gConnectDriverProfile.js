@@ -29,6 +29,7 @@ import getDriverRate from '@salesforce/apex/DriverAvailabilityController.getDriv
 import updateDriverRate from '@salesforce/apex/DriverAvailabilityController.updateDriverRate';// UnComment on 21-10-2025// Commented On 16-10-2025 for Deduction and Incident to PROD
 import USER_ID from "@salesforce/user/Id";
 import saveUplodededFiles from '@salesforce/apex/ImageUploaderController.saveUplodededFiles';
+import sendVerificationLinkEmail from '@salesforce/apex/ConnectAppController.sendVerificationLinkEmail';
 
 
 export default class GConnectDriverProfile extends LightningElement {
@@ -234,6 +235,10 @@ export default class GConnectDriverProfile extends LightningElement {
     @track isHasRestrictionsSelected;
     @track copyButtonLabel = 'Copy';
 
+    @track nationalInsuranceProof = 'Check this is a full certificate showing at least one parent\'s name. Short-form certificates are not accepted.';
+    @track birthCertificateProof = 'P45, P60, HMRC letter, PAYE payslip, or DWP letter NI number.are not accepted.';
+
+
     @track allowedRTWOptions = {
         'British Citizen': [
             {
@@ -267,6 +272,7 @@ export default class GConnectDriverProfile extends LightningElement {
         ]
     };
     @track isRTWVerfiedCheck = false;
+    @track selectedRTWDocumentTypes = [];
     handleRTWVerifiedCheck(event) {
         this.isRTWVerfiedCheck = !this.isRTWVerfiedCheck;
     }
@@ -732,6 +738,18 @@ export default class GConnectDriverProfile extends LightningElement {
                 this.imagesNotAvailable = true;
             });
 
+    }
+
+    get hasEvidenceBritishPassport() {
+        return this.recordData.Right_to_work_document__c === 'British passport' && this.recordData.Citizenship_Immigration_status__c === 'British Citizen';
+    }
+
+    get hasEvidenceBirthOrNI() {
+        return this.recordData.Right_to_work_document__c === 'Birth/Adoption Certificate + National Insurance document' || this.recordData.Right_to_work_document__c === 'Certificate of registration/naturalisation + National Insurance document';
+    }
+
+    get hasEvidenceIrishPassport() {
+        return this.recordData.Right_to_work_document__c === 'Irish passport or passport card';
     }
 
     onchangeincidentDetails(event) {
@@ -2248,6 +2266,20 @@ export default class GConnectDriverProfile extends LightningElement {
             }
         }
 
+        // Build list of document types for the selected RTW document
+        let documentTypeList = [];
+        const citizenType = this.recordData?.Citizenship_Immigration_status__c;
+        const selectedDocValue = this.recordData?.Right_to_work_document__c;
+        if (citizenType && selectedDocValue && this.allowedRTWOptions[citizenType]) {
+            const docs = this.allowedRTWOptions[citizenType];
+            const match = docs.find(d => d.value === selectedDocValue);
+            if (match && Array.isArray(match.documentType)) {
+                documentTypeList = match.documentType;
+            }
+        }
+        // expose to component state if needed elsewhere
+        // this.selectedRTWDocumentTypes = documentTypeList;
+
         let updateData = {
             Id: this.recordId,
             Date_of_Entry__c: this.dateOfEntry,
@@ -2275,17 +2307,83 @@ export default class GConnectDriverProfile extends LightningElement {
             updateData.RTW_Expiry_Date__c = null;
         }
 
-        if (!isBritish || (isBritish && this.recordData?.Right_to_work_document__c === 'British passport')) {
+        console.log('hasShareCode:', this.recordData.hasShareCode);
 
-            if (this.showRTWExpiryDate) {
-                if (!this.expiryDate) {
-                    this.showToast('Error', 'Expiry Date is required', 'error');
+        if (this.recordData.hasShareCode && this.recordData.Type_of_e_visa__c === 'Time-limited right to work') {
+            console.log('permissoin--->>> ', this.recordData.Permission_Expiry_Date__c)
+            if (!this.recordData.Permission_Expiry_Date__c) {
+                this.showToast('Error', 'Permission Expiry Date is required.', 'error');
+                return;
+            }
+
+            if (!this.recordData?.Any_work_restrictions__c) {
+                this.showToast('Error', 'Any Work Restrictions is required.', 'error');
+                return;
+            }
+
+            if (this.recordData.Any_work_restrictions__c === 'Yes') {
+                const hours = this.recordData.Limited_To_X_Hours_Per_Week__c;
+
+                if (hours === null || hours === undefined || hours === '') {
+                    this.showToast('Error', 'Limited To X Hours Per Week is required.', 'error');
                     return;
                 }
-                updateData.RTW_Expiry_Date__c = this.expiryDate;
-                updateData.Access_Code__c = null;
+
+                const hoursNumber = Number(hours);
+                if (isNaN(hoursNumber)) {
+                    this.showToast('Error', 'Please enter a valid number.', 'error');
+                    return;
+                }
+
+                if (hoursNumber < 0 || hoursNumber > 168) {
+                    this.showToast('Error', 'Hours must be between 0 and 168.', 'error');
+                    return;
+                }
+
+                if (!this.recordData?.Limited_To_Specific_Job_Types__c) {
+                    this.showToast('Error', 'Limited To Specific Job Types are required.', 'error');
+                    return;
+                }
+
+                if (!this.recordData?.Other_Restrictions__c) {
+                    this.showToast('Error', 'Other Restrictions is required.', 'error');
+                    return;
+                }
             }
         }
+
+        if (documentTypeList.length == 2 && !this.hasFrontRTWImage && !this.hasBackRTWImage && !this.tempFrontFiles.length && !this.tempBackFiles.length) {
+            this.showToast('Error', 'Please upload the required Right to Work documents before saving.', 'error');
+            return;
+        }
+
+        if (documentTypeList.length == 1 && !this.hasFrontRTWImage && !this.hasRTWCheckImage && !this.tempFrontFiles.length) {
+            this.showToast('Error', 'Please upload the required Right to Work document before saving.', 'error');
+            return;
+        }
+
+        if (!this.isRTWVerfiedCheck) {
+            this.showToast('Error', 'Please verify the Right to Work before saving.', 'error');
+            return;
+        }
+
+        if (this.isRTWVerfiedCheck && !this.verifiedRTWName) {
+            this.showToast('Error', 'Please provide the name of the person who verified the Right to Work.', 'error');
+            return;
+        }
+
+
+        // if (!isBritish || (isBritish && this.recordData?.Right_to_work_document__c === 'British passport')) {
+
+        //     if (this.showRTWExpiryDate) {
+        //         if (!this.expiryDate) {
+        //             this.showToast('Error', 'Expiry Date is required', 'error');
+        //             return;
+        //         }
+        //         updateData.RTW_Expiry_Date__c = this.expiryDate;
+        //         updateData.Access_Code__c = null;
+        //     }
+        // }
 
         try {
             this.imageLoading = true;
@@ -2317,6 +2415,37 @@ export default class GConnectDriverProfile extends LightningElement {
             this.imageLoading = false;
         }
     }
+    // handleRequestNewEvidence(event) {
+
+    //     const recordId = event.target.dataset.selectedId;
+
+    //     sendVerificationLinkEmail({ applicationId: recordId })
+    //         .then(() => {
+    //             this.dispatchEvent(
+    //                 new ShowToastEvent({
+    //                     title: 'Success',
+    //                     message: 'Verification email sent successfully.',
+    //                     variant: 'success'
+    //                 })
+    //             );
+
+    //         })
+    //         .catch(error => {
+    //             let errorMessage = 'Error sending verification email';
+    //             if (error?.body?.message) {
+    //                 errorMessage = error.body.message;
+    //             }
+    //             this.dispatchEvent(
+    //                 new ShowToastEvent({
+    //                     title: 'Error',
+    //                     message: errorMessage,
+    //                     variant: 'error'
+    //                 })
+    //             );
+
+    //             console.error(error);
+    //         });
+    // }
 
     handleRTWCancel() {
         this.rtwEditOpen = false;

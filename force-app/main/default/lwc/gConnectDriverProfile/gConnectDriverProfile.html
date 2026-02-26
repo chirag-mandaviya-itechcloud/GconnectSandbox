@@ -1598,6 +1598,9 @@
                                         <div class="customHeaderFlex">
                                             <div class="image-section-title">Right to Work</div>
                                             <div>
+                                                <!-- <button class="btn-request" onclick={handleRequestNewEvidence}
+                                                    data-selected-id={recordData.Id}> Request New Evidence
+                                                </button> -->
                                                 <button class="slds-button btnDwl" onclick={handleRTWEditOpen}>Edit
                                                 </button>
                                                 <button class="slds-button btnDwl" data-doctype="GConnect RTW"
@@ -1635,12 +1638,12 @@
                                                         </div>
                                                     </div>
                                                 </template>
-                                                <!-- <template if:true={recordData.hasShareCode}>
+                                                <template if:true={recordData.hasShareCode}>
                                                     <div class="info-field">
                                                         <div class="info-label">Share Code</div>
                                                         <div class="badge badge-gray">{recordData.Share_Code__c}</div>
                                                     </div>
-                                                </template> -->
+                                                </template>
                                                 <template if:true={recordData.hasAccessCode}>
                                                     <div class="info-field">
                                                         <div class="info-label">Access Code</div>
@@ -1692,6 +1695,10 @@
                                                                 <p>
                                                                     <strong>{recordData.rtwFrontDocumentName}:</strong>
                                                                 </p>
+                                                                <template if:true={hasEvidenceBirthOrNI}>
+                                                                    <div class="dual-doc-hint">{nationalInsuranceProof}
+                                                                    </div>
+                                                                </template>
                                                                 <template if:true={hasFrontRTWImage}>
                                                                     <img src={rtwFrontImage} class="frontImage"
                                                                         alt="RTW Front Document" />
@@ -1708,6 +1715,10 @@
                                                                         <p>
                                                                             <strong>{recordData.rtwBackDocumentName}:</strong>
                                                                         </p>
+                                                                        <template if:true={hasEvidenceBirthOrNI}>
+                                                                            <div class="dual-doc-hint">
+                                                                                {birthCertificateProof}</div>
+                                                                        </template>
                                                                         <div style="width: 100%;">
                                                                             <template if:true={hasBackRTWImage}>
                                                                                 <img src={rtwBackImage}
@@ -1733,41 +1744,206 @@
                                             </div>
                                             <!-- <template if:false={rtwEditOpen}> -->
                                             <div class="rtw-data">
-                                                <div class="slds-grid slds-wrap">
-                                                    <div
-                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
-                                                        <div class="contractor-field">
-
-                                                            <div class="field-title">Right to work document</div>
-
-                                                            <!-- <template if:false={rtwEditOpen}> -->
-                                                            <template if:true={recordData.hasRTWDoc}>
-                                                                <div>{recordData.Right_to_work_document__c}</div>
-                                                            </template>
-                                                            <template if:false={recordData.hasRTWDoc}>
-                                                                <div>N/A</div>
-                                                            </template>
-                                                            <!-- </template> -->
-
-                                                            <!-- <template if:true={rtwEditOpen}>
-                                                                        <lightning-combobox
-                                                                            value={editRTWDocument}
-                                                                            options={rtwDocOptions}
-                                                                            placeholder="Select document"
-                                                                            onchange={handleRTWPicklistChange}
-                                                                            data-field="Right_to_work_document__c">
-                                                                        </lightning-combobox>
-                                                                    </template> -->
+                                                <template if:true={hasEvidenceBritishPassport}>
+                                                    <div class="document-details">
+                                                        <div class="design-note">
+                                                            <strong>OSM action:</strong> Review the uploaded
+                                                            passport
+                                                            for authenticity. Check the photo matches the driver,
+                                                            details are legible, and the document is genuine.
+                                                        </div>
+                                                        <div class="info-callout">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round">
+                                                                <circle cx="12" cy="12" r="10" />
+                                                                <line x1="12" y1="16" x2="12" y2="12" />
+                                                                <circle cx="12" cy="8" r="0.5" fill="currentColor" />
+                                                            </svg>
+                                                            <div>British passports do not need to be in-date for a
+                                                                manual Right to Work check.</div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <template if:true={recordData.hasRestrictedStatus}>
-                                                    <div class="slds-grid slds-wrap">
-                                                        <div
-                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
-                                                            <!-- <div class="contractor-field">
-                                                                    <div class=" field-title">Settled Status
+                                                </template>
+                                                <template if:false={hasEvidenceBritishPassport}>
+                                                    <template if:true={recordData.hasShareCode}>
+                                                        <template if:false={rtwEditOpen}>
+                                                            <div class="slds-grid slds-wrap">
+
+
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Permission
+                                                                                    Expiry
+                                                                                    Date
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Permission_Expiry_Date__c}>
+                                                                                    <div>
+                                                                                        {recordData.Permission_Expiry_Date__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Permission_Expiry_Date__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
                                                                     </div>
+                                                                </div>
+
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Type of e-visa
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Type_of_e_visa__c}>
+                                                                                    <div>{recordData.Type_of_e_visa__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Type_of_e_visa__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Any work
+                                                                                    restrictions?
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Any_work_restrictions__c}>
+                                                                                    <div>
+                                                                                        {recordData.Any_work_restrictions__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Any_work_restrictions__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Limited To X
+                                                                                    Hours
+                                                                                    Per
+                                                                                    Week
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Limited_To_X_Hours_Per_Week__c}>
+                                                                                    <div>
+                                                                                        {recordData.Limited_To_X_Hours_Per_Week__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Limited_To_X_Hours_Per_Week__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Limited To
+                                                                                    Specific
+                                                                                    Job
+                                                                                    Types
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Limited_To_Specific_Job_Types__c}>
+                                                                                    <div>
+                                                                                        {recordData.Limited_To_Specific_Job_Types__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Limited_To_Specific_Job_Types__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Other
+                                                                                    Restrictions
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Other_Restrictions__c}>
+                                                                                    <div>
+                                                                                        {recordData.Other_Restrictions__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Other_Restrictions__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <!-- <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Other
+                                                                                    Restrictions
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Other_Restrictions__c}>
+                                                                                    <div>
+                                                                                        {recordData.Other_Restrictions__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Other_Restrictions__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template> -->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </template>
+                                                    <template if:true={recordData.hasRestrictedStatus}>
+                                                        <!-- <template if:false={rtwEditOpen}> -->
+                                                        <div class="slds-grid slds-wrap">
+                                                            <div
+                                                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                <div class="contractor-field">
+                                                                    <div class="field-title">Settled Status</div>
+
                                                                     <template if:true={recordData.hasSettledStatus}>
                                                                         <div>
                                                                             {recordData.Settled_Status__c}</div>
@@ -1775,35 +1951,16 @@
                                                                     <template if:false={recordData.hasSettledStatus}>
                                                                         <div>N/A</div>
                                                                     </template>
-                                                                </div> -->
-                                                            <div class="contractor-field">
-                                                                <div class="field-title">Settled Status</div>
 
-                                                                <!-- <template if:false={rtwEditOpen}> -->
-                                                                <template if:true={recordData.hasSettledStatus}>
-                                                                    <div>
-                                                                        {recordData.Settled_Status__c}</div>
-                                                                </template>
-                                                                <template if:false={recordData.hasSettledStatus}>
-                                                                    <div>N/A</div>
-                                                                </template>
-                                                                <!-- </template> -->
-
-                                                                <!-- <template if:true={rtwEditOpen}>
-                                                                            <lightning-combobox
-                                                                                value={editSettledStatus}
-                                                                                options={settledStatusOptions}
-                                                                                onchange={handleRTWPicklistChange}
-                                                                                data-field="Settled_Status__c">
-                                                                            </lightning-combobox>
-                                                                        </template> -->
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div
-                                                            class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
-                                                            <!-- <div class="contractor-field">
-                                                                    <div class=" field-title">Biometric Evidence
-                                                                    </div>
+                                                            <div
+                                                                class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+
+                                                                <div class="contractor-field">
+                                                                    <div class="field-title">Biometric Evidence</div>
+
+                                                                    <!-- <template if:false={rtwEditOpen}> -->
                                                                     <template if:true={recordData.hasBiometric}>
                                                                         <div>
                                                                             {recordData.Biometric_Evidence__c}</div>
@@ -1811,21 +1968,9 @@
                                                                     <template if:false={recordData.hasBiometric}>
                                                                         <div>N/A</div>
                                                                     </template>
-                                                                </div> -->
-                                                            <div class="contractor-field">
-                                                                <div class="field-title">Biometric Evidence</div>
+                                                                    <!-- </template> -->
 
-                                                                <!-- <template if:false={rtwEditOpen}> -->
-                                                                <template if:true={recordData.hasBiometric}>
-                                                                    <div>
-                                                                        {recordData.Biometric_Evidence__c}</div>
-                                                                </template>
-                                                                <template if:false={recordData.hasBiometric}>
-                                                                    <div>N/A</div>
-                                                                </template>
-                                                                <!-- </template> -->
-
-                                                                <!-- <template if:true={rtwEditOpen}>
+                                                                    <!-- <template if:true={rtwEditOpen}>
                                                                         <lightning-combobox
                                                                             value={editBiometric}
                                                                             options={biometricOptions}
@@ -1833,67 +1978,48 @@
                                                                             data-field="Biometric_Evidence__c">
                                                                         </lightning-combobox>
                                                                     </template> -->
-                                                            </div>
+                                                                </div>
 
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </template>
-                                                <div class="slds-grid slds-wrap">
-                                                    <template if:true={recordData.hasRestrictedStatus}>
+                                                        <!-- </template> -->
+                                                    </template>
+                                                    <div class="slds-grid slds-wrap">
+                                                        <template if:false={hasEvidenceBritishPassport}>
+                                                            <template if:true={recordData.hasRestrictedStatus}>
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <div class="field-title">Date Of Entry</div>
+                                                                        <template if:true={recordData.hasEntryDate}>
+                                                                            <div>
+                                                                                {recordData.Date_of_Entry__c}</div>
+                                                                        </template>
+                                                                        <template if:false={recordData.hasEntryDate}>
+                                                                            <div>N/A</div>
+                                                                        </template>
+
+                                                                    </div>
+                                                                </div>
+
+                                                            </template>
+                                                        </template>
                                                         <div
                                                             class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
                                                             <!-- <div class="contractor-field">
-                                                                    <div class=" field-title">Date Of Entry</div>
-                                                                    <template if:true={recordData.hasEntryDate}>
-                                                                        <div>
-                                                                            {recordData.Date_of_Entry__c}</div>
-                                                                    </template>
-                                                                    <template if:false={recordData.hasEntryDate}>
-                                                                        <div>N/A</div>
-                                                                    </template>
-                                                                </div> -->
-                                                            <div class="contractor-field">
-                                                                <div class="field-title">Date Of Entry</div>
-
-                                                                <!-- <template if:false={rtwEditOpen}> -->
-                                                                <template if:true={recordData.hasEntryDate}>
-                                                                    <div>
-                                                                        {recordData.Date_of_Entry__c}</div>
-                                                                </template>
-                                                                <template if:false={recordData.hasEntryDate}>
-                                                                    <div>N/A</div>
-                                                                </template>
-                                                                <!-- </template> -->
-
-                                                                <!-- <template if:true={rtwEditOpen}>
-                                                                        <lightning-input
-                                                                            type="date"
-                                                                            date-style="short"
-                                                                            value={dateOfEntry}
-                                                                            onchange={handleRTWFieldChange}
-                                                                            data-field="Date_of_Entry__c">
-                                                                        </lightning-input>
-                                                                    </template> -->
-                                                            </div>
-                                                        </div>
-
-                                                    </template>
-                                                    <div
-                                                        class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
-                                                        <!-- <div class="contractor-field">
                                                                 <template if:true={recordData.hasAccessCode}>
                                                                     <div class="field-title">Access Code</div>
                                                                     <div>{recordData.Access_Code__c}</div>
                                                                 </template>
                                                             </div> -->
-                                                        <div class="contractor-field">
+                                                            <div class="contractor-field">
 
 
-                                                            <!-- <template if:true={recordData.hasAccessCode}>
+                                                                <!-- <template if:true={recordData.hasAccessCode}>
                                                                 <div class="field-title">Access Code</div>
                                                                 <div>{recordData.Access_Code__c}</div>
                                                             </template> -->
-                                                            <!-- <template if:false={rtwEditOpen}>
+                                                                <!-- <template if:false={rtwEditOpen}>
 
                                                                 </template>
 
@@ -1909,16 +2035,48 @@
                                                                         </lightning-input>
                                                                     </template>
                                                                 </template> -->
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+
+                                                </template>
+
+                                                <template if:true={hasEvidenceBirthOrNI}>
+                                                    <div class="design-note">
+                                                        <strong>OSM action:</strong> Review both documents. Confirm the
+                                                        birth certificate is a full certificate (not
+                                                        short-form) and the NI proof shows a valid National Insurance
+                                                        number matching this driver.
+                                                    </div>
+                                                </template>
+
+                                                <template if:true={hasEvidenceIrishPassport}>
+                                                    <div class="document-details">
+                                                        <div class="design-note">
+                                                            <strong>OSM action:</strong> Review the uploaded Irish
+                                                            passport or passport card for authenticity. Check it has
+                                                            not been clipped (cancelled).
+                                                        </div>
+                                                        <div class="info-callout">
+                                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round">
+                                                                <circle cx="12" cy="12" r="10" />
+                                                                <line x1="12" y1="16" x2="12" y2="12" />
+                                                                <circle cx="12" cy="8" r="0.5" fill="currentColor" />
+                                                            </svg>
+                                                            <div>Irish citizens have an automatic right to work under
+                                                                the Common Travel Area. Passport can be current or
+                                                                expired but must not be clipped.</div>
+                                                        </div>
+                                                    </div>
+                                                </template>
 
                                                 <div class="slds-grid slds-wrap">
                                                     <div
                                                         class="slds-col slds-large-size_1-of-1 slds-medium-size_6-of-12 slds-size_6-of-12">
                                                         <div class="contractor-field">
                                                             <!-- ===== VIEW MODE ===== -->
-                                                            <template if:false={rtwEditOpen}>
+                                                            <!-- <template if:false={rtwEditOpen}> -->
                                                                 <!-- <div class="slds-grid slds-wrap"> -->
 
                                                                 <!-- Show Expiry Date ONLY when there is NO Access Code -->
@@ -1928,18 +2086,8 @@
                                                                         <div class="field-title">Date Of Expiry</div>
                                                                         <div>{recordData.RTW_Expiry_Date__c}</div>
                                                                     </template>
-                                                                    <!-- <template if:false={recordData.hasExpiryDate}>
-                                                                                    <div>N/A</div>
-                                                                                </template> -->
                                                                 </template>
-
-                                                                <!-- Show Access Code ONLY when Access Code exists -->
-                                                                <!-- <template if:true={recordData.hasAccessCode}>
-                                                                                <div class="field-title">Access Code</div>
-                                                                                <div>{recordData.Access_Code__c}</div>
-                                                                        </template> -->
-                                                                <!-- </div> -->
-                                                            </template>
+                                                            <!-- </template> -->
 
 
                                                             <!-- ===== EDIT MODE ===== -->
@@ -1958,14 +2106,14 @@
                                                                     </template> -->
 
                                                                 <!-- ===== EXPIRY DATE ONLY ===== -->
-                                                                <template if:true={showRTWExpiryDate}>
+                                                                <!-- <template if:true={showRTWExpiryDate}>
                                                                     <lightning-input type="date" label="Expiry Date"
                                                                         date-style="short"
                                                                         data-field="RTW_Expiry_Date__c"
                                                                         name="expiryDate" value={expiryDate} required
                                                                         onchange={onChangeRTWField}>
                                                                     </lightning-input>
-                                                                </template>
+                                                                </template> -->
                                                             </template>
 
                                                             <template if:true={rtwEditOpen}>
@@ -2273,7 +2421,8 @@
                                                                             onclick={clickRTWUpload}>
                                                                         </lightning-button>
                                                                         <div style="color: red;"
-                                                                            if:true={fileErrorMessage}>Please upload
+                                                                            if:true={fileErrorMessage}>
+                                                                            Please upload
                                                                             Front and
                                                                             Back Documents
                                                                         </div>
@@ -2365,6 +2514,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
 
                                             </div>
                                             <!-- </template>  -->
@@ -2470,7 +2620,8 @@
         <c-g-connect-incident-modal record-id={recordId} contact-id={contactId}
             is-deduction-disabled={isDeductionDisabled} oncallclosemethod={closehandleNewIncident}
             onnewincidentrecord={handleNewIncidentRecord} onclosesuccess={handleCloseSuccessModal}
-            oncalldeductionlog={handleCallDeductionLog}>> </c-g-connect-incident-modal>
+            oncalldeductionlog={handleCallDeductionLog}>>
+        </c-g-connect-incident-modal>
     </template>
 
 </template>

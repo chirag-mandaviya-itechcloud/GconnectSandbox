@@ -10,6 +10,7 @@ import getRTWandDLfiles from '@salesforce/apex/AccountMainContractorController.g
 import saveUplodededFiles from '@salesforce/apex/ImageUploaderController.saveUplodededFiles';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getMultiplePicklistValues from '@salesforce/apex/ConnectAppController.getMultiplePicklistValues';
+import createRTWandDLDocument from '@salesforce/apex/AccountMainContractorController.createRTWandDLDocument';
 
 
 import MC_Site_URL from '@salesforce/label/c.MC_Site_URL';
@@ -192,6 +193,9 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
     @track noRecordFound = false;
     @track complianceFilter;
+    @track originalContractorData = {}
+    @track isExtraFieldEditable = false;
+    @track hasShareCodeFile = false;
 
     // New UI RTW
     @track allowedRTWOptions = {
@@ -382,7 +386,20 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
                     // new
                     this.data[x].hasEVisa = this.data[x].hasOwnProperty('Type_of_e_visa__c') && this.data[x].Type_of_e_visa__c !== null ? true : false;
-                    this.data[x].hasPermissionExpiryDate = this.data[x].hasOwnProperty('Permission_Expiry_Date__c') && this.data[x].Permission_Expiry_Date__c !== null ? true : false;
+                    // this.data[x].hasPermissionExpiryDate = this.data[x].hasOwnProperty('Permission_Expiry_Date__c') && this.data[x].Permission_Expiry_Date__c !== null ? true : false;
+                   if (this.data[x].hasOwnProperty('Permission_Expiry_Date__c') && this.data[x].Permission_Expiry_Date__c !== null) {
+                        this.data[x].hasPermissionExpiryDate = true;
+
+                        const expiryDate = new Date(this.data[x].Permission_Expiry_Date__c);
+                        expiryDate.setDate(expiryDate.getDate() - 90);
+
+                        this.data[x].followUpCheckDate = expiryDate.toISOString().split('T')[0];
+                    } else {
+                        this.data[x].hasPermissionExpiryDate = false;
+                        this.data[x].followUpCheckDate = null;
+                    }
+
+
                     this.data[x].hasAnyWorkRestrictions = this.data[x].hasOwnProperty('Any_work_restrictions__c') && this.data[x].Any_work_restrictions__c !== null ? true : false;
                     this.data[x].hasLimitedToSpecificJobTypes = this.data[x].hasOwnProperty('Limited_To_Specific_Job_Types__c') && this.data[x].Limited_To_Specific_Job_Types__c !== null ? true : false;
                     this.data[x].hasLimitedToHoursPerWeek = this.data[x].hasOwnProperty('Limited_To_X_Hours_Per_Week__c') && this.data[x].Limited_To_X_Hours_Per_Week__c !== null ? true : false;
@@ -561,6 +578,18 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                             }
                         }
 
+                        if (this.data[x].hasOwnProperty('Permission_Expiry_Date__c') && this.data[x].Permission_Expiry_Date__c) {
+                            console.log('this.data[x].Permission_Expiry_Date__c', this.data[x].Permission_Expiry_Date__c);
+                            console.log('this.checkDLandRTWExpiry(this.data[x].Permission_Expiry_Date__c)', this.checkDLandRTWExpiry(this.data[x].Permission_Expiry_Date__c));
+                            if (this.checkDLandRTWExpiry(this.data[x].Permission_Expiry_Date__c) == 'expiring') {
+                                this.data[x].RtwProgressIcon = this.rtwLightRed;
+                            }
+                            if (this.checkDLandRTWExpiry(this.data[x].Permission_Expiry_Date__c) == 'expired') {
+                                this.data[x].RtwProgressIcon = this.rtwRed;
+
+                            }
+                        }
+
                     }
 
                     //-- Right TO Work -- Button --//
@@ -571,37 +600,49 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                     this.data[x].rtwDataNotAvaliable = false;
                     this.data[x].allowRTWEdit = false;
                     this.data[x].requiredRTWEdit = true;
-                    if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.data[x].Citizenship_Immigration_status__c !== null) {
+                    
+if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.data[x].Citizenship_Immigration_status__c !== null) {
 
-                        if (!this.data[x].bypassValidation && this.data[x].RTW_Expiry_Date__c) {
-                            let rtwExpiryStatus = this.checkDLandRTWExpiry(this.data[x].RTW_Expiry_Date__c);
+    // CHECK EXPIRY - PRIORITY ORDER
+    let expiryDateToCheck = null;
+    let rtwExpiryStatus = null;
+    
+    // Priority 1: Check Permission_Expiry_Date__c first (for Share Code scenarios)
+    if (this.data[x].Permission_Expiry_Date__c) {
+        expiryDateToCheck = this.data[x].Permission_Expiry_Date__c;
+        rtwExpiryStatus = this.checkDLandRTWExpiry(expiryDateToCheck);
+    } 
+    // Priority 2: Check RTW_Expiry_Date__c if no Permission date
+    else if (!this.data[x].bypassValidation && this.data[x].RTW_Expiry_Date__c) {
+        expiryDateToCheck = this.data[x].RTW_Expiry_Date__c;
+        rtwExpiryStatus = this.checkDLandRTWExpiry(expiryDateToCheck);
+    }
 
-                            if (rtwExpiryStatus == 'expiring') {
-                                this.data[x].isRTWExpiring = true;
-                                this.data[x].allowRTWEdit = true;
-                            }
-
-                            if (rtwExpiryStatus == 'expired') {
-                                this.data[x].isRTWExpired = true;
-                                this.data[x].allowRTWEdit = true;
-                                this.data[x].requiredRTWEdit = true;
-                            }
-                        }
-
-                        if (this.data[x].isRTWExpiring == false && this.data[x].isRTWExpired == false) {
-                            if (this.data[x].is_Right_to_Work_Verify__c) {
-                                this.data[x].rtwLicenseVerify = true;
-
-                                this.data[x].allowRTWEdit = true;
-                            }
-                            else {
-                                this.data[x].rtwLicenseNotVerify = true;
-                                this.data[x].allowRTWEdit = true;
-                            }
-                        }
-                    } else {
-                        this.data[x].rtwDataNotAvaliable = true;
-                    }
+    // Set button states based on expiry status
+    if (rtwExpiryStatus === 'expiring') {
+        this.data[x].isRTWExpiring = true;
+        this.data[x].allowRTWEdit = true;
+        this.data[x].RtwProgressIcon = this.rtwLightRed;
+    } else if (rtwExpiryStatus === 'expired') {
+        this.data[x].isRTWExpired = true;
+        this.data[x].allowRTWEdit = true;
+        this.data[x].requiredRTWEdit = true;
+        this.data[x].RtwProgressIcon = this.rtwRed;
+    } else {
+        // No expiry issues
+        if (this.data[x].is_Right_to_Work_Verify__c) {
+            this.data[x].rtwLicenseVerify = true;
+            this.data[x].allowRTWEdit = true;
+            this.data[x].RtwProgressIcon = this.rtwGreen;
+        } else {
+            this.data[x].rtwLicenseNotVerify = true;
+            this.data[x].allowRTWEdit = true;
+            this.data[x].RtwProgressIcon = this.rtwYellow;
+        }
+    }
+} else {
+    this.data[x].rtwDataNotAvaliable = true;
+}
 
 
                     // NEW UI RTW
@@ -798,6 +839,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
     }
     handleRTWImageError() {
         this.selectedContractor.CheckDoc = undefined;
+        this.isExtraFieldEditable = false;
     }
 
     verifyCPassFailHandle(event) {
@@ -809,6 +851,17 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         let fileTypeName = null;
 
         if (event.target.name === 'RTW') {
+             const contractor = this.data[this.currentIndex];
+            this.originalContractorData = {
+                Type_of_e_visa__c: contractor.Type_of_e_visa__c,
+                Permission_Expiry_Date__c: contractor.Permission_Expiry_Date__c,
+                Any_work_restrictions__c: contractor.Any_work_restrictions__c,
+                Limited_To_X_Hours_Per_Week__c: contractor.Limited_To_X_Hours_Per_Week__c,
+                Limited_To_Specific_Job_Types__c: contractor.Limited_To_Specific_Job_Types__c,
+                Other_Restrictions__c: contractor.Other_Restrictions__c,
+                showTimeLimitedSection: contractor.showTimeLimitedSection,
+                showRestrictionsSection: contractor.showRestrictionsSection
+            };
             this.isRightToWorkModalOpen = true;
             this.uploadSectionName = 'Right To Work Check';
             this.sectionTitle = 'Right To Work';
@@ -903,6 +956,8 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                         this.selectedContractor['FrontDoc'] = result.Front;
                         this.selectedContractor['BackDoc'] = result.Back;
                         this.selectedContractor['CheckDoc'] = result.Check;
+                        this.hasShareCodeFile = !!result.Check
+                        this.isExtraFieldEditable = !!result.Check
                         this.selectedContractor['CheckDocName'] = result.CheckFileName;
                     }
                     else {
@@ -1230,8 +1285,9 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         let expiryDate = new Date(dlandRTWExpiryDate);
         let currentDate = new Date();
         let timeDiff = expiryDate - currentDate;
+        
         let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-
+    
 
         if (daysDiff < 0) {
             return 'expired';
@@ -1261,9 +1317,29 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         this.visibleNewContractorModal = false;
     }
     cancelModule() {
-        this.closeModal();
+        if (this.isRightToWorkModalOpen && Object.keys(this.originalContractorData).length > 0) {
+        const contractorIndex = this.selectedContractor?.currentClickIndex;
+        
+        if (contractorIndex !== undefined) {
+            Object.keys(this.originalContractorData).forEach(key => {
+                if (this.selectedContractor) {
+                    this.selectedContractor[key] = this.originalContractorData[key];
+                }
+                if (this.data[contractorIndex]) {
+                    this.data[contractorIndex][key] = this.originalContractorData[key];
+                }
+            });
+            
+            this.showTimeLimitedSection = this.originalContractorData.showTimeLimitedSection || false;
+            this.showRestrictionsSection = this.originalContractorData.showRestrictionsSection || false;
+        }
     }
+    
+    this.originalContractorData = {};
+    this.closeModal();
+}
     closeModal(event) {
+        
         this.selectedContractor = {};
         this.visibleNewContractorModal = false;
         this.visibleUploadSection = false;
@@ -1310,7 +1386,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         this.fileErrorMessage = false;
         this.rightToWorkNotShowVerified = true;
         this.drivingLicenseNotShowVerified = true;
-
+    
     }
 
     handleRecordMenuClick(event) {
@@ -1436,6 +1512,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
      * Handle selection of Continuous Right to Work
      */
     handleSelectContinuousRTW() {
+        this.rightToWorkNotShowVerified = true;
         const contractorIndex = this.selectedContractor.currentClickIndex;
 
         // Update both selectedContractor and data array
@@ -1477,6 +1554,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
      * Handle selection of Time-Limited Right to Work
      */
     handleSelectTimeLimitedRTW() {
+        this.rightToWorkNotShowVerified = true;
         const contractorIndex = this.selectedContractor.currentClickIndex;
 
         // Update both selectedContractor and data array
@@ -1638,6 +1716,51 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         this.fileErrorMessage = '';
     }
 
+    handleDownload(event) {
+    const docType = event.target.dataset.doctype;
+    const accountId = event.target.dataset.selectedId;
+    const citizenship = this.selectedContractor.Citizenship_Immigration_status__c;
+    const rtwDocument = this.selectedContractor.Right_to_work_document__c;
+    let validData = false;
+    let requiredDocCount = 1;
+
+    if (citizenship && this.allowedRTWOptions?.[citizenship]) {
+        const selectedOption = this.allowedRTWOptions[citizenship]?.find(opt => opt.value === rtwDocument);
+        if (selectedOption?.documentType?.length) requiredDocCount = selectedOption.documentType.length;
+    }
+    if (docType === 'GConnect RTW') {
+        if (requiredDocCount === 1 && this.selectedContractor.FrontDoc) {
+            validData = true;
+        } 
+        else if (requiredDocCount === 2 && this.selectedContractor.FrontDoc && this.selectedContractor.BackDoc)
+        {
+            validData = true;
+        } 
+        else if ((this.selectedContractor.Access_Code__c && this.selectedContractor.Biometric_Evidence__c === 'No')|| this.selectedContractor.Share_Code__c) {
+            validData = true;
+        }
+    }
+    if (validData) {
+        createRTWandDLDocument({ accountId: accountId, documentType: docType })
+        .then(result => {
+            let vfPageName, fileType;
+            if (docType === 'GConnect RTW') { vfPageName = 'RightToWorkEvidence'; fileType = '_RTW_Evidence'; }
+            else if (docType === 'GConnect DL') { vfPageName = 'DrivingLicenceEvidence'; fileType = '_DL_Evidence'; }
+            const firstName = this.selectedContractor.First_Name__c;
+            const lastName = this.selectedContractor.Last_Name__c;
+            const filename = `${firstName}_${lastName}${fileType}.pdf`;
+            const link = document.createElement('a');
+            link.href = this.MC_Site_URL + '/apex/' + vfPageName + '?id=' + accountId;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(error => { console.error("Error generating document: ", error); });
+    }
+}
+
+
     handleDLEditClick(event) {
         let previousHideDLValidateContent = this.hideDLValidateContent;
         this.hideDLValidateButton = !this.hideDLValidateButton;
@@ -1705,7 +1828,6 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
     clickFrontBackUpload(event) {
         // new UI RTW
-        console.log('SelectedCOntractor', this.selectedContractor);
         const citizenType = this.selectedContractor.Citizenship_Immigration_status__c;
         const selectedDocValue = this.selectedContractor.Right_to_work_document__c;
 
@@ -1725,8 +1847,6 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
             }
         }
 
-        console.log('Document Count:', documentCount);
-        console.log('Document Names:', this.documentNames);
 
         if (this.selectedOption == 'DL') {
             this.showFrontBackRadioBtn = true;
@@ -1755,7 +1875,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
     }
 
     // new Enable edit functionality for the after the file is uploaded it will show new fields
-    @track isExtraFieldEditable = false;
+    
     handleSaveFiles(event) {
         const childComp = this.template.querySelector('c-image-capture');
         if (childComp) {
@@ -1772,6 +1892,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                             this.isExtraFieldEditable = true;
                         } else {
                             this.selectedContractor.FrontDoc = this.frontDocFiles[0].preview;
+                            this.isExtraFieldEditable = false;
                         }
                     }
 
@@ -1809,8 +1930,26 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
     }
 
     rejectHandler(event) {
-
         if (event.target.name === 'RTWReject') {
+            // Restore original values when canceling
+            if (this.selectedContractor && Object.keys(this.originalContractorData).length > 0) {
+                const contractorIndex = this.selectedContractor.currentClickIndex;
+                
+                // Restore values in both selectedContractor and data array
+                Object.keys(this.originalContractorData).forEach(key => {
+                    this.selectedContractor[key] = this.originalContractorData[key];
+                    if (this.data[contractorIndex]) {
+                        this.data[contractorIndex][key] = this.originalContractorData[key];
+                    }
+                });
+                
+                // Reset section visibility flags
+                this.showTimeLimitedSection = this.originalContractorData.showTimeLimitedSection || false;
+                this.showRestrictionsSection = this.originalContractorData.showRestrictionsSection || false;
+            }
+            
+            // Clear stored data
+            this.originalContractorData = {};
             this.closeModal();
             this.isRightToWorkModalOpen = false;
         }
@@ -1819,9 +1958,8 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
             this.closeModal();
             this.isDrivingLicenseModelOpen = false;
         }
-
-
     }
+
 
     handleDLVerifiedCheck(event) {
         this.isDLVerfiedCheck = !this.isDLVerfiedCheck;
@@ -1916,6 +2054,12 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                 }
             }
             if (targetName === 'RTWValidate' && this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == false && updateType == 'validate' && this.verifiedRTWName != null) {
+                
+                if (this.selectedContractor.hasShareCode == true && this.hasShareCodeFile == false) {
+                    this.showRTWCheckError = true;
+                    return;
+                }
+                
                 this.selectedContractor['is_Right_to_Work_Verify__c'] = true;
                 this.data[this.selectedContractor.currentClickIndex].is_Right_to_Work_Verify__c = true;
                 this.data[this.selectedContractor.currentClickIndex].RTW_Verified_by__c = this.verifiedRTWName;
@@ -1950,6 +2094,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                 }
             }
         }
+
 
         if (targetName === 'drivingValidate' && (this.isDLVerfiedCheck == false || this.verifiedDLName == null)) {
             this.showDLValidateError = true;
@@ -2214,7 +2359,100 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
             let changedFields = { Id: this.data[this.selectedContractor.currentClickIndex].Id };
             if (this.selectedOption == 'RTW') {
+                // ===== VALIDATION 3: SHARE CODE VALIDATIONS =====
+                    if (this.selectedContractor.hasShareCode) {
+                        
+                        // 3a. Type of eVisa required
+                        if (!this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c) {
+                            this.showToast('Error', 'Please select Type of e-Visa.', 'error');
+                            return;
+                        }
 
+                        // 3b. TIME-LIMITED SPECIFIC VALIDATIONS
+                        if (this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c === 'Time-limited right to work') {
+                            
+                            // Permission Expiry Date - Required
+                            if (!this.data[this.selectedContractor.currentClickIndex].Permission_Expiry_Date__c) {
+                                this.showToast('Error', 'Permission Expiry Date is required for Time-limited right to work.', 'error');
+                                return;
+                            }
+
+                            // Any Work Restrictions - Required
+                            if (!this.data[this.selectedContractor.currentClickIndex].Any_work_restrictions__c) {
+                                this.showToast('Error', 'Please select if there are any work restrictions (Yes or No).', 'error');
+                                return;
+                            }
+
+                            // 3c. RESTRICTIONS DETAILS (if Yes selected)
+                            if (this.data[this.selectedContractor.currentClickIndex].Any_work_restrictions__c === 'Yes') {
+                                
+                                const hasLimitedHours = 
+                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c && 
+                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c.toString().trim() !== '';
+                                
+                                const hasJobTypes = 
+                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_Specific_Job_Types__c && 
+                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_Specific_Job_Types__c.trim() !== '';
+                                
+                                const hasOtherRestrictions = 
+                                    this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c && 
+                                    this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c.trim() !== '';
+
+                                // At least ONE restriction field must be filled
+                                // if (!hasLimitedHours && !hasJobTypes && !hasOtherRestrictions) {
+                                //     this.showToast(
+                                //         'Error', 
+                                //         'Please provide at least one work restriction detail (Limited Hours, Job Types, or Other Restrictions).', 
+                                //         'error'
+                                //     );
+                                //     return;
+                                // }
+                                if (!hasLimitedHours) {
+                                    this.showToast(
+                                        'Error', 
+                                        'Limited To X Hours Per Week is required when work restrictions are present.', 
+                                        'error'
+                                    );
+                                    return;
+                                }
+                                // Validate hours if provided
+                                if (hasLimitedHours) {
+                                    const hours = this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c;
+                                    const hoursNumber = Number(hours);
+                                    
+                                    if (isNaN(hoursNumber)) {
+                                        this.showToast('Error', 'Please enter a valid number for hours per week.', 'error');
+                                        return;
+                                    }
+                                    
+                                    if (hoursNumber < 0 || hoursNumber > 168) {
+                                        this.showToast('Error', 'Hours per week must be between 0 and 168.', 'error');
+                                        return;
+                                    }
+                                }
+                                // VALIDATION 3: Job Types - REQUIRED
+                                if (!hasJobTypes) {
+                                    this.showToast(
+                                        'Error', 
+                                        'Limited To Specific Job Types is required when work restrictions are present.', 
+                                        'error'
+                                    );
+                                    return;
+                                }
+
+                                // VALIDATION 4: Other Restrictions - REQUIRED
+                                if (!hasOtherRestrictions) {
+                                    this.showToast(
+                                        'Error', 
+                                        'Other Restrictions field is required when work restrictions are present.', 
+                                        'error'
+                                    );
+                                    return;
+                                }
+                               
+                            }
+                        }
+                    }
                 if ((this.isRTWVerfiedCheck == false || this.verifiedRTWName == null)) {
                     this.showValidateError = true;
                     return;
@@ -2228,9 +2466,13 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                     if (this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && this.verifiedRTWName == null) {
                         this.isRightToWorkModalOpen = false;
                     }
-                    //  SHARE CODE SCENARIO (hasShareCode = true)
+                    
                     if (this.selectedContractor.hasShareCode == true && this.isRTWVerfiedCheck == true && this.verifiedRTWName != null) {
 
+                        if (this.selectedContractor.hasShareCode == true && this.hasShareCodeFile == false && this.frontDocFiles.length == 0){
+                            this.fileErrorMessage = true;
+                            return;
+                        }
                         // Upload files if new files were added
                         if (this.fileErrorMessage == false && this.frontDocFiles.length > 0) {
                             await this.uploadAllFiles();
@@ -2273,7 +2515,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                             Other_Restrictions__c: this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c
                         };
 
-                        console.log('Saving Share Code RTW Data:', changedFields);
+
                     }
                     if (this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && this.verifiedRTWName != null) {
 
@@ -2475,14 +2717,23 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                 }
 
             }
-            console.log('Saving Share Code RTW Data:', changedFields);
             if (updateProceed) {
                 await this.callUpdateAccountClient(changedFields);
             }
 
         }
     }
-
+    showToast(title, message, variant) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: variant,
+                // mode: variant === 'error' ? 'sticky' : 'dismissable'
+                mode: variant === 'error' 
+            })
+        );
+    }
     uploadAllFiles() {
         this.uploadFiles = [...this.frontDocFiles, ...this.backDocFiles];
         this.backDocFiles = [];
@@ -2495,7 +2746,6 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
 
         try {
             for (const file of this.uploadFiles) {
-                console.log(file);
                 let fileDocName;
                 if ((this.selectedContractor.hasAccessCode || this.selectedContractor.hasShareCode) && this.selectedOption == 'RTW') {
                     fileDocName = this.selectedContractor.Client_Name__c + '_' + this.selectedOption + ' ' + 'Check';
