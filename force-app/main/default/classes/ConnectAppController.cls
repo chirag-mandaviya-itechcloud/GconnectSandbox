@@ -561,191 +561,58 @@ global without sharing class ConnectAppController {
         public String bankWithName{get;set;}
     }
 
-    // @AuraEnabled
-    // public static void sendVerificationLinkEmail(String applicationId) {
-    //     try {
-    //         Application__c app = [SELECT Id, Email__c, First_Name__c, Last_Name__c, Access_Code__c, Share_Code__c, SubContractor_URL__c, Verification_URL__c  FROM Application__c WHERE Id = :applicationId LIMIT 1];
-    //         if(app != null) {
-    //             // get email template
-    //             EmailTemplate et;
-    //             if (app.Access_Code__c != null || app.Share_Code__c != null) {
-    //                 et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_Non_UK_verification' limit 1];
-    //             } else {
-    //                 et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_UK_Irish_verification' limit 1];
-    //             }
+   @AuraEnabled
+    public static void sendVerificationLinkEmail(String applicationId) {
+        try {
 
-    //             OrgWideEmailAddress[] owea = [SELECT Id,Address FROM OrgWideEmailAddress WHERE displayName =: label.noReplyOrgWideEmail];
-    //             List<Contact> lstContact=[select id from contact limit 1];
-    //             List<Messaging.SingleEmailMessage> mailList = new List<Messaging.SingleEmailMessage>();
+            Application__c app = [ SELECT Id, Email__c, Access_Code__c, Share_Code__c FROM Application__c WHERE Id = :applicationId LIMIT 1 ];
 
-    //             if (String.isNotBlank(app.Email__c) && String.isNotBlank(app.SubContractor_URL__c) && !lstContact.isEmpty() && String.isNotBlank(app.Verification_URL__c)) {
-    //                 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-    //                 if (owea.size() > 0) {
-    //                     mail.setOrgWideEmailAddressId(owea.get(0).Id);
-    //                 }
-    //                 mail.setToAddresses(new String[]{app.Email__c});
-    //                 mail.setTemplateId(et.Id);
-    //                 mail.setTargetObjectId(lstContact[0].Id);
-    //                 mail.setWhatId(app.Id);
-    //                 mail.setTreatTargetObjectAsRecipient(false);
-    //                 mailList.add(mail);
-    //             } else{
-    //                 System.debug('Error: Email Not found');
-    //             }
-                
-    //             Boolean emailSent = false;
+            EmailTemplate et;
 
+            if (app.Access_Code__c != null || app.Share_Code__c != null) {
+                et = [ SELECT Id FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_Non_UK_verification' LIMIT 1 ];
+            } else {
+                et = [
+                    SELECT Id FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_UK_Irish_verification' LIMIT 1 ];
+            }
 
-    //             if (!mailList.isEmpty()) {
-    //                 List<Messaging.SendEmailResult> sendResults = Messaging.sendEmail(mailList);
-    //                 for (Messaging.SendEmailResult result : sendResults) {
-    //                     if (result.isSuccess()) {
-    //                         emailSent = true;
-    //                     } else {
-    //                         System.debug('Failed to send email: ' + result.getErrors()[0].getMessage());
-    //                     }
-    //                 }
-    //                 if (emailSent) {
-    //                 update new Application__c(
-    //                     Id = app.Id,
-    //                     RTW_Requested__c = true
-    //                 );
-    //             }
-    //             } else {
-    //                 System.debug('No emails to send.');
-    //             }
-    //         }
-    //     } catch(Exception e) {
-    //         System.debug('Error sending verification email: ' + e.getMessage());
-    //         throw new AuraHandledException('Failed to send verification email: ' + e.getMessage());
-    //     }
-    // }
-    @AuraEnabled
-public static void sendVerificationLinkEmail(String recordId) {
-    try {
-
-        Application__c app;
-
-        // Detect if recordId is Application or Account
-        if (recordId.startsWith('a0')) { // Application__c Id prefix (example)
-            
-            app = [
-                SELECT Id, Email__c, First_Name__c, Last_Name__c,
-                       Access_Code__c, Share_Code__c,
-                       SubContractor_URL__c, Verification_URL__c,
-                       Gconnect_Account__c
-                FROM Application__c
-                WHERE Id = :recordId
+            OrgWideEmailAddress owea = [
+                SELECT Id
+                FROM OrgWideEmailAddress
+                WHERE DisplayName = :Label.noReplyOrgWideEmail
                 LIMIT 1
             ];
 
-        } else if (recordId.startsWith('001')) { // Account Id prefix
+            Messaging.SingleEmailMessage renderedEmail =
+                Messaging.renderStoredEmailTemplate(
+                    et.Id,
+                    null,          
+                    app.Id
+                );
 
-            app = [
-                SELECT Id, Email__c, First_Name__c, Last_Name__c,
-                       Access_Code__c, Share_Code__c,
-                       SubContractor_URL__c, Verification_URL__c,
-                       Gconnect_Account__c
-                FROM Application__c
-                WHERE Gconnect_Account__c = :recordId
-                LIMIT 1
-            ];
-        }
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
-
-        if (app == null) {
-            throw new AuraHandledException('No Application found.');
-        }
-
-
-        // Select Email Template
-        EmailTemplate et;
-
-        if (app.Access_Code__c != null || app.Share_Code__c != null) {
-
-            et = [
-                SELECT Id, HtmlValue, Subject
-                FROM EmailTemplate
-                WHERE DeveloperName = 'Sub_Contractor_Non_UK_verification'
-                LIMIT 1
-            ];
-
-        } else {
-
-            et = [
-                SELECT Id, HtmlValue, Subject
-                FROM EmailTemplate
-                WHERE DeveloperName = 'Sub_Contractor_UK_Irish_verification'
-                LIMIT 1
-            ];
-        }
-
-
-        // Org Wide Email
-        OrgWideEmailAddress owea = [
-            SELECT Id
-            FROM OrgWideEmailAddress
-            WHERE DisplayName = :Label.noReplyOrgWideEmail
-            LIMIT 1
-        ];
-
-
-        // Dummy Contact (Required for Template)
-        Contact con = [
-            SELECT Id
-            FROM Contact
-            LIMIT 1
-        ];
-
-
-        if (String.isBlank(app.Email__c) ||
-            String.isBlank(app.SubContractor_URL__c) ||
-            String.isBlank(app.Verification_URL__c)) {
-
-            throw new AuraHandledException('Required email data missing.');
-        }
-
-
-        // Create Email
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-
-        mail.setToAddresses(new String[]{app.Email__c});
-        mail.setTemplateId(et.Id);
-        mail.setTargetObjectId(con.Id);
-        mail.setWhatId(app.Id);
-        mail.setTreatTargetObjectAsRecipient(false);
-
-        if (owea != null) {
+            mail.setToAddresses(new String[]{app.Email__c});
+            mail.setSubject(renderedEmail.getSubject());
+            mail.setHtmlBody(renderedEmail.getHtmlBody());
             mail.setOrgWideEmailAddressId(owea.Id);
-        }
+            mail.setSaveAsActivity(false);
 
+            Messaging.SendEmailResult[] results =
+                Messaging.sendEmail(new Messaging.SingleEmailMessage[]{mail});
 
-        // Send Email
-        Messaging.SendEmailResult result =
-            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{mail})[0];
+            if (results[0].isSuccess()) {
+                update new Application__c(
+                    Id = app.Id,
+                    RTW_Requested__c = true
+                );
+            }
 
-
-        if (result.isSuccess()) {
-
-            // Update Application
-            update new Application__c(
-                Id = app.Id,
-                RTW_Requested__c = true
+        } catch(Exception e) {
+            throw new AuraHandledException(
+                'Failed to send verification email: ' + e.getMessage()
             );
-
-        } else {
-
-            throw new AuraHandledException(result.getErrors()[0].getMessage());
-
         }
-
-    } catch (Exception e) {
-
-        System.debug('Error sending verification email: ' + e.getMessage());
-
-        throw new AuraHandledException(
-            'Failed to send verification email: ' + e.getMessage()
-        );
     }
-}
+    
 }
