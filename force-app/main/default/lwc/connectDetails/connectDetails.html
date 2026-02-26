@@ -340,9 +340,11 @@
                </div>
                <div
                   class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
-                  <lightning-input label="Points on Licence" type="text" name="pointOfLicense"
-                     onchange={onChangeLicenseDetails} value={pointOfLicense} class=pointOfLicense
-                     placeholder="Add points here"></lightning-input>
+                  <lightning-input label="Licence Issue Date"
+                     message-when-value-missing="Please add Issue Date" required="true"
+                     placeholder="DD/MM/YYYY" date-style="short" type="date" name="licenseIssueDate"
+                     class="licenseIssueDate" onchange={onChangeLicenseDetails} max={maxDate}
+                     value={licenseIssueDate}></lightning-input>
                </div>
                <div
                   class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
@@ -354,11 +356,9 @@
                </div>
                <div
                   class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_12-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
-                  <lightning-input label="Licence Issue Date"
-                     message-when-value-missing="Please add Issue Date" required="true"
-                     placeholder="DD/MM/YYYY" date-style="short" type="date" name="licenseIssueDate"
-                     class="licenseIssueDate" onchange={onChangeLicenseDetails} max={maxDate}
-                     value={licenseIssueDate}></lightning-input>
+                  <lightning-input label="Points on Licence" type="text" name="pointOfLicense"
+                     onchange={onChangeLicenseDetails} value={pointOfLicense} class=pointOfLicense
+                     placeholder="Add points here"></lightning-input>
                </div>
                <div
                   class="slds-col slds-large-size_12-of-12 slds-medium-size_12-of-12 slds-size_12-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
@@ -554,7 +554,6 @@
          </div>
       </div>
    </template> -->
-  <!-- 7. New RTW details -->
    <!-- 7. Right To Work -->
    <template if:true={confirmForm64Page}>
       <div class="connect-v2" style="padding-top: 35px; padding-bottom: 20px;">
@@ -686,17 +685,6 @@
                               </div>
                         </div>
 
-                        <!-- <div style="margin-top: 16px;">
-                              <input type="text" 
-                                    name="shareCode" 
-                                    class="shareCode"
-                                    value={shareCode}
-                                    onchange={onChangeForm64Details}
-                                    placeholder="W12345678"
-                                    maxlength="9"
-                                    required
-                                    style="width: 100%; padding: 12px; border: 1.5px solid #E2E6ED; border-radius: 8px; font-size: 15px; text-transform: uppercase; font-family: inherit;" />
-                        </div> -->
                         <div style="margin-top: 16px;">
                            <div class="share-code-input-wrapper">
                               <div class="share-code-prefix">W</div>
@@ -716,21 +704,6 @@
                   </div>
             </template>
 
-            <!-- NAVIGATION -->
-               <!-- <div class="slds-grid slds-wrap">
-                        <div
-                           class="editbtn slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
-                           <div style="display: flex;justify-content: center;">
-                              <button class="editButton" onclick={callBackButton} name="rtw">Back</button>
-                           </div>
-                        </div>
-                        <div
-                           class="confirmbtn slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12 slds-p-horizontal_medium slds-p-vertical_x-small">
-                           <div style="display: flex;justify-content: center;">
-                              <button onclick={callConfirmForm64} class="confirmButton">Next</button>
-                           </div>
-                        </div>
-               </div> -->
 
                <div class="slds-grid slds-wrap" style="gap: inherit;">
                      <div
@@ -838,13 +811,11 @@
          </div>
       </template>
    </template> -->
-   <!-- ════════════════════════════════════════════════════════
-     MAIN COMPONENT TEMPLATE
-     Add this block where your confirmRTWUploadPage sits.
-     Back + Next buttons live here in the parent.
-════════════════════════════════════════════════════════ -->
 
-   <!-- RTW UPLOAD SCREEN -->
+   
+    
+
+   <!-- NEW RTW UPLOAD SCREEN -->
    <template if:true={confirmRTWUploadPage}>
       <div class="connect-v2">
          <div class="main" style="display: block;">

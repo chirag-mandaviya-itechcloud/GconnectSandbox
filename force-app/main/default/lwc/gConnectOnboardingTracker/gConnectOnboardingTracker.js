@@ -11,6 +11,7 @@ import saveUplodededFiles from '@salesforce/apex/ImageUploaderController.saveUpl
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getMultiplePicklistValues from '@salesforce/apex/ConnectAppController.getMultiplePicklistValues';
 import createRTWandDLDocument from '@salesforce/apex/AccountMainContractorController.createRTWandDLDocument';
+import sendVerificationLinkEmail from '@salesforce/apex/ConnectAppController.sendVerificationLinkEmail';
 
 
 import MC_Site_URL from '@salesforce/label/c.MC_Site_URL';
@@ -2425,8 +2426,27 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                     if (this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c === 'Time-limited right to work') {
 
                         // Permission Expiry Date - Required
-                        if (!this.data[this.selectedContractor.currentClickIndex].Permission_Expiry_Date__c) {
+                        // if (!this.data[this.selectedContractor.currentClickIndex].Permission_Expiry_Date__c) {
+                        //     this.showToast('Error', 'Permission Expiry Date is required for Time-limited right to work.', 'error');
+                        //     return;
+                        // }
+                        const expiryDate = this.data[this.selectedContractor.currentClickIndex].Permission_Expiry_Date__c;
+
+                        // Required validation
+                        if (!expiryDate) {
                             this.showToast('Error', 'Permission Expiry Date is required for Time-limited right to work.', 'error');
+                            return;
+                        }
+
+                        // Past date validation
+                        const today = new Date().toISOString().split('T')[0];
+
+                        if (expiryDate < today) {
+                            this.showToast(
+                                'Error',
+                                'Past date is not allowed.',
+                                'error'
+                            );
                             return;
                         }
 

@@ -1959,6 +1959,16 @@
                                                             <div
                                                                 class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
                                                                 <div class="contractor-field">
+                                                                    
+
+                                                                    <template if:true={recordData.hasAccessCode}>
+                                                                        <div class="field-title">Access Code</div>
+                                                                        <div> {recordData.Access_Code__c}</div>
+                                                                    </template>
+                                                                   
+
+                                                                </div>
+                                                                <div class="contractor-field">
                                                                     <div class="field-title">Settled Status</div>
 
                                                                     <template if:true={recordData.hasSettledStatus}>

@@ -1388,6 +1388,14 @@ export default class GConnectDriverProfile extends LightningElement {
     handleDownload(event) {
         const docType = event.target.dataset.doctype;
         const accountId = this.recordId;
+        const citizenship = this.recordData.Citizenship_Immigration_status__c;
+        const rtwDocument = this.recordData.Right_to_work_document__c;
+        let requiredDocCount = 1;
+
+        if (citizenship && this.allowedRTWOptions?.[citizenship]) {
+            const selectedOption = this.allowedRTWOptions[citizenship]?.find(opt => opt.value === rtwDocument);
+            if (selectedOption?.documentType?.length) requiredDocCount = selectedOption.documentType.length;
+        }
         let validData = false;
         if (docType == 'GConnect DL') {
 
@@ -1397,19 +1405,16 @@ export default class GConnectDriverProfile extends LightningElement {
                 this.errorMessage = 'No Driving Licence Document available for this SubContractor';
                 this.showError = true;
             }
-        } else if (docType == 'GConnect RTW') {
-
-            if (this.recordData.Citizenship_Immigration_status__c && this.hasFrontRTWImage) {
+        } else if (docType === 'GConnect RTW') {
+            if (requiredDocCount === 1 && this.recordData.FrontDoc) {
                 validData = true;
-
-            } else if (this.recordData.Access_Code__c && this.recordData.Biometric_Evidence__c === 'No') {
-                validData = true;
-
-            } else {
-                this.errorMessage = 'No Right to Work Document available for this SubContractor';
-                this.showError = true;
             }
-
+            else if (requiredDocCount === 2 && this.recordData.FrontDoc && this.recordData.BackDoc) {
+                validData = true;
+            }
+            else if ((this.recordData.Access_Code__c && this.recordData.Biometric_Evidence__c === 'No') || this.recordData.Share_Code__c) {
+                validData = true;
+            }
         }
 
 
@@ -2323,11 +2328,12 @@ export default class GConnectDriverProfile extends LightningElement {
                 );
                 return;
             }
+            if(!this.recordData.Type_of_e_visa__c){
+                this.showToast('Error', 'Please Select Type of E Visa.', 'error');
+                return;
+            }
         }
-        if(!this.recordData.Type_of_e_visa__c){
-            this.showToast('Error', 'Please Select Type of E Visa.', 'error');
-            return;
-        }
+      
         if (this.recordData.hasShareCode && this.recordData.Type_of_e_visa__c === 'Time-limited right to work') {
             console.log('permissoin--->>> ', this.recordData.Permission_Expiry_Date__c)
             // if (!this.recordData.Permission_Expiry_Date__c) {
