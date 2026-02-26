@@ -406,7 +406,7 @@ global without sharing class ConnectAppController {
 
                 if(!accountIds.isEmpty()) {
                     List<Account> accountsToUpdate = [SELECT Id, Citizenship_Immigration_status__c, Right_to_work_document__c, Settled_Status__c,
-                                                        Date_of_Entry__c, RTW_Expiry_Date__c, Access_Code__c, Share_Code__c, Biometric_Evidence__c, RTW_Verified_by__c, Any_work_restrictions__c, 
+                                                        Date_of_Entry__c, RTW_Expiry_Date__c, Access_Code__c, Share_Code__c, Biometric_Evidence__c, RTW_Verified_by__c, Any_work_restrictions__c, DL_Requested__c, RTW_Requested__c,
                                                         Permission_Expiry_Date__c, Limited_To_X_Hours_Per_Week__c, Limited_To_Specific_Job_Types__c, Other_Restrictions__c, Type_of_e_visa__c, is_Right_to_Work_Verify__c,
                                                         Driving_Licence_Number__c, Points_on_Licence__c, Driving_Licence_Expiry_Date__c, Type_of_Licence__c,
                                                         Additional_Licence_Categories__c, Driving_Licence_Issue_Date__c FROM Account WHERE Id IN :accountIds];
@@ -440,6 +440,14 @@ global without sharing class ConnectAppController {
                                 acc.Type_of_Licence__c = app.Type_of_licence__c;
                                 acc.Additional_Licence_Categories__c = app.Additional_licence_categories__c;
                                 acc.Driving_Licence_Issue_Date__c = app.Driving_Licence_Issue_Date__c;
+
+                                if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'DL Upload'){
+                                    acc.DL_Requested__c = false;
+                                }
+
+                                if(detailsWrapper.fromVerification == true && (detailsWrapper.lastConfirmStage == 'RTW Upload' || detailsWrapper.confirmRightToWorkDetails?.hasShareCode == true )){
+                                    acc.RTW_Requested__c = false;
+                                }
 
                                 accountUpdates.add(acc);
                                 break;
@@ -586,7 +594,7 @@ global without sharing class ConnectAppController {
             Messaging.SingleEmailMessage renderedEmail =
                 Messaging.renderStoredEmailTemplate(
                     et.Id,
-                    null,          
+                    null,
                     app.Id
                 );
 
@@ -614,5 +622,5 @@ global without sharing class ConnectAppController {
             );
         }
     }
-    
+
 }
