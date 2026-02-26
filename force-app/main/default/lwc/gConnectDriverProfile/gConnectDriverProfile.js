@@ -1932,6 +1932,9 @@ export default class GConnectDriverProfile extends LightningElement {
                 this.hasFrontRTWImage = true;
                 this.hasCompletedImageforShareCode = true;
             }
+            if(this.recordData.hasShareCode){
+                this.hasCompletedImageforShareCode = true;
+            }
             this.imagesAvailable = true;
             this.imagesNotAvailable = false;
 
@@ -2246,9 +2249,7 @@ export default class GConnectDriverProfile extends LightningElement {
     }
 
     async handleSaveRTW() {
-        const isBritish =
-            this.recordData.Citizenship_Immigration_status__c ===
-            'British passport/UK National';
+        const isBritish = this.recordData.Citizenship_Immigration_status__c === 'British passport/UK National';
         if (this.showRTWExpiryDate && this.expiryDate) {
             const selectedDate = new Date(this.expiryDate);
             selectedDate.setHours(0, 0, 0, 0);
@@ -2277,8 +2278,7 @@ export default class GConnectDriverProfile extends LightningElement {
                 documentTypeList = match.documentType;
             }
         }
-        // expose to component state if needed elsewhere
-        // this.selectedRTWDocumentTypes = documentTypeList;
+
 
         let updateData = {
             Id: this.recordId,
@@ -2308,7 +2308,24 @@ export default class GConnectDriverProfile extends LightningElement {
         }
 
         console.log('hasShareCode:', this.recordData.hasShareCode);
+    
+        if (this.recordData.hasShareCode) {
 
+            const checkImageMissing = !this.hasRTWCheckImage && !this.tempFrontFiles.length;
+
+            if (checkImageMissing) {
+                this.showToast(
+                    'Error',
+                    'Please upload the Right to Work Check image before saving.',
+                    'error'
+                );
+                return;
+            }
+        }
+        if(!this.recordData.Type_of_e_visa__c){
+            this.showToast('Error', 'Please Select Type of E Visa.', 'error');
+            return;
+        }
         if (this.recordData.hasShareCode && this.recordData.Type_of_e_visa__c === 'Time-limited right to work') {
             console.log('permissoin--->>> ', this.recordData.Permission_Expiry_Date__c)
             if (!this.recordData.Permission_Expiry_Date__c) {
@@ -2415,37 +2432,36 @@ export default class GConnectDriverProfile extends LightningElement {
             this.imageLoading = false;
         }
     }
-    // handleRequestNewEvidence(event) {
+    handleRequestNewEvidence(event) {
 
-    //     const recordId = event.target.dataset.selectedId;
 
-    //     sendVerificationLinkEmail({ applicationId: recordId })
-    //         .then(() => {
-    //             this.dispatchEvent(
-    //                 new ShowToastEvent({
-    //                     title: 'Success',
-    //                     message: 'Verification email sent successfully.',
-    //                     variant: 'success'
-    //                 })
-    //             );
+        sendVerificationLinkEmail({ applicationId: this.recordId })
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Verification email sent successfully.',
+                        variant: 'success'
+                    })
+                );
 
-    //         })
-    //         .catch(error => {
-    //             let errorMessage = 'Error sending verification email';
-    //             if (error?.body?.message) {
-    //                 errorMessage = error.body.message;
-    //             }
-    //             this.dispatchEvent(
-    //                 new ShowToastEvent({
-    //                     title: 'Error',
-    //                     message: errorMessage,
-    //                     variant: 'error'
-    //                 })
-    //             );
+            })
+            .catch(error => {
+                let errorMessage = 'Error sending verification email';
+                if (error?.body?.message) {
+                    errorMessage = error.body.message;
+                }
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: errorMessage,
+                        variant: 'error'
+                    })
+                );
 
-    //             console.error(error);
-    //         });
-    // }
+                console.error(error);
+            });
+    }
 
     handleRTWCancel() {
         this.rtwEditOpen = false;

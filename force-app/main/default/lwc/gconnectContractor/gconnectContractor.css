@@ -1030,3 +1030,13 @@ lightning-textarea {
 .btn:hover {
     filter: brightness(0.95);
 }
+.btn-request {
+    padding: 6px 16px;
+    border: 1px solid #d4a574;
+    border-radius: 6px;
+    background: #fef9f2;
+    font-size: 14px;
+    color: #8b6914;
+    cursor: pointer;
+    font-weight: 500;
+}

@@ -20,6 +20,7 @@ import { CurrentPageReference } from 'lightning/navigation';
 
 import HEADER_ICONS from '@salesforce/resourceUrl/Header_Icons';
 import getMultiplePicklistValues from '@salesforce/apex/ConnectAppController.getMultiplePicklistValues';
+import sendVerificationLinkEmail from '@salesforce/apex/ConnectAppController.sendVerificationLinkEmail';
 
 export default class GconnectContractor extends NavigationMixin(LightningElement) {
 
@@ -2012,6 +2013,38 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.fileErrorMessage = '';
     }
 
+    handleRequestNewEvidence(event) {
+
+        const recordId = event.target.dataset.selectedId;
+
+        sendVerificationLinkEmail({ applicationId: recordId })
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Verification email sent successfully.',
+                        variant: 'success'
+                    })
+                );
+
+            })
+            .catch(error => {
+                let errorMessage = 'Error sending verification email';
+                if (error?.body?.message) {
+                    errorMessage = error.body.message;
+                }
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: errorMessage,
+                        variant: 'error'
+                    })
+                );
+
+                console.error(error);
+            });
+    }
+
     // handleDLEditClick(event){
     //     this.hideDLValidateButton = !this.hideDLValidateButton;
     //     this.drivingLicenseEditOpen = !this.drivingLicenseEditOpen;
@@ -2832,6 +2865,73 @@ export default class GconnectContractor extends NavigationMixin(LightningElement
         this.dlNoDataSectionModal = false;
         this.dispatchEvent(new ShowToastEvent({ title: 'Success', message: 'Data Added Successfully', variant: 'success' }));
 
+    }
+
+    handledownloadRTWfile(event) {
+        const docType = event.target.dataset.doctype;
+        const accountId = this.selectedContractor.Id;
+        console.log('accountId >  OUTPUT : ',accountId);
+        console.log('this.selectedContractor  >> OUTPUT : ',this.selectedContractor);
+        let validData = false;
+        if (docType == 'GConnect DL') {
+
+            // if (this.hasFrontDLImage && this.hasBackDLImage && this.recordData.Driving_Licence_Number__c) {
+            //     validData = true;
+            // } else {
+            //     this.errorMessage = 'No Driving Licence Document available for this SubContractor';
+            //     this.showError = true;
+            // }
+        } else if (docType == 'GConnect RTW') {
+
+            if (this.recordData.Citizenship_Immigration_status__c && this.hasFrontRTWImage) {
+                validData = true;
+
+            } else if (this.recordData.Access_Code__c && this.recordData.Biometric_Evidence__c === 'No') {
+                validData = true;
+
+            } else {
+                this.errorMessage = 'No Right to Work Document available for this SubContractor';
+                this.showError = true;
+            }
+
+        }
+
+
+        /*if (validData) {
+            createRTWandDLDocument({
+                    accountId: accountId,
+                    documentType: docType
+                })
+                .then(result => {
+                    let vfPageName;
+                    let fileType;
+                    if (docType === 'GConnect RTW') {
+                        vfPageName = 'RightToWorkEvidence';
+                        fileType = '_RTW_Evidence';
+                    } else if (docType === 'GConnect DL') {
+                        vfPageName = 'DrivingLicenceEvidence';
+                        fileType = '_DL_Evidence';
+                    }
+                    const firstName = this.recordData.First_Name__c;
+                    const lastName = this.recordData.Last_Name__c;
+                    const filename = `${firstName}_${lastName}_${fileType}.pdf`;
+
+                    const vfUrl = window.location.origin + result;
+
+                    //window.open( this.orgUrl + '/apex/'+ vfPageName + '?id='+ this.recordId);
+
+                    const link = document.createElement('a');
+                    link.href = this.orgUrl + '/apex/' + vfPageName + '?id=' + this.recordId;
+                    link.download = filename; // Set the desired filename
+                    document.body.appendChild(link); // Required for Firefox
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => {
+                    console.error("Error generating document: ", error);
+                });
+
+        }*/
     }
 
     // handleUploadFinished(event){

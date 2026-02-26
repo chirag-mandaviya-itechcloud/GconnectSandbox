@@ -274,6 +274,12 @@ export default class GConnectVerification extends LightningElement {
     @track successPage = false;
     @track alreadySubmittedPage = false;
 
+    @track citizenshipStatuses = [
+        'British passport/UK National',
+        'EU/EEA/Swiss Citizen',
+        'Rest Of The World'
+    ];
+
     rtwData = {
         categories: [
             {
@@ -417,6 +423,7 @@ export default class GConnectVerification extends LightningElement {
 
         this.collectForm64Details.rtwDoc = null;
         this.collectForm64Details.shareCode = null;
+        this.collectForm64Details.hasShareCode = false;
 
         if (category.value === 'Non-UK National') {
             this.isRTWDoc = false;
@@ -450,7 +457,6 @@ export default class GConnectVerification extends LightningElement {
         ];
 
         this.uploadMode = dualDocs.includes(rtwDocValue) ? 'dual' : 'single';
-        console.log('uploadMode →', this.uploadMode);
     }
 
     handleEvidenceClick(event) {
@@ -956,30 +962,35 @@ export default class GConnectVerification extends LightningElement {
                         }
 
 
-                        if (row.Biometric_Evidence__c == 'Yes' || row.Right_to_work_document__c != null) {
-                            this.showFileUploadCombo = true;
-                            if (this.selectedRTWOption == 'British passport') {
-                                this.selectedRTWOption = 'Passport';
-                            } else if (this.selectedRTWOption == 'British Birth or Adoption Certificate') {
-                                this.selectedRTWOption = 'Adoption';
-                            } else if (this.selectedRTWOption == 'Naturalisation') {
-                                this.selectedRTWOption = 'Naturalisation';
-                            } else if (this.selectedRTWOption == 'Work Visa') {
-                                this.selectedRTWOption = 'Visa';
-                            } else if (this.selectedRTWOption == 'Work Permit') {
-                                this.selectedRTWOption = 'Permit';
-                            } else if (this.selectedRTWOption == 'Other') {
-                                this.selectedRTWOption = 'Other';
-                            } else {
-                                this.selectedRTWOption = 'RTW';
-                            }
-                            this.showAccessCode = false;
-                            this.selectedRTWOption = 'Biometric';
-                        } else {
-                            this.showFileUploadCombo = false;
-                            this.showAccessCode = true;
-                        }
+                        // if (row.Biometric_Evidence__c == 'Yes' || row.Right_to_work_document__c != null) {
+                        //     this.showFileUploadCombo = true;
+                        //     if (this.selectedRTWOption == 'British passport') {
+                        //         this.selectedRTWOption = 'Passport';
+                        //     } else if (this.selectedRTWOption == 'British Birth or Adoption Certificate') {
+                        //         this.selectedRTWOption = 'Adoption';
+                        //     } else if (this.selectedRTWOption == 'Naturalisation') {
+                        //         this.selectedRTWOption = 'Naturalisation';
+                        //     } else if (this.selectedRTWOption == 'Work Visa') {
+                        //         this.selectedRTWOption = 'Visa';
+                        //     } else if (this.selectedRTWOption == 'Work Permit') {
+                        //         this.selectedRTWOption = 'Permit';
+                        //     } else if (this.selectedRTWOption == 'Other') {
+                        //         this.selectedRTWOption = 'Other';
+                        //     } else {
+                        //         this.selectedRTWOption = 'RTW';
+                        //     }
+                        //     this.showAccessCode = false;
+                        //     this.selectedRTWOption = 'Biometric';
+                        // } else {
+                        //     this.showFileUploadCombo = false;
+                        //     this.showAccessCode = true;
+                        // }
+                        
                         this.assignUpdatedData(row);
+                        if (this.citizenshipStatuses.includes(row.Citizenship_Immigration_status__c)) {
+                            this.citi_Immi_status = null;
+                        }
+                        
 
 
 
@@ -1203,48 +1214,14 @@ export default class GConnectVerification extends LightningElement {
             this.collectForm64Details.rtwDoc = this.rtwDoc;
         }
 
-        // Validate share code (if applicable)
-        // if (this.showShareCode) {
-        //     const shareCodeInput = this.template.querySelector('input[name="shareCode"]');
-        //     if (shareCodeInput) {
-        //         let value = shareCodeInput.value ? shareCodeInput.value.trim().toUpperCase() : '';
-        //         let errorMessage = '';
-
-        //         const alphaNumericPattern = /^[A-Z0-9]+$/;
-
-        //         if (value.length === 0) {
-        //             errorMessage = 'Share Code is required.';
-        //         }
-        //         else if (!value.startsWith('W')) {
-        //             errorMessage = 'Share Code is invalid. It must start with W.';
-        //         }
-        //         else if (value.length !== 9) {
-        //             errorMessage = 'Share Code must be exactly 9 characters.';
-        //         }
-        //         else if (!alphaNumericPattern.test(value)) {
-        //             errorMessage = 'Share Code must contain letters and numbers only.';
-        //         }
-
-        //         if (errorMessage) {
-        //             this.showToast('Error', errorMessage, 'error');
-        //             return;
-        //         }
-
-        //         this.shareCode = value;
-        //         this.collectForm64Details.shareCode = value;
-        //     }
-        // }
         if (this.showShareCode) {
 
             const value = this.collectForm64Details.shareCode ? this.collectForm64Details.shareCode.trim().toUpperCase() : '';
-
             const alphaNumericPattern = /^[A-Z0-9]{8}$/;
-
             if (!value) {
                 this.showToast('Error', 'Share Code is required.', 'error');
                 return;
             }
-
             if (!alphaNumericPattern.test(value)) {
                 this.showToast('Error', 'Share Code must be exactly 8 letters and numbers.', 'error');
                 return;
@@ -1253,12 +1230,11 @@ export default class GConnectVerification extends LightningElement {
 
             this.shareCode = fullValue;
             this.collectForm64Details.shareCode = fullValue;
+            this.collectForm64Details.hasShareCode = true;
                 
         }
 
         if (allFieldsValid && !this.isRtwDocError) {
-            // Only validate and navigate to the RTW upload page here.
-            // The actual file upload and server update will be performed from the upload page's Next button.
             let shareCode = this.collectForm64Details.shareCode;
 
             if (shareCode) {
@@ -1269,12 +1245,22 @@ export default class GConnectVerification extends LightningElement {
                 }
 
                 this.collectForm64Details.shareCode = shareCode;
+                this.collectForm64Details.hasShareCode = true;
             }
-            console.log(shareCode);
-            this.collectDetails['lastConfirmStage'] = 'Right To Work';
-            this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
 
+            this.collectDetails['lastConfirmStage'] = 'Right To Work';
+            
+            this.collectDetails['confirmRightToWorkDetails'] = this.collectForm64Details;
+            if(this.collectForm64Details.shareCode != null){
+                this.collectDetails['fromVerification'] = true;
+                
+            }
+            else{
+                this.showFileUploadCombo = true;
+            }
             await this.updateConfirmDetails();
+            
+            
             
             this.confirmForm64Page = false;
             this.showUploadScreen = false;
@@ -1658,6 +1644,7 @@ export default class GConnectVerification extends LightningElement {
             this.collectForm64Details.rtwDoc = null;
                 // NEW RTW
                 this.collectForm64Details.shareCode = null;
+                this.collectForm64Details.hasShareCode = false;
 
             if (event.target.value == 'Non-UK National') {
                 // this.citizenshipIsEEU = true;
@@ -1757,6 +1744,7 @@ export default class GConnectVerification extends LightningElement {
             // Save ONLY 8 characters (backend adds W)
             this.shareCode = value;
             this.collectForm64Details.shareCode = value;
+            this.collectForm64Details.hasShareCode = true;
 
             return;
         }
@@ -2031,7 +2019,6 @@ export default class GConnectVerification extends LightningElement {
 
     //uploadde file to save
     handleUpload() {
-        console.log('this.uploadFiles', this.uploadFiles);
         try {
             for (const file of this.uploadFiles) {
 
@@ -2115,7 +2102,6 @@ export default class GConnectVerification extends LightningElement {
 
     updateConfirmDetails() {
         this.spinner = true;
-        console.log(this.collectDetails);
         return updateDetailsFromVerification({
             outputMap: JSON.stringify(this.collectDetails)
         })
@@ -2272,7 +2258,6 @@ export default class GConnectVerification extends LightningElement {
             .then((response) => {
 
                 const parsedResponse = JSON.parse(response);
-                console.log('parsedResponse', parsedResponse);
                 if (parsedResponse.scAccount.length !== 0) {
                     let row = parsedResponse.scAccount[0];
                     this.assignUpdatedData(row);
@@ -2382,7 +2367,6 @@ export default class GConnectVerification extends LightningElement {
     }
 
     assignUpdatedData(rowData) {
-
         //this.fileErrorMessage = false;
         this.editMode = true;
         this.firstName = rowData.First_Name__c ? rowData.First_Name__c : '';
@@ -2478,7 +2462,6 @@ export default class GConnectVerification extends LightningElement {
         // AUTO SELECT CATEGORY
         // ================================
         if (this.citi_Immi_status) {
-
             const matchedCategory = this.rtwData.categories.find(cat =>
                 cat.value === this.citi_Immi_status
             );
@@ -2503,6 +2486,7 @@ export default class GConnectVerification extends LightningElement {
         }
         if (this.shareCode) {
             this.collectForm64Details.shareCode = this.shareCode;
+            this.collectForm64Details.hasShareCode = true;
         }
         // Add this after restoring RTW data
         if (this.rtwDoc && this.selectedCategoryId) {

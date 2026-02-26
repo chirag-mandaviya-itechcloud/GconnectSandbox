@@ -1386,6 +1386,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
         this.fileErrorMessage = false;
         this.rightToWorkNotShowVerified = true;
         this.drivingLicenseNotShowVerified = true;
+        this.isExtraFieldEditable = false;
     
     }
 
@@ -1512,6 +1513,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
      * Handle selection of Continuous Right to Work
      */
     handleSelectContinuousRTW() {
+        this.hideValidateContent = false;
         this.rightToWorkNotShowVerified = true;
         const contractorIndex = this.selectedContractor.currentClickIndex;
 
@@ -1555,6 +1557,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
      */
     handleSelectTimeLimitedRTW() {
         this.rightToWorkNotShowVerified = true;
+        this.hideValidateContent = false;
         const contractorIndex = this.selectedContractor.currentClickIndex;
 
         // Update both selectedContractor and data array
@@ -1574,6 +1577,8 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
      * Handle selection of No Restrictions
      */
     handleSelectNoRestrictions() {
+        this.rightToWorkNotShowVerified = true;
+        this.hideValidateContent = false;
         const contractorIndex = this.selectedContractor.currentClickIndex;
 
         // Update both selectedContractor and data array
@@ -1603,6 +1608,8 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
      * Handle selection of Has Restrictions
      */
     handleSelectHasRestrictions() {
+        this.rightToWorkNotShowVerified = true;
+        this.hideValidateContent = false;
         const contractorIndex = this.selectedContractor.currentClickIndex;
 
         // Update both selectedContractor and data array
