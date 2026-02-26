@@ -296,7 +296,7 @@ global without sharing class ConnectAppController {
                 Sign_Offers_News__c, Main_Contractor_ID__c, Company_Name__c, Emergency_Contact__c,Sort_Code__c,Bank_Account_No__c,Bank_Account_Name__c,Who_do_you_bank_with__c,
                 Flat_Rate_First_Year_Ends__c, Preffered_Language__c, Busineess_Rate__c, SubContractor_URL__c,EncryptedKey__c,Is_Existing_Driver__c,
                 Last_Confirmed_Stage__c,Amazon_Cortex_Number__c,Duplicate_Found__c,Match_Account__c,
-                Citizenship_Immigration_status__c, Right_to_work_document__c, Settled_Status__c, Date_of_Entry__c, Access_Code__c, Biometric_Evidence__c,RTW_Expiry_Date__c, DL_Requested__c, RTW_Requested__c,
+                Citizenship_Immigration_status__c, Right_to_work_document__c, Settled_Status__c, Date_of_Entry__c, Access_Code__c, Biometric_Evidence__c,RTW_Expiry_Date__c, DL_Requested__c, RTW_Requested__c, Any_work_restrictions__c, Permission_Expiry_Date__c, Limited_To_X_Hours_Per_Week__c, Limited_To_Specific_Job_Types__c, Other_Restrictions__c, Type_of_e_visa__c, is_Right_to_Work_Verify__c,
                 Driving_Licence_Number__c, Points_on_Licence__c, Driving_Licence_Expiry_Date__c, Type_of_licence__c, Additional_licence_categories__c, Driving_Licence_Issue_Date__c, Share_Code__c
                 FROM Application__c where Email__c =:email And EncryptedKey__c=:encryptedKey Limit 1];
     }
@@ -352,7 +352,7 @@ global without sharing class ConnectAppController {
                         applicationUpdate.DL_Requested__c = false;
                     }
 
-                    if(detailsWrapper.fromVerification == true && detailsWrapper.lastConfirmStage == 'RTW Upload'){
+                    if(detailsWrapper.fromVerification == true && (detailsWrapper.lastConfirmStage == 'RTW Upload' || detailsWrapper.confirmRightToWorkDetails?.hasShareCode == true )){
                         applicationUpdate.RTW_Requested__c = false;
                     }
 
@@ -369,7 +369,14 @@ global without sharing class ConnectAppController {
                         applicationUpdate.Access_Code__c = detailsWrapper.confirmRightToWorkDetails.accessCode != null ? detailsWrapper.confirmRightToWorkDetails.accessCode : '';
                         applicationUpdate.Share_Code__C = detailsWrapper.confirmRightToWorkDetails.shareCode != null ? detailsWrapper.confirmRightToWorkDetails.shareCode : '';
                         applicationUpdate.Biometric_Evidence__c = detailsWrapper.confirmRightToWorkDetails.biometricEvidence != null ? detailsWrapper.confirmRightToWorkDetails.biometricEvidence : null;
+                        applicationUpdate.Any_work_restrictions__c = null;
+                        applicationUpdate.Permission_Expiry_Date__c = null;
+                        applicationUpdate.Type_of_e_visa__c = null;
+                        applicationUpdate.Other_Restrictions__c = null;
                         applicationUpdate.RTW_Verified_by__c = null;
+                        applicationUpdate.is_Right_to_Work_Verify__c = false;
+                        applicationUpdate.Limited_To_X_Hours_Per_Week__c = null;
+                        applicationUpdate.Limited_To_Specific_Job_Types__c = null;
                     }
 
                     // Driving License Details
@@ -399,7 +406,8 @@ global without sharing class ConnectAppController {
 
                 if(!accountIds.isEmpty()) {
                     List<Account> accountsToUpdate = [SELECT Id, Citizenship_Immigration_status__c, Right_to_work_document__c, Settled_Status__c,
-                                                        Date_of_Entry__c, RTW_Expiry_Date__c, Access_Code__c, Share_Code__c, Biometric_Evidence__c, RTW_Verified_by__c,
+                                                        Date_of_Entry__c, RTW_Expiry_Date__c, Access_Code__c, Share_Code__c, Biometric_Evidence__c, RTW_Verified_by__c, Any_work_restrictions__c, 
+                                                        Permission_Expiry_Date__c, Limited_To_X_Hours_Per_Week__c, Limited_To_Specific_Job_Types__c, Other_Restrictions__c, Type_of_e_visa__c, is_Right_to_Work_Verify__c,
                                                         Driving_Licence_Number__c, Points_on_Licence__c, Driving_Licence_Expiry_Date__c, Type_of_Licence__c,
                                                         Additional_Licence_Categories__c, Driving_Licence_Issue_Date__c FROM Account WHERE Id IN :accountIds];
 
@@ -417,6 +425,13 @@ global without sharing class ConnectAppController {
                                 acc.Share_Code__c = app.Share_Code__c;
                                 acc.Biometric_Evidence__c = app.Biometric_Evidence__c;
                                 acc.RTW_Verified_by__c = app.RTW_Verified_by__c;
+                                acc.Any_work_restrictions__c = app.Any_work_restrictions__c;
+                                acc.Permission_Expiry_Date__c = app.Permission_Expiry_Date__c;
+                                acc.Limited_To_X_Hours_Per_Week__c = app.Limited_To_X_Hours_Per_Week__c;
+                                acc.Limited_To_Specific_Job_Types__c = app.Limited_To_Specific_Job_Types__c;
+                                acc.Other_Restrictions__c = app.Other_Restrictions__c;
+                                acc.Type_of_e_visa__c = app.Type_of_e_visa__c;
+                                acc.is_Right_to_Work_Verify__c = app.is_Right_to_Work_Verify__c;
 
                                 // Sync driving licence details
                                 acc.Driving_Licence_Number__c = app.Driving_Licence_Number__c;
@@ -470,6 +485,7 @@ global without sharing class ConnectAppController {
         public confirmRightToWorkDetails confirmRightToWorkDetails {get;set;} // Get the Right To Work Details
         public confirmDrivingLicenseDetails confirmDrivingLicenseDetails {get;set;} // Get the Driving License Details
         public Boolean fromVerification {get;set;}
+        public Boolean hasShareCode {get;set;}
 
         public ConfirmDetailsWrapper(){
             this.fromVerification = false;
@@ -494,6 +510,7 @@ global without sharing class ConnectAppController {
         public String shareCode {get;set;}
         public String biometricEvidence {get;set;}
         public String expiryDate {get;set;}
+        public Boolean hasShareCode {get;set;}
     }
 
     global class confirmBasicDetails{
@@ -544,54 +561,191 @@ global without sharing class ConnectAppController {
         public String bankWithName{get;set;}
     }
 
+    // @AuraEnabled
+    // public static void sendVerificationLinkEmail(String applicationId) {
+    //     try {
+    //         Application__c app = [SELECT Id, Email__c, First_Name__c, Last_Name__c, Access_Code__c, Share_Code__c, SubContractor_URL__c, Verification_URL__c  FROM Application__c WHERE Id = :applicationId LIMIT 1];
+    //         if(app != null) {
+    //             // get email template
+    //             EmailTemplate et;
+    //             if (app.Access_Code__c != null || app.Share_Code__c != null) {
+    //                 et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_Non_UK_verification' limit 1];
+    //             } else {
+    //                 et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_UK_Irish_verification' limit 1];
+    //             }
+
+    //             OrgWideEmailAddress[] owea = [SELECT Id,Address FROM OrgWideEmailAddress WHERE displayName =: label.noReplyOrgWideEmail];
+    //             List<Contact> lstContact=[select id from contact limit 1];
+    //             List<Messaging.SingleEmailMessage> mailList = new List<Messaging.SingleEmailMessage>();
+
+    //             if (String.isNotBlank(app.Email__c) && String.isNotBlank(app.SubContractor_URL__c) && !lstContact.isEmpty() && String.isNotBlank(app.Verification_URL__c)) {
+    //                 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+    //                 if (owea.size() > 0) {
+    //                     mail.setOrgWideEmailAddressId(owea.get(0).Id);
+    //                 }
+    //                 mail.setToAddresses(new String[]{app.Email__c});
+    //                 mail.setTemplateId(et.Id);
+    //                 mail.setTargetObjectId(lstContact[0].Id);
+    //                 mail.setWhatId(app.Id);
+    //                 mail.setTreatTargetObjectAsRecipient(false);
+    //                 mailList.add(mail);
+    //             } else{
+    //                 System.debug('Error: Email Not found');
+    //             }
+                
+    //             Boolean emailSent = false;
+
+
+    //             if (!mailList.isEmpty()) {
+    //                 List<Messaging.SendEmailResult> sendResults = Messaging.sendEmail(mailList);
+    //                 for (Messaging.SendEmailResult result : sendResults) {
+    //                     if (result.isSuccess()) {
+    //                         emailSent = true;
+    //                     } else {
+    //                         System.debug('Failed to send email: ' + result.getErrors()[0].getMessage());
+    //                     }
+    //                 }
+    //                 if (emailSent) {
+    //                 update new Application__c(
+    //                     Id = app.Id,
+    //                     RTW_Requested__c = true
+    //                 );
+    //             }
+    //             } else {
+    //                 System.debug('No emails to send.');
+    //             }
+    //         }
+    //     } catch(Exception e) {
+    //         System.debug('Error sending verification email: ' + e.getMessage());
+    //         throw new AuraHandledException('Failed to send verification email: ' + e.getMessage());
+    //     }
+    // }
     @AuraEnabled
-    public static void sendVerificationLinkEmail(String applicationId) {
-        try {
-            Application__c app = [SELECT Id, Email__c, First_Name__c, Last_Name__c, Access_Code__c, Share_Code__c, SubContractor_URL__c, Verification_URL__c  FROM Application__c WHERE Id = :applicationId LIMIT 1];
-            if(app != null) {
-                // get email template
-                EmailTemplate et;
-                if (app.Access_Code__c != null || app.Share_Code__c != null) {
-                    et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_Non_UK_verification' limit 1];
-                } else {
-                    et = [SELECT Id, HtmlValue, Subject FROM EmailTemplate WHERE DeveloperName = 'Sub_Contractor_UK_Irish_verification' limit 1];
-                }
+public static void sendVerificationLinkEmail(String recordId) {
+    try {
 
-                OrgWideEmailAddress[] owea = [SELECT Id,Address FROM OrgWideEmailAddress WHERE displayName =: label.noReplyOrgWideEmail];
-                List<Contact> lstContact=[select id from contact limit 1];
-                List<Messaging.SingleEmailMessage> mailList = new List<Messaging.SingleEmailMessage>();
+        Application__c app;
 
-                if (String.isNotBlank(app.Email__c) && String.isNotBlank(app.SubContractor_URL__c) && !lstContact.isEmpty() && String.isNotBlank(app.Verification_URL__c)) {
-                    Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-                    if (owea.size() > 0) {
-                        mail.setOrgWideEmailAddressId(owea.get(0).Id);
-                    }
-                    mail.setToAddresses(new String[]{app.Email__c});
-                    mail.setTemplateId(et.Id);
-                    mail.setTargetObjectId(lstContact[0].Id);
-                    mail.setWhatId(app.Id);
-                    mail.setTreatTargetObjectAsRecipient(false);
-                    mailList.add(mail);
-                } else{
-                    System.debug('Error: Email Not found');
-                }
+        // Detect if recordId is Application or Account
+        if (recordId.startsWith('a0')) { // Application__c Id prefix (example)
+            
+            app = [
+                SELECT Id, Email__c, First_Name__c, Last_Name__c,
+                       Access_Code__c, Share_Code__c,
+                       SubContractor_URL__c, Verification_URL__c,
+                       Gconnect_Account__c
+                FROM Application__c
+                WHERE Id = :recordId
+                LIMIT 1
+            ];
 
-                if (!mailList.isEmpty()) {
-                    List<Messaging.SendEmailResult> sendResults = Messaging.sendEmail(mailList);
-                    for (Messaging.SendEmailResult result : sendResults) {
-                        if (result.isSuccess()) {
-                            System.debug('Email sent successfully.');
-                        } else {
-                            System.debug('Failed to send email: ' + result.getErrors()[0].getMessage());
-                        }
-                    }
-                } else {
-                    System.debug('No emails to send.');
-                }
-            }
-        } catch(Exception e) {
-            System.debug('Error sending verification email: ' + e.getMessage());
-            throw new AuraHandledException('Failed to send verification email: ' + e.getMessage());
+        } else if (recordId.startsWith('001')) { // Account Id prefix
+
+            app = [
+                SELECT Id, Email__c, First_Name__c, Last_Name__c,
+                       Access_Code__c, Share_Code__c,
+                       SubContractor_URL__c, Verification_URL__c,
+                       Gconnect_Account__c
+                FROM Application__c
+                WHERE Gconnect_Account__c = :recordId
+                LIMIT 1
+            ];
         }
+
+
+        if (app == null) {
+            throw new AuraHandledException('No Application found.');
+        }
+
+
+        // Select Email Template
+        EmailTemplate et;
+
+        if (app.Access_Code__c != null || app.Share_Code__c != null) {
+
+            et = [
+                SELECT Id, HtmlValue, Subject
+                FROM EmailTemplate
+                WHERE DeveloperName = 'Sub_Contractor_Non_UK_verification'
+                LIMIT 1
+            ];
+
+        } else {
+
+            et = [
+                SELECT Id, HtmlValue, Subject
+                FROM EmailTemplate
+                WHERE DeveloperName = 'Sub_Contractor_UK_Irish_verification'
+                LIMIT 1
+            ];
+        }
+
+
+        // Org Wide Email
+        OrgWideEmailAddress owea = [
+            SELECT Id
+            FROM OrgWideEmailAddress
+            WHERE DisplayName = :Label.noReplyOrgWideEmail
+            LIMIT 1
+        ];
+
+
+        // Dummy Contact (Required for Template)
+        Contact con = [
+            SELECT Id
+            FROM Contact
+            LIMIT 1
+        ];
+
+
+        if (String.isBlank(app.Email__c) ||
+            String.isBlank(app.SubContractor_URL__c) ||
+            String.isBlank(app.Verification_URL__c)) {
+
+            throw new AuraHandledException('Required email data missing.');
+        }
+
+
+        // Create Email
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+
+        mail.setToAddresses(new String[]{app.Email__c});
+        mail.setTemplateId(et.Id);
+        mail.setTargetObjectId(con.Id);
+        mail.setWhatId(app.Id);
+        mail.setTreatTargetObjectAsRecipient(false);
+
+        if (owea != null) {
+            mail.setOrgWideEmailAddressId(owea.Id);
+        }
+
+
+        // Send Email
+        Messaging.SendEmailResult result =
+            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{mail})[0];
+
+
+        if (result.isSuccess()) {
+
+            // Update Application
+            update new Application__c(
+                Id = app.Id,
+                RTW_Requested__c = true
+            );
+
+        } else {
+
+            throw new AuraHandledException(result.getErrors()[0].getMessage());
+
+        }
+
+    } catch (Exception e) {
+
+        System.debug('Error sending verification email: ' + e.getMessage());
+
+        throw new AuraHandledException(
+            'Failed to send verification email: ' + e.getMessage()
+        );
     }
+}
 }
