@@ -1169,12 +1169,28 @@
     margin-left: 6px;
 }
 
+.rtw-osm-badge {
+    border: 2px solid #ffbf47;
+    color: #ba5c19;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-left: 6px;
+}
+
 /* Radio Groups */
 .rtw-radio-group {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-bottom: 16px;
+}
+
+.rtw-section-title-text {
+	font-size: 16px;
+    font-weight: 600;
+	font-family: var(--color-font-secondary);
 }
 
 .rtw-radio-option {
@@ -1259,6 +1275,27 @@
 /* Adjust vertical alignment of the permission expiry date picker */
 .rtw-date-picker {
     margin-top: -13px;
+}
+
+.rtw-followup-hint {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #00703c;
+    background: #e6f4ea;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.rtw-followup-icon {
+    font-size: 14px;
+	font-weight: bold;
+}
+
+.rtw-followup-text {
+	font-weight: 600;
 }
 
 /* Restrictions Section */
@@ -1462,9 +1499,8 @@
 
 .section-label {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: #8C95A6;
 }
 
@@ -1569,4 +1605,5 @@
     color: #8b6914;
     cursor: pointer;
     font-weight: 500;
+	margin-right: 3px;
 }

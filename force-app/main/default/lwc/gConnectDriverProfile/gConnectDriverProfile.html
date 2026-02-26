@@ -2232,12 +2232,16 @@
                                                                         <div class="rtw-verification-section">
                                                                             <div class="rtw-section-title">
                                                                                 <span class="rtw-asterisk">*</span>
-                                                                                VERIFICATION OUTCOME
                                                                                 <span
-                                                                                    class="rtw-required-badge">REQUIRED</span>
+                                                                                    class="rtw-section-title-text">Verification
+                                                                                    Outcome</span>
+                                                                                <span class="rtw-osm-badge">OSM
+                                                                                    EDITABLE</span>
                                                                             </div>
 
                                                                             <!-- Radio Buttons: Continuous vs Time-Limited -->
+                                                                            <div class="rtw-date-label">Type of right of
+                                                                                work</div>
                                                                             <div class="rtw-radio-group">
                                                                                 <label class={getContinuousRTWClass}
                                                                                     onclick={handleSelectContinuousRTW}>
@@ -2292,8 +2296,8 @@
                                                                                 <div class="rtw-date-input-group">
                                                                                     <div class="rtw-date-label">
                                                                                         Permission expiry date
-                                                                                        <span
-                                                                                            class="rtw-required-badge">REQUIRED</span>
+                                                                                        <span class="rtw-osm-badge">OSM
+                                                                                            EDITABLE</span>
                                                                                     </div>
                                                                                     <lightning-input type="date"
                                                                                         name="PermissionexpiryDate"
@@ -2301,14 +2305,22 @@
                                                                                         onchange={onChangeRTWDetails}
                                                                                         class="rtw-date-picker">
                                                                                     </lightning-input>
+                                                                                    <div class="rtw-followup-hint">
+                                                                                        <span
+                                                                                            class="rtw-followup-icon">⏱</span>
+                                                                                        <span
+                                                                                            class="rtw-followup-text">Follow-up
+                                                                                            check auto-scheduled 90 days
+                                                                                            before expiry</span>
+                                                                                    </div>
                                                                                 </div>
 
                                                                                 <!-- Work Restrictions Section -->
                                                                                 <div class="rtw-restrictions-section">
                                                                                     <div class="rtw-section-title">
                                                                                         Work restrictions
-                                                                                        <span
-                                                                                            class="rtw-required-badge">REQUIRED</span>
+                                                                                        <span class="rtw-osm-badge">OSM
+                                                                                            EDITABLE</span>
                                                                                     </div>
 
                                                                                     <!-- Radio Buttons: No vs Yes Restrictions -->
