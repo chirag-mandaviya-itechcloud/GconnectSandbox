@@ -1184,7 +1184,7 @@
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
 }
 
@@ -1214,7 +1214,20 @@
     font-weight: 700;
     color: #0b0c0c;
     cursor: pointer;
+    line-height: 1.4;
+}
+
+.rtw-radio-text {
+    display: flex;
+    flex-direction: column;
     flex: 1;
+}
+
+.rtw-radio-description {
+    font-size: 13px;
+    font-weight: 400;
+    color: #6f777b;
+    margin-top: 2px;
 }
 
 /* Date Input Section */
