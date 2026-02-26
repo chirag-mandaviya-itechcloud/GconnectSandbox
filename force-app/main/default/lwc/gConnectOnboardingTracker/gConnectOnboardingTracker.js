@@ -2436,15 +2436,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
                                     this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c && 
                                     this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c.trim() !== '';
 
-                                // At least ONE restriction field must be filled
-                                // if (!hasLimitedHours && !hasJobTypes && !hasOtherRestrictions) {
-                                //     this.showToast(
-                                //         'Error', 
-                                //         'Please provide at least one work restriction detail (Limited Hours, Job Types, or Other Restrictions).', 
-                                //         'error'
-                                //     );
-                                //     return;
-                                // }
+
                                 if (!hasLimitedHours) {
                                     this.showToast(
                                         'Error', 
