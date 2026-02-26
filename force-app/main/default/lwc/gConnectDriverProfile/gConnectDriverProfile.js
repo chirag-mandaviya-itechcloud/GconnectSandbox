@@ -229,6 +229,7 @@ export default class GConnectDriverProfile extends LightningElement {
     @track originalDLFront = '';
     @track originalDLBack = '';
     @track restrictedStatuses = ['British passport/UK National', 'EU/EEA/Swiss Citizen', 'Rest Of The World'];
+    @track allowedEdit = false;
     @track isContinuousSelected;
     @track isTimeLimitedSelected;
     @track isNoRestrictionsSelected;
@@ -572,7 +573,7 @@ export default class GConnectDriverProfile extends LightningElement {
 
                     const citizenshipImmigrationStatus = this.recordData.hasOwnProperty('Citizenship_Immigration_status__c') && this.recordData.Citizenship_Immigration_status__c !== null ? this.recordData.Citizenship_Immigration_status__c : null;
                     this.recordData.hasRestrictedStatus = this.restrictedStatuses.includes(citizenshipImmigrationStatus);
-
+                    
                     this.recordData.Limited_To_X_Hours_Per_Week__c = this.recordData.hasOwnProperty('Limited_To_X_Hours_Per_Week__c') && this.recordData.Limited_To_X_Hours_Per_Week__c !== null ? this.recordData.Limited_To_X_Hours_Per_Week__c : '';
                     this.recordData.Limited_To_Specific_Job_Types__c = this.recordData.hasOwnProperty('Limited_To_Specific_Job_Types__c') && this.recordData.Limited_To_Specific_Job_Types__c !== null ? this.recordData.Limited_To_Specific_Job_Types__c : '';
                     this.recordData.Other_Restrictions__c = this.recordData.hasOwnProperty('Other_Restrictions__c') && this.recordData.Other_Restrictions__c !== null ? this.recordData.Other_Restrictions__c : '';
@@ -2216,6 +2217,7 @@ export default class GConnectDriverProfile extends LightningElement {
         //     }
         //     event.target.reportValidity();
         // }
+        
     }
 
     handleRTWEditOpen() {
@@ -2328,8 +2330,24 @@ export default class GConnectDriverProfile extends LightningElement {
         }
         if (this.recordData.hasShareCode && this.recordData.Type_of_e_visa__c === 'Time-limited right to work') {
             console.log('permissoin--->>> ', this.recordData.Permission_Expiry_Date__c)
-            if (!this.recordData.Permission_Expiry_Date__c) {
+            // if (!this.recordData.Permission_Expiry_Date__c) {
+            //     this.showToast('Error', 'Permission Expiry Date is required.', 'error');
+            //     return;
+            // }
+            const expiryDate = this.recordData.Permission_Expiry_Date__c;
+
+            // Required validation
+            if (!expiryDate) {
                 this.showToast('Error', 'Permission Expiry Date is required.', 'error');
+                return;
+            }
+
+            // Get today in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+
+            // Compare safely
+            if (expiryDate < today) {
+                this.showToast('Error', 'Past date is not allowed.', 'error');
                 return;
             }
 

@@ -124,7 +124,8 @@
                                                 <div class="scoreWrap">
                                                     <div class="ring scoreTooltipHost" style={contractor.scoreStyle}>
                                                         <div class="inner"></div>
-                                                        <div class="label">{contractor.totalscore}</div>
+                                                        <div class="label" style="margin: 0px;">{contractor.totalscore}
+                                                        </div>
 
                                                         <!-- Tooltip -->
                                                         <div class="scoreTooltipBox">
@@ -309,7 +310,8 @@
                                                 <div class="scoreWrap">
                                                     <div class="ring scoreTooltipHost" style={contractor.scoreStyle}>
                                                         <div class="inner"></div>
-                                                        <div class="label">{contractor.totalscore}</div>
+                                                        <div class="label" style="margin: 0px;">{contractor.totalscore}
+                                                        </div>
 
                                                         <!-- Tooltip -->
                                                         <div class="scoreTooltipBox">
@@ -1080,7 +1082,7 @@
                                             </div>
                                         </template>
 
-                                        <template if:true={selectedContractor.hasShareCode}>
+                                        <!-- <template if:true={selectedContractor.hasShareCode}>
                                             <template if:true={selectedContractor.hasEVisa}>
                                                 <div class="slds-col slds-size_1-of-2">
                                                     <p><strong>Type of eVisa:</strong></p>
@@ -1163,8 +1165,83 @@
                                                     </div>
                                                 </template>
                                             </template>
-                                        </template>
+                                        </template> -->
+                                        <template if:true={selectedContractor.hasShareCode}>
+                                            <div class="driver-info">
+                                                <!-- Verification Outcome -->
+                                                <template if:true={selectedContractor.Type_of_e_visa__c}>
+                                                    <div class="info-field">
+                                                        <div class="info-label">Type of EVisa:</div>
+                                                        <div class="badge badge-blue">
+                                                            {selectedContractor.Type_of_e_visa__c}
+                                                        </div>
+                                                    </div>
+                                                </template>
 
+                                                <!-- Permission Expiry Date -->
+                                                <template if:true={selectedContractor.Permission_Expiry_Date__c}>
+                                                    <div class="info-field">
+                                                        <div class="info-label">Permission expiry date:</div>
+                                                        <div class="info-value">
+                                                            {selectedContractor.Permission_Expiry_Date__c}</div>
+                                                    </div>
+                                                </template>
+
+                                                <!-- Limited Hours -->
+                                                <template if:true={selectedContractor.Limited_To_X_Hours_Per_Week__c}>
+                                                    <div class="info-field">
+                                                        <div class="info-label">Limited to:</div>
+                                                        <div class="info-value">
+                                                            {selectedContractor.Limited_To_X_Hours_Per_Week__c} hours
+                                                            per
+                                                            week</div>
+                                                    </div>
+                                                </template>
+
+                                                <!-- Specific Job Types -->
+                                                <template if:true={selectedContractor.Limited_To_Specific_Job_Types__c}>
+                                                    <div class="info-field">
+                                                        <div class="info-label">Limited to specific job types:</div>
+                                                        <div class="info-value">
+                                                            {selectedContractor.Limited_To_Specific_Job_Types__c}</div>
+                                                    </div>
+                                                </template>
+
+                                                <!-- Other Restrictions -->
+                                                <template if:true={selectedContractor.Other_Restrictions__c}>
+                                                    <div class="info-field full-width">
+                                                        <div class="info-label">Other restriction:</div>
+                                                        <div class="info-value">
+                                                            {selectedContractor.Other_Restrictions__c}
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+
+                                            <!-- Follow-up Check Section (Yellow Background) - Full Width at Bottom -->
+                                            <template if:true={selectedContractor.followUpCheckDate}>
+                                                <div class="rtw-followup-box">
+                                                    <div class="rtw-followup-icon">
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
+                                                            </rect>
+                                                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                                                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                                                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="rtw-followup-content">
+                                                        <div class="rtw-followup-label">Follow-up Check:</div>
+                                                        <div class="rtw-followup-value">Due
+                                                            {selectedContractor.followUpCheckDate}</div>
+                                                        <div class="rtw-followup-note">Auto-scheduled 90 days before
+                                                            expiry
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </template>
                                         <template if:true={selectedContractor.hasBiometric}>
                                             <div class="slds-col slds-size_1-of-2 slds-p-top_small">
                                                 <p><strong>Biometric Evidence:</strong></p>
@@ -1221,46 +1298,90 @@
                                     label="I confirm that I have personally verified the authenticity of this document with the holder present during their interview and ensured that all images captured are clear and legible for accurate record-keeping."
                                     checked={isRTWVerfiedCheck} onchange={handleRTWVerifiedCheck}>
                                 </lightning-input> -->
-                                <div class="validation-box">
-                                    <div class="validation-title">
-                                        <input type="checkbox" checked={isRTWVerfiedCheck}
-                                            onchange={handleRTWVerifiedCheck} />
-                                        <label>I confirm that:</label>
+                                <template if:true={showNonUKConfirmPoints}>
+                                    <div class="validation-box">
+                                        <div class="validation-title">
+                                            <input type="checkbox" checked={isRTWVerfiedCheck}
+                                                onchange={handleRTWVerifiedCheck} />
+                                            <label>I confirm that:</label>
+                                        </div>
+
+                                        <div class="validation-items">
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {nonUKConfirmPoints.one}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {nonUKConfirmPoints.two}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {nonUKConfirmPoints.three}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div class="validation-items">
-
-                                        <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            <span>
-                                                The photograph on this document matches the person presenting it
-                                            </span>
+                                </template>
+                                <template if:false={showNonUKConfirmPoints}>
+                                    <div class="validation-box">
+                                        <div class="validation-title">
+                                            <input type="checkbox" checked={isRTWVerfiedCheck}
+                                                onchange={handleRTWVerifiedCheck} />
+                                            <label>I confirm that:</label>
                                         </div>
 
-                                        <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            <span>
-                                                I have verified this person is the rightful holder
-                                            </span>
-                                        </div>
+                                        <div class="validation-items">
 
-                                        <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            <span>
-                                                The document appears genuine and all images are clear
-                                            </span>
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {UKConfirmPoints.one}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {UKConfirmPoints.two}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {UKConfirmPoints.three}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </template>
                                 <template if:true={isRTWVerfiedCheck}>
                                     <div class="slds-var-p-top_small">
                                         <lightning-input label="Verified By" placeholder="Enter Your Initials"

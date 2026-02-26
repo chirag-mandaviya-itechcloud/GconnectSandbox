@@ -1601,8 +1601,10 @@
                                                 <button class="btn-request" onclick={handleRequestNewEvidence}> Request
                                                     New Evidence
                                                 </button>
-                                                <button class="slds-button btnDwl" onclick={handleRTWEditOpen}>Edit
-                                                </button>
+                                                <template if:false={recordData.hasRestrictedStatus}>
+                                                    <button class="slds-button btnDwl" onclick={handleRTWEditOpen}>Edit
+                                                    </button>
+                                                </template>
                                                 <button class="slds-button btnDwl" data-doctype="GConnect RTW"
                                                     onclick={handleDownload}>Download</button>
                                             </div>
@@ -1639,17 +1641,21 @@
                                                     </div>
                                                 </template>
                                                 <template if:true={recordData.hasShareCode}>
-                                                    <div class="info-field">
+                                                    <!-- <div class="info-field">
                                                         <div class="info-label">Share Code</div>
                                                         <div class="badge badge-gray">{recordData.Share_Code__c}</div>
+                                                    </div> -->
+                                                    <div class="info-field">
+                                                        <div class="info-label">Date of Birth</div>
+                                                        <div class="badge badge-gray">{recordData.Date_of_Birth}</div>
                                                     </div>
                                                 </template>
-                                                <template if:true={recordData.hasAccessCode}>
+                                                <!-- <template if:true={recordData.hasAccessCode}>
                                                     <div class="info-field">
                                                         <div class="info-label">Access Code</div>
                                                         <div class="badge badge-gray">{recordData.Access_Code__c}</div>
                                                     </div>
-                                                </template>
+                                                </template> -->
                                             </div>
                                             <hr class="slds-m-vertical_small" />
                                         </div>
@@ -1768,7 +1774,41 @@
                                                     <template if:true={recordData.hasShareCode}>
                                                         <template if:false={rtwEditOpen}>
                                                             <div class="slds-grid slds-wrap">
-
+                                                                <div
+                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
+                                                                    <div class="contractor-field">
+                                                                        <template if:false={rtwEditOpen}>
+                                                                            <template if:true={recordData.hasShareCode}>
+                                                                                <div class="field-title">Share Code
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Share_Code__c}>
+                                                                                    <div>
+                                                                                        {recordData.Share_Code__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Share_Code__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                            <template if:true={recordData.hasAccessCode}>
+                                                                                <div class="field-title">Access Code
+                                                                                </div>
+                                                                                <template
+                                                                                    if:true={recordData.Access_Code__c}>
+                                                                                    <div>
+                                                                                        {recordData.Access_Code__c}
+                                                                                    </div>
+                                                                                </template>
+                                                                                <template
+                                                                                    if:false={recordData.Access_Code__c}>
+                                                                                    <div>N/A</div>
+                                                                                </template>
+                                                                            </template>
+                                                                        </template>
+                                                                    </div>
+                                                                </div>
 
                                                                 <div
                                                                     class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
@@ -1908,29 +1948,6 @@
                                                                                 </template>
                                                                             </template>
                                                                         </template>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div
-                                                                    class="slds-col slds-large-size_6-of-12 slds-medium-size_6-of-12 slds-size_6-of-12">
-                                                                    <div class="contractor-field">
-                                                                        <!-- <template if:false={rtwEditOpen}>
-                                                                            <template if:true={recordData.hasShareCode}>
-                                                                                <div class="field-title">Other
-                                                                                    Restrictions
-                                                                                </div>
-                                                                                <template
-                                                                                    if:true={recordData.Other_Restrictions__c}>
-                                                                                    <div>
-                                                                                        {recordData.Other_Restrictions__c}
-                                                                                    </div>
-                                                                                </template>
-                                                                                <template
-                                                                                    if:false={recordData.Other_Restrictions__c}>
-                                                                                    <div>N/A</div>
-                                                                                </template>
-                                                                            </template>
-                                                                        </template> -->
                                                                     </div>
                                                                 </div>
                                                             </div>
