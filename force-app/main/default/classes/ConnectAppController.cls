@@ -573,7 +573,7 @@ global without sharing class ConnectAppController {
     public static void sendVerificationLinkEmail(String applicationId) {
         try {
 
-            Application__c app = [ SELECT Id, Email__c, Access_Code__c, Share_Code__c FROM Application__c WHERE Id = :applicationId LIMIT 1 ];
+            Application__c app = [ SELECT Id, Email__c, Access_Code__c, Share_Code__c, Gconnect_Account__c FROM Application__c WHERE Id = :applicationId LIMIT 1 ];
 
             EmailTemplate et;
 
@@ -614,8 +614,14 @@ global without sharing class ConnectAppController {
                     Id = app.Id,
                     RTW_Requested__c = true
                 );
-            }
 
+                if (app.Gconnect_Account__c != null) {
+                    update new Account(
+                        Id = app.Gconnect_Account__c,
+                        RTW_Requested__c = true
+                    );
+                }
+            }
         } catch(Exception e) {
             throw new AuraHandledException(
                 'Failed to send verification email: ' + e.getMessage()
