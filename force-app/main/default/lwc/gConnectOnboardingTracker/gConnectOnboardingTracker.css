@@ -1208,11 +1208,24 @@ lightning-textarea {
 }
 
 .rtw-radio-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #0b0c0c;
-  cursor: pointer;
-  flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0b0c0c;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.rtw-radio-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.rtw-radio-description {
+    font-size: 13px;
+    font-weight: 400;
+    color: #6f777b;
+    margin-top: 2px;
 }
 
 /* Date Input Section */
@@ -1474,4 +1487,41 @@ lightning-textarea {
   color: #856404;
   font-style: italic;
   opacity: 0.9;
+}
+
+.rtw-osm-badge {
+    border: 2px solid #ffbf47;
+    color: #ba5c19;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-left: 6px;
+}
+
+.rtw-section-title-text {
+	font-size: 16px;
+    font-weight: 600;
+	font-family: var(--color-font-secondary);
+}
+
+.rtw-followup-hint {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #00703c;
+    background: #e6f4ea;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.rtw-followup-icon {
+    font-size: 14px;
+	font-weight: bold;
+}
+
+.rtw-followup-text {
+	font-weight: 600;
 }

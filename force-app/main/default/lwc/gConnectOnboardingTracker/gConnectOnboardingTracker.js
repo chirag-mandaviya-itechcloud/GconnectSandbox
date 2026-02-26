@@ -231,6 +231,18 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         ]
     };
 
+    @track nonUKConfirmPoints = {
+        'one': 'The photograph from the Home Office online check matches the person presenting themselves',
+        'two': 'I have verified this person is the individual to whom the immigration status belongs',
+        'three': 'The Home Office profile PDF has been uploaded and retained'
+    }
+
+    @track UKConfirmPoints = {
+        'one': 'The photograph on this document matches the person presenting it',
+        'two': 'I have verified this person is the rightful holder',
+        'three': 'The document appears genuine and all images are clear'
+    }
+
     @track documentNames = [];
     @track restrictedStatuses = ['British passport/UK National', 'EU/EEA/Swiss Citizen', 'Rest Of The World'];
 
@@ -322,6 +334,10 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
         return this.currentPage === 1;
     }
 
+    get showNonUKConfirmPoints() {
+        return this.selectedContractor.Citizenship_Immigration_status__c === 'Non-UK National';
+    }
+
     handleNextPage() {
         if (this.currentPage < this.totalPages) {
             this.currentPage = this.currentPage + 1;
@@ -387,7 +403,7 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                     // new
                     this.data[x].hasEVisa = this.data[x].hasOwnProperty('Type_of_e_visa__c') && this.data[x].Type_of_e_visa__c !== null ? true : false;
                     // this.data[x].hasPermissionExpiryDate = this.data[x].hasOwnProperty('Permission_Expiry_Date__c') && this.data[x].Permission_Expiry_Date__c !== null ? true : false;
-                   if (this.data[x].hasOwnProperty('Permission_Expiry_Date__c') && this.data[x].Permission_Expiry_Date__c !== null) {
+                    if (this.data[x].hasOwnProperty('Permission_Expiry_Date__c') && this.data[x].Permission_Expiry_Date__c !== null) {
                         this.data[x].hasPermissionExpiryDate = true;
 
                         const expiryDate = new Date(this.data[x].Permission_Expiry_Date__c);
@@ -600,49 +616,49 @@ export default class GConnectOnboardingTracker extends NavigationMixin(Lightning
                     this.data[x].rtwDataNotAvaliable = false;
                     this.data[x].allowRTWEdit = false;
                     this.data[x].requiredRTWEdit = true;
-                    
-if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.data[x].Citizenship_Immigration_status__c !== null) {
 
-    // CHECK EXPIRY - PRIORITY ORDER
-    let expiryDateToCheck = null;
-    let rtwExpiryStatus = null;
-    
-    // Priority 1: Check Permission_Expiry_Date__c first (for Share Code scenarios)
-    if (this.data[x].Permission_Expiry_Date__c) {
-        expiryDateToCheck = this.data[x].Permission_Expiry_Date__c;
-        rtwExpiryStatus = this.checkDLandRTWExpiry(expiryDateToCheck);
-    } 
-    // Priority 2: Check RTW_Expiry_Date__c if no Permission date
-    else if (!this.data[x].bypassValidation && this.data[x].RTW_Expiry_Date__c) {
-        expiryDateToCheck = this.data[x].RTW_Expiry_Date__c;
-        rtwExpiryStatus = this.checkDLandRTWExpiry(expiryDateToCheck);
-    }
+                    if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.data[x].Citizenship_Immigration_status__c !== null) {
 
-    // Set button states based on expiry status
-    if (rtwExpiryStatus === 'expiring') {
-        this.data[x].isRTWExpiring = true;
-        this.data[x].allowRTWEdit = true;
-        this.data[x].RtwProgressIcon = this.rtwLightRed;
-    } else if (rtwExpiryStatus === 'expired') {
-        this.data[x].isRTWExpired = true;
-        this.data[x].allowRTWEdit = true;
-        this.data[x].requiredRTWEdit = true;
-        this.data[x].RtwProgressIcon = this.rtwRed;
-    } else {
-        // No expiry issues
-        if (this.data[x].is_Right_to_Work_Verify__c) {
-            this.data[x].rtwLicenseVerify = true;
-            this.data[x].allowRTWEdit = true;
-            this.data[x].RtwProgressIcon = this.rtwGreen;
-        } else {
-            this.data[x].rtwLicenseNotVerify = true;
-            this.data[x].allowRTWEdit = true;
-            this.data[x].RtwProgressIcon = this.rtwYellow;
-        }
-    }
-} else {
-    this.data[x].rtwDataNotAvaliable = true;
-}
+                        // CHECK EXPIRY - PRIORITY ORDER
+                        let expiryDateToCheck = null;
+                        let rtwExpiryStatus = null;
+
+                        // Priority 1: Check Permission_Expiry_Date__c first (for Share Code scenarios)
+                        if (this.data[x].Permission_Expiry_Date__c) {
+                            expiryDateToCheck = this.data[x].Permission_Expiry_Date__c;
+                            rtwExpiryStatus = this.checkDLandRTWExpiry(expiryDateToCheck);
+                        }
+                        // Priority 2: Check RTW_Expiry_Date__c if no Permission date
+                        else if (!this.data[x].bypassValidation && this.data[x].RTW_Expiry_Date__c) {
+                            expiryDateToCheck = this.data[x].RTW_Expiry_Date__c;
+                            rtwExpiryStatus = this.checkDLandRTWExpiry(expiryDateToCheck);
+                        }
+
+                        // Set button states based on expiry status
+                        if (rtwExpiryStatus === 'expiring') {
+                            this.data[x].isRTWExpiring = true;
+                            this.data[x].allowRTWEdit = true;
+                            this.data[x].RtwProgressIcon = this.rtwLightRed;
+                        } else if (rtwExpiryStatus === 'expired') {
+                            this.data[x].isRTWExpired = true;
+                            this.data[x].allowRTWEdit = true;
+                            this.data[x].requiredRTWEdit = true;
+                            this.data[x].RtwProgressIcon = this.rtwRed;
+                        } else {
+                            // No expiry issues
+                            if (this.data[x].is_Right_to_Work_Verify__c) {
+                                this.data[x].rtwLicenseVerify = true;
+                                this.data[x].allowRTWEdit = true;
+                                this.data[x].RtwProgressIcon = this.rtwGreen;
+                            } else {
+                                this.data[x].rtwLicenseNotVerify = true;
+                                this.data[x].allowRTWEdit = true;
+                                this.data[x].RtwProgressIcon = this.rtwYellow;
+                            }
+                        }
+                    } else {
+                        this.data[x].rtwDataNotAvaliable = true;
+                    }
 
 
                     // NEW UI RTW
@@ -851,7 +867,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
         let fileTypeName = null;
 
         if (event.target.name === 'RTW') {
-             const contractor = this.data[this.currentIndex];
+            const contractor = this.data[this.currentIndex];
             this.originalContractorData = {
                 Type_of_e_visa__c: contractor.Type_of_e_visa__c,
                 Permission_Expiry_Date__c: contractor.Permission_Expiry_Date__c,
@@ -1285,9 +1301,9 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
         let expiryDate = new Date(dlandRTWExpiryDate);
         let currentDate = new Date();
         let timeDiff = expiryDate - currentDate;
-        
+
         let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-    
+
 
         if (daysDiff < 0) {
             return 'expired';
@@ -1318,28 +1334,28 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
     }
     cancelModule() {
         if (this.isRightToWorkModalOpen && Object.keys(this.originalContractorData).length > 0) {
-        const contractorIndex = this.selectedContractor?.currentClickIndex;
-        
-        if (contractorIndex !== undefined) {
-            Object.keys(this.originalContractorData).forEach(key => {
-                if (this.selectedContractor) {
-                    this.selectedContractor[key] = this.originalContractorData[key];
-                }
-                if (this.data[contractorIndex]) {
-                    this.data[contractorIndex][key] = this.originalContractorData[key];
-                }
-            });
-            
-            this.showTimeLimitedSection = this.originalContractorData.showTimeLimitedSection || false;
-            this.showRestrictionsSection = this.originalContractorData.showRestrictionsSection || false;
+            const contractorIndex = this.selectedContractor?.currentClickIndex;
+
+            if (contractorIndex !== undefined) {
+                Object.keys(this.originalContractorData).forEach(key => {
+                    if (this.selectedContractor) {
+                        this.selectedContractor[key] = this.originalContractorData[key];
+                    }
+                    if (this.data[contractorIndex]) {
+                        this.data[contractorIndex][key] = this.originalContractorData[key];
+                    }
+                });
+
+                this.showTimeLimitedSection = this.originalContractorData.showTimeLimitedSection || false;
+                this.showRestrictionsSection = this.originalContractorData.showRestrictionsSection || false;
+            }
         }
+
+        this.originalContractorData = {};
+        this.closeModal();
     }
-    
-    this.originalContractorData = {};
-    this.closeModal();
-}
     closeModal(event) {
-        
+
         this.selectedContractor = {};
         this.visibleNewContractorModal = false;
         this.visibleUploadSection = false;
@@ -1387,7 +1403,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
         this.rightToWorkNotShowVerified = true;
         this.drivingLicenseNotShowVerified = true;
         this.isExtraFieldEditable = false;
-    
+
     }
 
     handleRecordMenuClick(event) {
@@ -1755,48 +1771,47 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
     }
 
     handleDownload(event) {
-    const docType = event.target.dataset.doctype;
-    const accountId = event.target.dataset.selectedId;
-    const citizenship = this.selectedContractor.Citizenship_Immigration_status__c;
-    const rtwDocument = this.selectedContractor.Right_to_work_document__c;
-    let validData = false;
-    let requiredDocCount = 1;
+        const docType = event.target.dataset.doctype;
+        const accountId = event.target.dataset.selectedId;
+        const citizenship = this.selectedContractor.Citizenship_Immigration_status__c;
+        const rtwDocument = this.selectedContractor.Right_to_work_document__c;
+        let validData = false;
+        let requiredDocCount = 1;
 
-    if (citizenship && this.allowedRTWOptions?.[citizenship]) {
-        const selectedOption = this.allowedRTWOptions[citizenship]?.find(opt => opt.value === rtwDocument);
-        if (selectedOption?.documentType?.length) requiredDocCount = selectedOption.documentType.length;
-    }
-    if (docType === 'GConnect RTW') {
-        if (requiredDocCount === 1 && this.selectedContractor.FrontDoc) {
-            validData = true;
-        } 
-        else if (requiredDocCount === 2 && this.selectedContractor.FrontDoc && this.selectedContractor.BackDoc)
-        {
-            validData = true;
-        } 
-        else if ((this.selectedContractor.Access_Code__c && this.selectedContractor.Biometric_Evidence__c === 'No')|| this.selectedContractor.Share_Code__c) {
-            validData = true;
+        if (citizenship && this.allowedRTWOptions?.[citizenship]) {
+            const selectedOption = this.allowedRTWOptions[citizenship]?.find(opt => opt.value === rtwDocument);
+            if (selectedOption?.documentType?.length) requiredDocCount = selectedOption.documentType.length;
+        }
+        if (docType === 'GConnect RTW') {
+            if (requiredDocCount === 1 && this.selectedContractor.FrontDoc) {
+                validData = true;
+            }
+            else if (requiredDocCount === 2 && this.selectedContractor.FrontDoc && this.selectedContractor.BackDoc) {
+                validData = true;
+            }
+            else if ((this.selectedContractor.Access_Code__c && this.selectedContractor.Biometric_Evidence__c === 'No') || this.selectedContractor.Share_Code__c) {
+                validData = true;
+            }
+        }
+        if (validData) {
+            createRTWandDLDocument({ accountId: accountId, documentType: docType })
+                .then(result => {
+                    let vfPageName, fileType;
+                    if (docType === 'GConnect RTW') { vfPageName = 'RightToWorkEvidence'; fileType = '_RTW_Evidence'; }
+                    else if (docType === 'GConnect DL') { vfPageName = 'DrivingLicenceEvidence'; fileType = '_DL_Evidence'; }
+                    const firstName = this.selectedContractor.First_Name__c;
+                    const lastName = this.selectedContractor.Last_Name__c;
+                    const filename = `${firstName}_${lastName}${fileType}.pdf`;
+                    const link = document.createElement('a');
+                    link.href = this.MC_Site_URL + '/apex/' + vfPageName + '?id=' + accountId;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => { console.error("Error generating document: ", error); });
         }
     }
-    if (validData) {
-        createRTWandDLDocument({ accountId: accountId, documentType: docType })
-        .then(result => {
-            let vfPageName, fileType;
-            if (docType === 'GConnect RTW') { vfPageName = 'RightToWorkEvidence'; fileType = '_RTW_Evidence'; }
-            else if (docType === 'GConnect DL') { vfPageName = 'DrivingLicenceEvidence'; fileType = '_DL_Evidence'; }
-            const firstName = this.selectedContractor.First_Name__c;
-            const lastName = this.selectedContractor.Last_Name__c;
-            const filename = `${firstName}_${lastName}${fileType}.pdf`;
-            const link = document.createElement('a');
-            link.href = this.MC_Site_URL + '/apex/' + vfPageName + '?id=' + accountId;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        })
-        .catch(error => { console.error("Error generating document: ", error); });
-    }
-}
 
 
     handleDLEditClick(event) {
@@ -1913,7 +1928,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
     }
 
     // new Enable edit functionality for the after the file is uploaded it will show new fields
-    
+
     handleSaveFiles(event) {
         const childComp = this.template.querySelector('c-image-capture');
         if (childComp) {
@@ -1972,7 +1987,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
             // Restore original values when canceling
             if (this.selectedContractor && Object.keys(this.originalContractorData).length > 0) {
                 const contractorIndex = this.selectedContractor.currentClickIndex;
-                
+
                 // Restore values in both selectedContractor and data array
                 Object.keys(this.originalContractorData).forEach(key => {
                     this.selectedContractor[key] = this.originalContractorData[key];
@@ -1980,12 +1995,12 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
                         this.data[contractorIndex][key] = this.originalContractorData[key];
                     }
                 });
-                
+
                 // Reset section visibility flags
                 this.showTimeLimitedSection = this.originalContractorData.showTimeLimitedSection || false;
                 this.showRestrictionsSection = this.originalContractorData.showRestrictionsSection || false;
             }
-            
+
             // Clear stored data
             this.originalContractorData = {};
             this.closeModal();
@@ -2092,12 +2107,12 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
                 }
             }
             if (targetName === 'RTWValidate' && this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == false && updateType == 'validate' && this.verifiedRTWName != null) {
-                
+
                 if (this.selectedContractor.hasShareCode == true && this.hasShareCodeFile == false) {
                     this.showRTWCheckError = true;
                     return;
                 }
-                
+
                 this.selectedContractor['is_Right_to_Work_Verify__c'] = true;
                 this.data[this.selectedContractor.currentClickIndex].is_Right_to_Work_Verify__c = true;
                 this.data[this.selectedContractor.currentClickIndex].RTW_Verified_by__c = this.verifiedRTWName;
@@ -2398,91 +2413,91 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
             let changedFields = { Id: this.data[this.selectedContractor.currentClickIndex].Id };
             if (this.selectedOption == 'RTW') {
                 // ===== VALIDATION 3: SHARE CODE VALIDATIONS =====
-                    if (this.selectedContractor.hasShareCode) {
-                        
-                        // 3a. Type of eVisa required
-                        if (!this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c) {
-                            this.showToast('Error', 'Please select Type of e-Visa.', 'error');
+                if (this.selectedContractor.hasShareCode) {
+
+                    // 3a. Type of eVisa required
+                    if (!this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c) {
+                        this.showToast('Error', 'Please select Type of e-Visa.', 'error');
+                        return;
+                    }
+
+                    // 3b. TIME-LIMITED SPECIFIC VALIDATIONS
+                    if (this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c === 'Time-limited right to work') {
+
+                        // Permission Expiry Date - Required
+                        if (!this.data[this.selectedContractor.currentClickIndex].Permission_Expiry_Date__c) {
+                            this.showToast('Error', 'Permission Expiry Date is required for Time-limited right to work.', 'error');
                             return;
                         }
 
-                        // 3b. TIME-LIMITED SPECIFIC VALIDATIONS
-                        if (this.data[this.selectedContractor.currentClickIndex].Type_of_e_visa__c === 'Time-limited right to work') {
-                            
-                            // Permission Expiry Date - Required
-                            if (!this.data[this.selectedContractor.currentClickIndex].Permission_Expiry_Date__c) {
-                                this.showToast('Error', 'Permission Expiry Date is required for Time-limited right to work.', 'error');
+                        // Any Work Restrictions - Required
+                        if (!this.data[this.selectedContractor.currentClickIndex].Any_work_restrictions__c) {
+                            this.showToast('Error', 'Please select if there are any work restrictions (Yes or No).', 'error');
+                            return;
+                        }
+
+                        // 3c. RESTRICTIONS DETAILS (if Yes selected)
+                        if (this.data[this.selectedContractor.currentClickIndex].Any_work_restrictions__c === 'Yes') {
+
+                            const hasLimitedHours =
+                                this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c &&
+                                this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c.toString().trim() !== '';
+
+                            const hasJobTypes =
+                                this.data[this.selectedContractor.currentClickIndex].Limited_To_Specific_Job_Types__c &&
+                                this.data[this.selectedContractor.currentClickIndex].Limited_To_Specific_Job_Types__c.trim() !== '';
+
+                            const hasOtherRestrictions =
+                                this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c &&
+                                this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c.trim() !== '';
+
+
+                            if (!hasLimitedHours) {
+                                this.showToast(
+                                    'Error',
+                                    'Limited To X Hours Per Week is required when work restrictions are present.',
+                                    'error'
+                                );
+                                return;
+                            }
+                            // Validate hours if provided
+                            if (hasLimitedHours) {
+                                const hours = this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c;
+                                const hoursNumber = Number(hours);
+
+                                if (isNaN(hoursNumber)) {
+                                    this.showToast('Error', 'Please enter a valid number for hours per week.', 'error');
+                                    return;
+                                }
+
+                                if (hoursNumber < 0 || hoursNumber > 168) {
+                                    this.showToast('Error', 'Hours per week must be between 0 and 168.', 'error');
+                                    return;
+                                }
+                            }
+                            // VALIDATION 3: Job Types - REQUIRED
+                            if (!hasJobTypes) {
+                                this.showToast(
+                                    'Error',
+                                    'Limited To Specific Job Types is required when work restrictions are present.',
+                                    'error'
+                                );
                                 return;
                             }
 
-                            // Any Work Restrictions - Required
-                            if (!this.data[this.selectedContractor.currentClickIndex].Any_work_restrictions__c) {
-                                this.showToast('Error', 'Please select if there are any work restrictions (Yes or No).', 'error');
+                            // VALIDATION 4: Other Restrictions - REQUIRED
+                            if (!hasOtherRestrictions) {
+                                this.showToast(
+                                    'Error',
+                                    'Other Restrictions field is required when work restrictions are present.',
+                                    'error'
+                                );
                                 return;
                             }
 
-                            // 3c. RESTRICTIONS DETAILS (if Yes selected)
-                            if (this.data[this.selectedContractor.currentClickIndex].Any_work_restrictions__c === 'Yes') {
-                                
-                                const hasLimitedHours = 
-                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c && 
-                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c.toString().trim() !== '';
-                                
-                                const hasJobTypes = 
-                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_Specific_Job_Types__c && 
-                                    this.data[this.selectedContractor.currentClickIndex].Limited_To_Specific_Job_Types__c.trim() !== '';
-                                
-                                const hasOtherRestrictions = 
-                                    this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c && 
-                                    this.data[this.selectedContractor.currentClickIndex].Other_Restrictions__c.trim() !== '';
-
-
-                                if (!hasLimitedHours) {
-                                    this.showToast(
-                                        'Error', 
-                                        'Limited To X Hours Per Week is required when work restrictions are present.', 
-                                        'error'
-                                    );
-                                    return;
-                                }
-                                // Validate hours if provided
-                                if (hasLimitedHours) {
-                                    const hours = this.data[this.selectedContractor.currentClickIndex].Limited_To_X_Hours_Per_Week__c;
-                                    const hoursNumber = Number(hours);
-                                    
-                                    if (isNaN(hoursNumber)) {
-                                        this.showToast('Error', 'Please enter a valid number for hours per week.', 'error');
-                                        return;
-                                    }
-                                    
-                                    if (hoursNumber < 0 || hoursNumber > 168) {
-                                        this.showToast('Error', 'Hours per week must be between 0 and 168.', 'error');
-                                        return;
-                                    }
-                                }
-                                // VALIDATION 3: Job Types - REQUIRED
-                                if (!hasJobTypes) {
-                                    this.showToast(
-                                        'Error', 
-                                        'Limited To Specific Job Types is required when work restrictions are present.', 
-                                        'error'
-                                    );
-                                    return;
-                                }
-
-                                // VALIDATION 4: Other Restrictions - REQUIRED
-                                if (!hasOtherRestrictions) {
-                                    this.showToast(
-                                        'Error', 
-                                        'Other Restrictions field is required when work restrictions are present.', 
-                                        'error'
-                                    );
-                                    return;
-                                }
-                               
-                            }
                         }
                     }
+                }
                 if ((this.isRTWVerfiedCheck == false || this.verifiedRTWName == null)) {
                     this.showValidateError = true;
                     return;
@@ -2496,10 +2511,10 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
                     if (this.isRTWVerfiedCheck == true && this.selectedContractor.hasAccessCode == true && this.verifiedRTWName == null) {
                         this.isRightToWorkModalOpen = false;
                     }
-                    
+
                     if (this.selectedContractor.hasShareCode == true && this.isRTWVerfiedCheck == true && this.verifiedRTWName != null) {
 
-                        if (this.selectedContractor.hasShareCode == true && this.hasShareCodeFile == false && this.frontDocFiles.length == 0){
+                        if (this.selectedContractor.hasShareCode == true && this.hasShareCodeFile == false && this.frontDocFiles.length == 0) {
                             this.fileErrorMessage = true;
                             return;
                         }
@@ -2760,7 +2775,7 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
                 message: message,
                 variant: variant,
                 // mode: variant === 'error' ? 'sticky' : 'dismissable'
-                mode: variant === 'error' 
+                mode: variant === 'error'
             })
         );
     }

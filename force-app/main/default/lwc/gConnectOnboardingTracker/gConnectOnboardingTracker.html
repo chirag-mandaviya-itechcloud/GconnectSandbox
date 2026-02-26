@@ -773,11 +773,13 @@
                                             <div class="rtw-verification-section">
                                                 <div class="rtw-section-title">
                                                     <span class="rtw-asterisk">*</span>
-                                                    VERIFICATION OUTCOME
-                                                    <span class="rtw-required-badge">REQUIRED</span>
+                                                    <span class="rtw-section-title-text">Verification Outcome</span>
+                                                    <span class="rtw-osm-badge">OSM EDITABLE</span>
                                                 </div>
 
                                                 <!-- Radio Buttons: Continuous vs Time-Limited -->
+                                                <div class="rtw-date-label">Type of right of
+                                                    work</div>
                                                 <div class="rtw-radio-group">
                                                     <label class={getContinuousRTWClass}
                                                         onclick={handleSelectContinuousRTW}>
@@ -786,8 +788,14 @@
                                                                 value="Continuous right to work"
                                                                 checked={isContinuousSelected} class="rtw-radio-input">
                                                         </div>
-                                                        <span class="rtw-radio-label">Continuous right to work — no
-                                                            restrictions</span>
+                                                        <div class="rtw-radio-text">
+                                                            <span class="rtw-radio-label">Continuous
+                                                                right to work</span>
+                                                            <span class="rtw-radio-description">No
+                                                                restrictions, no
+                                                                follow-up check
+                                                                required</span>
+                                                        </div>
                                                     </label>
 
                                                     <label class={getTimeLimitedRTWClass}
@@ -797,7 +805,14 @@
                                                                 value="Time-limited right to work"
                                                                 checked={isTimeLimitedSelected} class="rtw-radio-input">
                                                         </div>
-                                                        <span class="rtw-radio-label">Time-limited right to work</span>
+                                                        <div class="rtw-radio-text">
+                                                            <span class="rtw-radio-label">Time-limited
+                                                                right to work</span>
+                                                            <span class="rtw-radio-description">Permission
+                                                                has an expiry date and
+                                                                may have
+                                                                restrictions</span>
+                                                        </div>
                                                     </label>
                                                 </div>
 
@@ -807,19 +822,25 @@
                                                     <div class="rtw-date-input-group">
                                                         <div class="rtw-date-label">
                                                             Permission expiry date
-                                                            <span class="rtw-required-badge">REQUIRED</span>
+                                                            <span class="rtw-osm-badge">OSM EDITABLE</span>
                                                         </div>
                                                         <lightning-input type="date" name="PermissionexpiryDate"
                                                             value={selectedContractor.Permission_Expiry_Date__c}
                                                             onchange={onChangeRTWDetails} class="rtw-date-picker">
                                                         </lightning-input>
+                                                        <div class="rtw-followup-hint">
+                                                            <span class="rtw-followup-icon">⏱</span>
+                                                            <span class="rtw-followup-text">Follow-up
+                                                                check auto-scheduled 90 days
+                                                                before expiry</span>
+                                                        </div>
                                                     </div>
 
                                                     <!-- Work Restrictions Section -->
                                                     <div class="rtw-restrictions-section">
                                                         <div class="rtw-section-title">
                                                             Work restrictions
-                                                            <span class="rtw-required-badge">REQUIRED</span>
+                                                            <span class="rtw-osm-badge">OSM EDITABLE</span>
                                                         </div>
 
                                                         <!-- Radio Buttons: No vs Yes Restrictions -->
@@ -911,7 +932,7 @@
                                             <!-- Verification Outcome -->
                                             <template if:true={selectedContractor.Type_of_e_visa__c}>
                                                 <div class="info-field">
-                                                    <div class="label">VERIFICATION OUTCOME:</div>
+                                                    <div class="info-label">TYPE OF EVISA:</div>
                                                     <div class="badge badge-blue">
                                                         {selectedContractor.Type_of_e_visa__c}
                                                     </div>
@@ -1035,46 +1056,90 @@
                                     label="I confirm that I have personally verified the authenticity of this document with the holder present during their interview and ensured that all images captured are clear and legible for accurate record-keeping."
                                     checked={isRTWVerfiedCheck} onchange={handleRTWVerifiedCheck}>
                                 </lightning-input> -->
-                                <div class="validation-box">
-                                    <div class="validation-title">
-                                        <input type="checkbox" checked={isRTWVerfiedCheck}
-                                            onchange={handleRTWVerifiedCheck} />
-                                        <label>I confirm that:</label>
+                                <template if:true={showNonUKConfirmPoints}>
+                                    <div class="validation-box">
+                                        <div class="validation-title">
+                                            <input type="checkbox" checked={isRTWVerfiedCheck}
+                                                onchange={handleRTWVerifiedCheck} />
+                                            <label>I confirm that:</label>
+                                        </div>
+
+                                        <div class="validation-items">
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {nonUKConfirmPoints.one}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {nonUKConfirmPoints.two}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {nonUKConfirmPoints.three}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div class="validation-items">
-
-                                        <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            <span>
-                                                The photograph on this document matches the person presenting it
-                                            </span>
+                                </template>
+                                <template if:false={showNonUKConfirmPoints}>
+                                    <div class="validation-box">
+                                        <div class="validation-title">
+                                            <input type="checkbox" checked={isRTWVerfiedCheck}
+                                                onchange={handleRTWVerifiedCheck} />
+                                            <label>I confirm that:</label>
                                         </div>
 
-                                        <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            <span>
-                                                I have verified this person is the rightful holder
-                                            </span>
-                                        </div>
+                                        <div class="validation-items">
 
-                                        <div class="validation-item">
-                                            <svg class="check-icon" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            <span>
-                                                The document appears genuine and all images are clear
-                                            </span>
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {UKConfirmPoints.one}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {UKConfirmPoints.two}
+                                                </span>
+                                            </div>
+
+                                            <div class="validation-item">
+                                                <svg class="check-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                                </svg>
+                                                <span>
+                                                    {UKConfirmPoints.three}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </template>
                                 <template if:true={isRTWVerfiedCheck}>
                                     <div class="slds-var-p-top_small">
                                         <lightning-input label="Verified By" placeholder="Enter Your Initials"
