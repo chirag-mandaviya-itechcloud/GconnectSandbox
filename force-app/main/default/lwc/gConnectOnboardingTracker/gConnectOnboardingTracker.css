@@ -1367,3 +1367,70 @@ lightning-textarea {
     font-size: 14px !important;
     resize: vertical !important;
 }
+
+/* Verification Steps Container */
+.verification-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Single Step */
+.verification-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+/* Step Content */
+.v-step-content {
+    flex: 1;
+    padding-top: 3px;
+}
+
+/* Step Title */
+.v-step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A2332;
+    margin-bottom: 4px;
+}
+
+/* Step Description */
+.v-step-desc {
+    font-size: 13px;
+    color: #5A6577;
+    line-height: 1.45;
+}
+
+/* GOV.UK Button */
+.verify-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #F0F4FF;
+    border: 1.5px solid #D4DEFF;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #3B5198;
+    cursor: pointer;
+    text-decoration: none;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: -10px;
+    transition: all 0.15s ease;
+}
+
+/* Hover Effect */
+.verify-btn:hover {
+    background: #D4DEFF;
+}
+
+/* Icon */
+.verify-btn svg {
+    width: 18px;
+    height: 18px;
+}

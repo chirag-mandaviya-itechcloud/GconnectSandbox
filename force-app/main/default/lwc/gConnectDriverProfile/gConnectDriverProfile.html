@@ -2184,19 +2184,7 @@
                                                                     </template>
                                                                 </template> -->
                                                                 <template if:true={recordData.hasShareCode}>
-                                                                    <template if:true={hasCompletedImageforShareCode}>
-
-                                                                        <div class="section-label">Share code</div>
-                                                                        <div class="share-code-display">
-                                                                            <div class="share-code-value">
-                                                                                {recordData.Share_Code__c}</div>
-                                                                            <button class="share-code-copy"
-                                                                                onclick={handleCopyCode}>
-                                                                                {copyButtonLabel}
-                                                                            </button>
-                                                                        </div>
-
-                                                                        <div class="verification-steps" id="v-steps">
+                                                                     <div class="verification-steps" id="v-steps">
                                                                             <div class="verification-step">
                                                                                 <div class="v-step-content">
                                                                                     <div class="v-step-title">Verify on
@@ -2227,6 +2215,19 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                    <template if:true={hasCompletedImageforShareCode}>
+
+                                                                        <div class="section-label">Share code</div>
+                                                                        <div class="share-code-display">
+                                                                            <div class="share-code-value">
+                                                                                {recordData.Share_Code__c}</div>
+                                                                            <button class="share-code-copy"
+                                                                                onclick={handleCopyCode}>
+                                                                                {copyButtonLabel}
+                                                                            </button>
+                                                                        </div>
+
+                                                                       
 
 
                                                                         <div class="rtw-verification-section">

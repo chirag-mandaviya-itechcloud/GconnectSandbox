@@ -1723,6 +1723,37 @@ if (this.data[x].hasOwnProperty('Citizenship_Immigration_status__c') && this.dat
         this.fileErrorMessage = '';
     }
 
+    handleRequestNewEvidence(event) {
+        const recordId = event.target.dataset.selectedId;
+
+        sendVerificationLinkEmail({ applicationId: recordId })
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Verification email sent successfully.',
+                        variant: 'success'
+                    })
+                );
+
+            })
+            .catch(error => {
+                let errorMessage = 'Error sending verification email';
+                if (error?.body?.message) {
+                    errorMessage = error.body.message;
+                }
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: errorMessage,
+                        variant: 'error'
+                    })
+                );
+
+                console.error(error);
+            });
+    }
+
     handleDownload(event) {
     const docType = event.target.dataset.doctype;
     const accountId = event.target.dataset.selectedId;
